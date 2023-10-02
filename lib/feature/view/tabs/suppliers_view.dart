@@ -1,5 +1,10 @@
+import 'dart:developer';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_cropper/image_cropper.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:stokip/feature/model/importer_model.dart';
 import 'package:stokip/product/navigator_manager.dart';
 import 'package:stokip/product/widgets/currency_popup_button.dart';
@@ -112,8 +117,20 @@ class _ImporterLeading extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextButton(
       onPressed: () async {
-        final response = ImageUploadManager().fetchFromLibrary();
-        context.read<ImporterCubit>().saveFileToLocale(await response, index);
+        try {
+          final response = await ImageUploadManager().fetchFromLibrary();
+          if (response != null) {
+            final croppedImage = await ImageCropper().cropImage(
+              sourcePath: response.path,
+            );
+            if (croppedImage != null) {
+              final croppedXFile = XFile(croppedImage.path);
+              context.read<ImporterCubit>().saveFileToLocale(croppedXFile, index);
+            } else {}
+          }
+        } catch (e) {
+          print('Hata: $e');
+        }
       },
       child: _userAvatar,
     );
