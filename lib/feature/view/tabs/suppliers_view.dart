@@ -1,9 +1,10 @@
-
-
 import 'package:flutter/material.dart';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
+
 import 'package:stokip/feature/model/importer_model.dart';
 import 'package:stokip/product/navigator_manager.dart';
 import 'package:stokip/product/widgets/currency_popup_button.dart';
