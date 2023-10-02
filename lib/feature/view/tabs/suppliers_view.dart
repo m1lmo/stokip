@@ -1,17 +1,18 @@
+
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
-
+import 'package:stokip/feature/model/importer_model.dart';
+import 'package:stokip/product/navigator_manager.dart';
+import 'package:stokip/product/widgets/currency_popup_button.dart';
 import 'package:stokip/feature/cubit/importers/importer_cubit.dart';
 import 'package:stokip/feature/cubit/stock/stock_cubit.dart';
-import 'package:stokip/feature/model/importer_model.dart';
 import 'package:stokip/feature/view/purchases_view.dart';
 import 'package:stokip/product/constants/enums/currency_enum.dart';
 import 'package:stokip/product/constants/enums/images_enum.dart';
 import 'package:stokip/product/image_picker_manager.dart';
-import 'package:stokip/product/navigator_manager.dart';
-import 'package:stokip/product/widgets/currency_popup_button.dart';
 
 class SuppliersView extends StatelessWidget with NavigatorManager {
   const SuppliersView({super.key});
