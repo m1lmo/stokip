@@ -39,56 +39,57 @@ class _DashBoardState extends State<DashBoard> {
         ),
       ],
       child: Scaffold(
-          appBar: AppBar(),
-          body: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              ProfitWidget(
-                monthlyPurchases: monthlyPurchases ?? 0,
-                monthlySales: monthlySales ?? 0,
-              ),
-              SizedBox(
-                height: 15,
-              ),
-              Stack(
-                children: <Widget>[
-                  AspectRatio(
-                    aspectRatio: 1.3,
-                    child: Padding(
-                        padding: EdgeInsets.only(
-                          right: MediaQuery.of(context).size.width * 0.01,
-                          left: MediaQuery.of(context).size.width * 0.01,
-                          top: 30,
-                          bottom: 12,
-                        ),
-                        child: BlocBuilder<ImporterCubit, ImporterState>(
-                          builder: (context, importerState) {
-                            return BlocBuilder<SalesCubit, SalesState>(
-                              builder: (context, salesState) {
-                                return LineChartWidget(
-                                  salesState: salesState,
-                                  importerState: importerState,
-                                );
-                              },
-                            );
-                          },
-                        )),
-                  ),
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width * 0.5,
-                    height: 30,
-                    child: TextButton(
-                      onPressed: () {},
-                      child: const Text(
-                        'Aylık Alış Ve Satış Grafiği', // todo burada ? : ; kullanarak grafiğin haftalık ve aylık versiyonlarını göstericez
-                        style: TextStyle(fontSize: 12, color: Colors.black),
+        appBar: AppBar(),
+        body: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            ProfitWidget(
+              monthlyPurchases: monthlyPurchases ?? 0,
+              monthlySales: monthlySales ?? 0,
+            ),
+            SizedBox(
+              height: 15,
+            ),
+            Stack(
+              children: <Widget>[
+                AspectRatio(
+                  aspectRatio: 1.3,
+                  child: Padding(
+                      padding: EdgeInsets.only(
+                        right: MediaQuery.of(context).size.width * 0.01,
+                        left: MediaQuery.of(context).size.width * 0.01,
+                        top: 30,
+                        bottom: 12,
                       ),
+                      child: BlocBuilder<ImporterCubit, ImporterState>(
+                        builder: (context, importerState) {
+                          return BlocBuilder<SalesCubit, SalesState>(
+                            builder: (context, salesState) {
+                              return LineChartWidget(
+                                salesState: salesState,
+                                importerState: importerState,
+                              );
+                            },
+                          );
+                        },
+                      )),
+                ),
+                SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.5,
+                  height: 30,
+                  child: TextButton(
+                    onPressed: () {},
+                    child: const Text(
+                      'Aylık Alış Ve Satış Grafiği', // todo burada ? : ; kullanarak grafiğin haftalık ve aylık versiyonlarını göstericez
+                      style: TextStyle(fontSize: 12, color: Colors.black),
                     ),
                   ),
-                ],
-              ),
-            ],
-          )),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
