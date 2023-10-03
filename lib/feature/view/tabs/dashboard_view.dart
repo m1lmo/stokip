@@ -47,7 +47,7 @@ class _DashBoardState extends State<DashBoard> {
               monthlyPurchases: monthlyPurchases ?? 0,
               monthlySales: monthlySales ?? 0,
             ),
-            SizedBox(
+            const SizedBox(
               height: 15,
             ),
             Stack(
@@ -55,24 +55,25 @@ class _DashBoardState extends State<DashBoard> {
                 AspectRatio(
                   aspectRatio: 1.3,
                   child: Padding(
-                      padding: EdgeInsets.only(
-                        right: MediaQuery.of(context).size.width * 0.01,
-                        left: MediaQuery.of(context).size.width * 0.01,
-                        top: 30,
-                        bottom: 12,
-                      ),
-                      child: BlocBuilder<ImporterCubit, ImporterState>(
-                        builder: (context, importerState) {
-                          return BlocBuilder<SalesCubit, SalesState>(
-                            builder: (context, salesState) {
-                              return LineChartWidget(
-                                salesState: salesState,
-                                importerState: importerState,
-                              );
-                            },
-                          );
-                        },
-                      )),
+                    padding: EdgeInsets.only(
+                      right: MediaQuery.of(context).size.width * 0.01,
+                      left: MediaQuery.of(context).size.width * 0.01,
+                      top: 30,
+                      bottom: 12,
+                    ),
+                    child: BlocBuilder<ImporterCubit, ImporterState>(
+                      builder: (context, importerState) {
+                        return BlocBuilder<SalesCubit, SalesState>(
+                          builder: (context, salesState) {
+                            return LineChartWidget(
+                              salesState: salesState,
+                              importerState: importerState,
+                            );
+                          },
+                        );
+                      },
+                    ),
+                  ),
                 ),
                 SizedBox(
                   width: MediaQuery.of(context).size.width * 0.5,
@@ -127,10 +128,10 @@ class ProfitWidget extends StatelessWidget {
       children: [
         Text(
           '${context.read<SalesCubit>().updateMonthlySalesAmount(DateTime.now().month) - context.read<ImporterCubit>().updateMonthlyPurchasesAmount(DateTime.now().month)}',
-          style: TextStyle(
+          style: const TextStyle(
               fontSize: 35, color: Colors.blue), //todo burası tabin rengiyle aynı renk olucak
         ),
-        SizedBox(
+        const SizedBox(
           width: 20,
         ),
         Container(
