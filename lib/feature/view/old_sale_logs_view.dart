@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:stokip/feature/cubit/sales/sales_cubit.dart';
+import 'package:stokip/product/constants/project_strings.dart';
 
 
 class OldSaleLogsView extends StatelessWidget {
@@ -23,7 +24,7 @@ class OldSaleLogsView extends StatelessWidget {
               itemBuilder: (BuildContext context, int index) {
                 return ListTile(
                   title: Text(state.sales?[index].title ?? ''),
-                  subtitle: Text('${state.sales?[index].meter} Metre'),
+                  subtitle: Text('${state.sales?[index].meter} ' + ProjectStrings.meter),
                   leading: Text(state.sales?[index].meter.toString() ?? ''),
                   trailing: BlocBuilder<SalesCubit, SalesState>(
                     builder: (context, state) {

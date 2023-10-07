@@ -9,15 +9,16 @@ import 'package:stokip/feature/model/purchases_model.dart';
 import 'package:stokip/feature/model/stock_model.dart';
 import 'package:stokip/product/constants/enums/currency_enum.dart';
 import 'package:stokip/product/constants/project_input_Decorations.dart';
+import 'package:stokip/product/constants/project_strings.dart';
 
 class PurchasesView extends StatelessWidget {
   const PurchasesView({
-    Key? key,
     required this.index,
     required this.importerState,
     required this.importerCubit,
     required this.stockCubit,
-  }) : super(key: key);
+    super.key,
+  });
   final int index;
   final ImporterState importerState;
   final ImporterCubit importerCubit;
@@ -72,7 +73,7 @@ class PurchasesView extends StatelessWidget {
                       ),
                     );
                   },
-                  icon: Icon(Icons.search),
+                  icon: const Icon(Icons.search),
                 );
               },
             ),
@@ -103,7 +104,7 @@ class PurchasesView extends StatelessWidget {
                 return BlocProvider.value(
                   value: importerCubit,
                   child: AlertDialog(
-                    title: Text('Ödeme Yaptığınız Değeri Giriniz'),
+                    title: Text(ProjectStrings.suppliersPayAlertTitle),
                     actions: [
                       BlocBuilder<ImporterCubit, ImporterState>(
                         builder: (context, state) {
@@ -117,7 +118,7 @@ class PurchasesView extends StatelessWidget {
                                   index, double.tryParse(paymentEditingController.text) ?? 0);
                               Navigator.of(context).pop();
                             },
-                            child: const Text('İşlemi Tamamla'),
+                            child: Text(ProjectStrings.suppliersCompletePayment),
                           );
                         },
                       ),
@@ -125,14 +126,14 @@ class PurchasesView extends StatelessWidget {
                         onPressed: () {
                           Navigator.of(context).pop();
                         },
-                        child: const Text(
-                          'Vazgeç',
+                        child: Text(
+                          ProjectStrings.suppliersDenyPayment,
                           style: TextStyle(color: Colors.red),
                         ),
                       ),
                     ],
                     content: TextField(
-                      keyboardType: TextInputType.numberWithOptions(decimal: true),
+                      keyboardType: const TextInputType.numberWithOptions(decimal: true),
                       controller: paymentEditingController,
                     ),
                   ),
@@ -142,7 +143,7 @@ class PurchasesView extends StatelessWidget {
           },
           backgroundColor: Colors.blue.shade200,
           child: Text(
-            'Ödeme Yap',
+            ProjectStrings.pay,
             style: TextStyle(color: Colors.black),
           ),
         ),
@@ -153,7 +154,7 @@ class PurchasesView extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Alışlar',
+                  ProjectStrings.suppliersPurchases,
                 ),
                 Expanded(
                   child: ListView.builder(
@@ -162,8 +163,9 @@ class PurchasesView extends StatelessWidget {
                       final reversedList = getStocksFromTheImporter?.reversed.toList();
                       return ListTile(
                         title: Text('${reversedList?[_index].title}'
-                            ' '
-                            '${reversedList?[_index].detailTitle} ${reversedList?[_index].meter} metre'),
+                                ' '
+                                '${reversedList?[_index].detailTitle} ${reversedList?[_index].meter} ' +
+                            ProjectStrings.meter),
                         trailing: context.read<ImporterCubit>().getPurchasedDate(index, _index),
                         subtitle: Text(
                           '${reversedList?[_index].totalAmount} ${state.importers![index].currency?.getSymbol}',
@@ -172,7 +174,7 @@ class PurchasesView extends StatelessWidget {
                     },
                   ),
                 ),
-                Text('Ödemeler'),
+                Text(ProjectStrings.suppliersPayments),
                 Expanded(
                   child: ListView.builder(
                     itemCount: getPaymentsFromTheImporter?.length ?? 0,
@@ -180,7 +182,9 @@ class PurchasesView extends StatelessWidget {
                       final reversedList = getPaymentsFromTheImporter?.reversed.toList();
                       return ListTile(
                         title: Text(
-                            '${reversedList?[_index].price} ${state.importers![index].currency?.getSymbol} ödeme yapıldı'),
+                          '${reversedList?[_index].price} ${state.importers![index].currency?.getSymbol} ' +
+                              ProjectStrings.suppliersPaymentSuccess,
+                        ),
                       );
                     },
                   ),
@@ -225,26 +229,32 @@ void _showModal(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       TextField(
-                        decoration:
-                            ProjectInputDecorations.suppliersAdd('Lütfen Ürün Adını Giriniz'),
+                        decoration: ProjectInputDecorations.suppliersAdd(
+                          ProjectStrings.suppliersHintItem,
+                        ),
                         controller: titleController,
                       ),
                       TextField(
-                        decoration:
-                            ProjectInputDecorations.suppliersAdd('Lütfen Ürün Rengini Giriniz'),
+                        decoration: ProjectInputDecorations.suppliersAdd(
+                          ProjectStrings.suppliersHintDetailItem,
+                        ),
                         controller: detailTitleController,
                       ),
                       TextField(
-                        decoration:
-                            ProjectInputDecorations.suppliersAdd('Kaç metre aldığınızı giriniz'),
+                        decoration: ProjectInputDecorations.suppliersAdd(
+                          ProjectStrings.suppliersHintQuantityMeter,
+                        ),
                         controller: meterController,
-                        keyboardType: TextInputType.numberWithOptions(decimal: true),
+                        keyboardType: const TextInputType.numberWithOptions(
+                          decimal: true,
+                        ),
                       ),
                       TextField(
-                        decoration:
-                            ProjectInputDecorations.suppliersAdd('Ürün alış fiyatını giriniz'),
+                        decoration: ProjectInputDecorations.suppliersAdd(
+                          ProjectStrings.suppliersHintPurchasePrice,
+                        ),
                         controller: priceController,
-                        keyboardType: TextInputType.numberWithOptions(decimal: true),
+                        keyboardType: const TextInputType.numberWithOptions(decimal: true),
                       ),
                       IconButton(
                         onPressed: () {
@@ -329,7 +339,7 @@ class _MySearchDelegate extends SearchDelegate<String> {
   Widget? buildLeading(BuildContext context) {
     return StatefulBuilder(
       builder: (context, setState) {
-        return IconButton(onPressed: navigateBackButton, icon: Icon(Icons.navigate_before));
+        return IconButton(onPressed: navigateBackButton, icon: const Icon(Icons.navigate_before));
       },
     );
   }
@@ -353,7 +363,8 @@ class _MySearchDelegate extends SearchDelegate<String> {
           itemBuilder: (BuildContext context, int index) {
             return ListTile(
               title: Text('${items?[index].title}'
-                  '${items?[index].detailTitle} ${items?[index].meter} metre'),
+                      '${items?[index].detailTitle} ${items?[index].meter} ' +
+                  ProjectStrings.meter),
               trailing: importerCubit.getPurchasedDate(importerIndex, index),
               subtitle: Text(
                 '${items?[index].totalAmount} ${importerState.importers![importerIndex].currency?.getSymbol}',

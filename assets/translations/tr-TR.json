@@ -1,0 +1,43 @@
+{
+    "common": {
+        "pickItem": "Malzeme Seçiniz",
+        "pickDetailItem": "Rengi Seçiniz",
+        "meter": "Metre",
+        "pay": "Ödeme Yap",
+        "oldLogs" :"Eski Kayıtlar"
+    },
+    "products": {
+        "appBarTitle": "Ürünler",
+        "total": "Toplam Ürün"
+    },
+    "stocks": {
+        "total": "Toplam Stok"
+    },
+    "sales": {
+        "priceHint": "Satış Fiyatı",
+        "appBarTitle" : "Satışlar"
+    },
+    "dashboard": {
+        "appBarTitle" : "Anasayfa",
+        "monthlyGraph": "Aylık Alış ve Satış Grafiği"
+    },
+    "suppliers": {
+        "appBarTitle": "Tedarikçiler",
+        "nameHint": "Cari Adını Giriniz",
+        "purchases": "Alışlar",
+        "payments": "Ödemeler",
+        "paymentSuccess": "Ödeme Yapıldı",
+        "payAlertTitle": "Ödeme Yaptığınız Tutarı Giriniz",
+        "completePayment": "Ödemeyi Tamamla",
+        "denyPayment": "Vazgeç",
+        "hintItem": "Lütfen Ürün Adını Giriniz",
+        "hintDetailItem": "Lütfen Ürün Rengini Giriniz",
+        "hintQuantityMeter": "Kaç Metre Aldığınızı Giriniz",
+        "hintPurchasePrice": "Ürün Alış Fiyatını Giriniz"
+    }
+}
+
+
+
+
+

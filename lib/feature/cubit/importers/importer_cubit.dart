@@ -9,7 +9,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:stokip/feature/model/importer_model.dart';
 import 'package:stokip/feature/model/payment_model.dart';
 import 'package:stokip/feature/model/purchases_model.dart';
-import 'package:stokip/product/cache/shared_manager.dart';
 import 'package:stokip/product/constants/enums/currency_enum.dart';
 import 'package:stokip/product/database/core/database_hive_manager.dart';
 import 'package:stokip/product/database/operation/importer_hive_operation.dart';
@@ -39,7 +38,6 @@ class ImporterCubit extends Cubit<ImporterState> {
 
   /// The line `late final SharedManager sharedManager;` is declaring a late final variable named
   /// `sharedManager` of type `SharedManager`.
-  late final SharedManager sharedManager;
 
   /// The line `final ImporterHiveOperation databaseOperation = ImporterHiveOperation();` is creating an
   /// instance of the `ImporterHiveOperation` class and assigning it to the variable
@@ -50,7 +48,7 @@ class ImporterCubit extends Cubit<ImporterState> {
   /// The `init` method is an asynchronous method that is used to initialize the databaseOperations init on ImporterCubit.
   /// It is marked with the `async` keyword, which means it can perform asynchronous operations. The
   /// method returns a `Future<void>`, indicating that it does not return a value.
-  /// u should start this at homeview otherwise cache çalışmaz
+  /// u should start this at homeview otherwise cache wont work
   Future<void> get init async {
     try {
       await DatabaseHiveManager().start();

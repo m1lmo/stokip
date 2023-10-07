@@ -16,16 +16,15 @@ class StockCubit extends Cubit<StockState> {
   final StockHiveOperation databaseOperation = StockHiveOperation();
 
   List<StockModel> get currentStocks => List<StockModel>.from(lists ?? []);
-  Future<void> inInit() async => await DatabaseHiveManager().start();
 
-  Future<void> init() async {
-    sharedManager = await SharedManager.getInstance;
+  Future<void> get init async {
+    await DatabaseHiveManager().start();
     await databaseOperation.start();
+    sharedManager = await SharedManager.getInstance;
 
     if (databaseOperation.box.isNotEmpty) {
       lists?.addAll(databaseOperation.box.values);
     }
-    readId();
     getProduct();
   }
 

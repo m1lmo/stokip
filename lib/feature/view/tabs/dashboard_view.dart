@@ -5,6 +5,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:stokip/feature/cubit/importers/importer_cubit.dart';
 import 'package:stokip/feature/cubit/sales/sales_cubit.dart';
+import 'package:stokip/product/constants/project_strings.dart';
+import 'package:stokip/product/extensions/string_extension.dart';
 import 'package:stokip/product/widgets/line_chart_widget.dart';
 
 class DashBoard extends StatefulWidget {
@@ -39,56 +41,59 @@ class _DashBoardState extends State<DashBoard> {
         ),
       ],
       child: Scaffold(
-          appBar: AppBar(),
-          body: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              ProfitWidget(
-                monthlyPurchases: monthlyPurchases ?? 0,
-                monthlySales: monthlySales ?? 0,
-              ),
-              SizedBox(
-                height: 15,
-              ),
-              Stack(
-                children: <Widget>[
-                  AspectRatio(
-                    aspectRatio: 1.3,
-                    child: Padding(
-                        padding: EdgeInsets.only(
-                          right: MediaQuery.of(context).size.width * 0.01,
-                          left: MediaQuery.of(context).size.width * 0.01,
-                          top: 30,
-                          bottom: 12,
-                        ),
-                        child: BlocBuilder<ImporterCubit, ImporterState>(
-                          builder: (context, importerState) {
-                            return BlocBuilder<SalesCubit, SalesState>(
-                              builder: (context, salesState) {
-                                return LineChartWidget(
-                                  salesState: salesState,
-                                  importerState: importerState,
-                                );
-                              },
+        appBar: AppBar(),
+        body: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            ProfitWidget(
+              monthlyPurchases: monthlyPurchases ?? 0,
+              monthlySales: monthlySales ?? 0,
+            ),
+            const SizedBox(
+              height: 15,
+            ),
+            Stack(
+              children: <Widget>[
+                AspectRatio(
+                  aspectRatio: 1.3,
+                  child: Padding(
+                    padding: EdgeInsets.only(
+                      right: MediaQuery.of(context).size.width * 0.01,
+                      left: MediaQuery.of(context).size.width * 0.01,
+                      top: 30,
+                      bottom: 12,
+                    ),
+                    child: BlocBuilder<ImporterCubit, ImporterState>(
+                      builder: (context, importerState) {
+                        return BlocBuilder<SalesCubit, SalesState>(
+                          builder: (context, salesState) {
+                            return LineChartWidget(
+                              salesState: salesState,
+                              importerState: importerState,
                             );
                           },
-                        )),
-                  ),
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width * 0.5,
-                    height: 30,
-                    child: TextButton(
-                      onPressed: () {},
-                      child: const Text(
-                        'Aylık Alış Ve Satış Grafiği', // todo burada ? : ; kullanarak grafiğin haftalık ve aylık versiyonlarını göstericez
-                        style: TextStyle(fontSize: 12, color: Colors.black),
-                      ),
+                        );
+                      },
                     ),
                   ),
-                ],
-              ),
-            ],
-          )),
+                ),
+                SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.5,
+                  height: 30,
+                  child: TextButton(
+                    onPressed: () {},
+                    child: Text(
+                      ProjectStrings.dashboardMonthlyGraph
+                          .locale(), // todo burada ? : ; kullanarak grafiğin haftalık ve aylık versiyonlarını göstericez
+                      style: TextStyle(fontSize: 12, color: Colors.black),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
@@ -126,10 +131,10 @@ class ProfitWidget extends StatelessWidget {
       children: [
         Text(
           '${context.read<SalesCubit>().updateMonthlySalesAmount(DateTime.now().month) - context.read<ImporterCubit>().updateMonthlyPurchasesAmount(DateTime.now().month)}',
-          style: TextStyle(
+          style: const TextStyle(
               fontSize: 35, color: Colors.blue), //todo burası tabin rengiyle aynı renk olucak
         ),
-        SizedBox(
+        const SizedBox(
           width: 20,
         ),
         Container(
