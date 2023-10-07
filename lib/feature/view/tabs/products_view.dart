@@ -20,13 +20,13 @@ class ProductsView extends StatelessWidget with NavigatorManager {
     final textEditingController = TextEditingController();
     return BlocProvider.value(
       value: stockCubit
-        ..updateAppBarTitle('Malzemeler')
+        ..updateAppBarTitle(ProjectStrings.productsAppBarTitle)
         ..getProduct(),
       child: BlocBuilder<StockCubit, StockState>(
         builder: (context, state) {
           return Scaffold(
             appBar: AppBar(
-              title: Text(state.appBarTitle ?? ProjectStrings.productsPageTitle),
+              title: Text(state.appBarTitle ?? ProjectStrings.productsAppBarTitle),
               actions: [
                 BlocBuilder<StockCubit, StockState>(
                   builder: (context, state) {
@@ -58,20 +58,7 @@ class ProductsView extends StatelessWidget with NavigatorManager {
                                           title: textEditingController.text,
                                           pPrice: 12,
                                           sPrice: 13,
-                                          stockDetailModel: [
-                                            StockDetailModel(
-                                              title: 'Kırmızı',
-                                              meter: 32,
-                                            ),
-                                            StockDetailModel(
-                                              title: 'yeşil',
-                                              meter: 32,
-                                            ),
-                                            StockDetailModel(
-                                              title: 'siyah',
-                                              meter: 32,
-                                            ),
-                                          ],
+                                          stockDetailModel: [],
                                         ),
                                       );
                                 },
@@ -104,7 +91,7 @@ class ProductsView extends StatelessWidget with NavigatorManager {
                               children: [
                                 Column(
                                   children: [
-                                    const Text('Toplam Ürün'),
+                                    Text(ProjectStrings.productsTotal),
                                     Text(
                                       '${state.products?.length}',
                                       style: TextStyle(
@@ -115,7 +102,7 @@ class ProductsView extends StatelessWidget with NavigatorManager {
                                 ),
                                 Column(
                                   children: [
-                                    const Text('Toplam Stok'),
+                                    Text(ProjectStrings.stockTotal),
                                     Text(
                                       '${state.totalMeter} Metre',
                                       style: TextStyle(
@@ -175,26 +162,3 @@ class ProductsView extends StatelessWidget with NavigatorManager {
     );
   }
 }
-
-//   Future<Widget?> bottomSheet(
-//       BuildContext context, TextEditingController textEditingController) async {
-//     return await showModalBottomSheet<Widget>(
-//       context: context,
-//       builder: (context) {
-//         return BlocProvider.value(
-//             value: BlocProvider.of<StockCubit>(context),
-//             child: BlocBuilder<StockCubit, StockState>(
-//               builder: (context, state) {
-//                 return TextField(
-//                   controller: textEditingController,
-//                   onEditingComplete: () {
-//                     context
-//                         .read<StockCubit>()
-//                         .addProduct(StockModel(title: textEditingController.text));
-//                   },
-//                 );
-//               },
-//             ));
-//       },
-//     );
-//   }

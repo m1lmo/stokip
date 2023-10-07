@@ -1,5 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:bloc/bloc.dart';
+
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:stokip/product/constants/enums/currency_enum.dart';
@@ -7,7 +8,6 @@ import 'package:stokip/product/constants/enums/currency_enum.dart';
 import 'package:stokip/product/database/operation/stock_hive_operation.dart';
 
 import '../../../product/cache/shared_manager.dart';
-import '../../../product/constants/project_strings.dart';
 import '../../../product/database/core/database_hive_manager.dart';
 import '../../../product/database/operation/sales_hive_operation.dart';
 import '../../model/sales_model.dart';
@@ -58,7 +58,9 @@ class SalesCubit extends Cubit<SalesState> {
   SalesCubit.s({
     this.stockDatabaseOperation,
     this.stocks,
-  }) : super(SalesState(sales: saless));
+  }) : super(SalesState(
+          sales: saless,
+        ));
 
   late final StockHiveOperation? stockDatabaseOperation;
   late final List<StockModel>? stocks;

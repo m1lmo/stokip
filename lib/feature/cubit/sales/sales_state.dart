@@ -1,12 +1,12 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 part of 'sales_cubit.dart';
 
-class SalesState with EquatableMixin {
+final class SalesState with EquatableMixin {
   SalesState({
     this.salesId = 0,
     this.sales,
-    this.selectedItemOnSales = ProjectStrings.pickItem,
-    this.selectedSpecific = ProjectStrings.pickDetailItem,
+    this.selectedItemOnSales,
+    this.selectedSpecific,
     this.currency,
   });
   int salesId;
@@ -16,10 +16,14 @@ class SalesState with EquatableMixin {
   final String? selectedSpecific;
   final CurrencyEnum? currency;
 
-
   @override
-  List<Object?> get props =>
-      [sales, selectedItemOnSales, salesId, selectedSpecific, currency,];
+  List<Object?> get props => [
+        sales,
+        selectedItemOnSales,
+        salesId,
+        selectedSpecific,
+        currency,
+      ];
 
   @override
   bool operator ==(Object other) =>
@@ -46,7 +50,6 @@ class SalesState with EquatableMixin {
     String? selectedItemOnSales,
     String? selectedSpecific,
     CurrencyEnum? currency,
-
   }) {
     return SalesState(
       salesId: salesId ?? this.salesId,
@@ -54,7 +57,6 @@ class SalesState with EquatableMixin {
       selectedItemOnSales: selectedItemOnSales ?? this.selectedItemOnSales,
       selectedSpecific: selectedSpecific ?? this.selectedSpecific,
       currency: currency ?? this.currency,
-
     );
   }
 }

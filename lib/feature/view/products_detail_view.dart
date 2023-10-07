@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:stokip/feature/cubit/sales/sales_cubit.dart';
 import 'package:stokip/feature/cubit/stock/stock_cubit.dart';
 import 'package:stokip/feature/model/stock_model.dart';
+import 'package:stokip/product/constants/project_strings.dart';
 
 class ProductsDetailView extends StatelessWidget {
   const ProductsDetailView({
@@ -42,27 +43,29 @@ class ProductsDetailView extends StatelessWidget {
               leading: BlocBuilder<StockCubit, StockState>(
                 builder: (context, state) {
                   return IconButton(
-                      onPressed: () {
-                        Navigator.maybePop(context);
-                      },
-                      icon: const Icon(Icons.navigate_before));
+                    onPressed: () {
+                      Navigator.maybePop(context);
+                    },
+                    icon: const Icon(Icons.navigate_before),
+                  );
                 },
               ),
               actions: [
                 BlocBuilder<StockCubit, StockState>(
                   builder: (context, state) {
                     return IconButton(
-                        onPressed: () {
-                          _showModal(
-                            context,
-                            index,
-                            detailTitleTextController,
-                            detailMeterTextController,
-                          );
-                        },
-                        icon: const Icon(Icons.add));
+                      onPressed: () {
+                        _showModal(
+                          context,
+                          index,
+                          detailTitleTextController,
+                          detailMeterTextController,
+                        );
+                      },
+                      icon: const Icon(Icons.add),
+                    );
                   },
-                )
+                ),
               ],
             ),
             body: BlocBuilder<StockCubit, StockState>(
@@ -72,10 +75,12 @@ class ProductsDetailView extends StatelessWidget {
                   itemBuilder: (context, indexOfDetails) {
                     return Card(
                       child: ListTile(
-                        title: Text(state.products?[index].stockDetailModel[indexOfDetails].title ??
-                            ''), //şimdiki
+                        title: Text(
+                          state.products?[index].stockDetailModel[indexOfDetails].title ?? '',
+                        ), //şimdiki
                         trailing: Text(
-                          '${state.products?[index].stockDetailModel[indexOfDetails].meter} metre',
+                          '${state.products?[index].stockDetailModel[indexOfDetails].meter} ' +
+                              ProjectStrings.meter,
                         ),
                       ),
                     );
@@ -110,7 +115,9 @@ void _showModal(
                     child: Padding(
                       padding: const EdgeInsets.all(8),
                       child: TextField(
-                        decoration: const InputDecoration(hintText: 'Rengi giriniz'),
+                        decoration:  InputDecoration(
+                          hintText: ProjectStrings.pickDetailItem,
+                        ),
                         controller: detailTitleController,
                         onEditingComplete: () {
                           context.read<StockCubit>().addOrUpdateDetailedStock(
@@ -126,13 +133,16 @@ void _showModal(
                     ),
                   ),
                   Expanded(
-                      child: Padding(
-                    padding: const EdgeInsets.all(8),
-                    child: TextField(
-                      controller: detailMeterController,
-                      decoration: const InputDecoration(hintText: 'Metre'),
+                    child: Padding(
+                      padding:  EdgeInsets.all(8),
+                      child: TextField(
+                        controller: detailMeterController,
+                        decoration:  InputDecoration(
+                          hintText: ProjectStrings.meter,
+                        ),
+                      ),
                     ),
-                  ))
+                  ),
                 ],
               ),
             ],

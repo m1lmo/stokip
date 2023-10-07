@@ -5,6 +5,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:stokip/feature/cubit/importers/importer_cubit.dart';
 import 'package:stokip/feature/cubit/sales/sales_cubit.dart';
+import 'package:stokip/product/constants/project_strings.dart';
+import 'package:stokip/product/extensions/string_extension.dart';
 import 'package:stokip/product/widgets/line_chart_widget.dart';
 
 class DashBoard extends StatefulWidget {
@@ -80,8 +82,9 @@ class _DashBoardState extends State<DashBoard> {
                   height: 30,
                   child: TextButton(
                     onPressed: () {},
-                    child: const Text(
-                      'Aylık Alış Ve Satış Grafiği', // todo burada ? : ; kullanarak grafiğin haftalık ve aylık versiyonlarını göstericez
+                    child: Text(
+                      ProjectStrings.dashboardMonthlyGraph
+                          .locale(), // todo burada ? : ; kullanarak grafiğin haftalık ve aylık versiyonlarını göstericez
                       style: TextStyle(fontSize: 12, color: Colors.black),
                     ),
                   ),

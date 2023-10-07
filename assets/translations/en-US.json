@@ -1,0 +1,38 @@
+{
+    "common": {
+        "pickItem": "Pick Item",
+        "pickDetailItem": "Choose Color",
+        "meter": "Meter",
+        "pay": "Pay",
+        "oldLogs": "Old Logs"
+    },
+    "products": {
+        "appBarTitle": "Products",
+        "total": "Total Products"
+    },
+    "stocks": {
+        "total": "Total Stocks"
+    },
+    "sales": {
+        "priceHint": "Selling Price",
+        "appBarTitle": "Sales"
+    },
+    "dashboard": {
+        "appBarTitle": "DashBoard",
+        "monthlyGraph": "Monthly Purchase and Sales"
+    },
+    "suppliers": {
+        "appBarTitle": "Suppliers",
+        "nameHint": "Please Enter the Supplier's Name",
+        "purchases": "Purchases",
+        "payments": "Payments",
+        "paymentSuccess": "Payment Successful",
+        "payAlertTitle": "Enter the Amount You Paid",
+        "completePayment": "Complete Payment",
+        "denyPayment": "Deny",
+        "hintItem": "Please Enter the Product Name",
+        "hintDetailItem": "Please Enter the Product Color",
+        "hintQuantityMeter": "Please Enter the Quantity in Meters",
+        "hintPurchasePrice": "Please Enter the Purchase Price of the Product"
+    }
+}

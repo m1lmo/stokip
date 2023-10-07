@@ -1,4 +1,6 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:stokip/product/constants/locales_consts.dart';
 import 'feature/view/home_view.dart';
 // homeview da 4 tabli bi sayfa sayfalar dashboard, sales, purchase, products olucak
 // productsda StockModel içeren ürünler olucak bu ürünlerin fiyatını alış ve satış olarak görmek mümkün hangi renkten kaç metre var
@@ -26,8 +28,20 @@ import 'feature/view/home_view.dart';
 /// todo named navigator yap [√] yaptım ama daha fazla nasıl geliştirebilirim ona çalış []
 /// todo suppliers viewda ödeme yapılınca ödemelerin tarihi ve ne kadar ödeme yapıldığı gözüksün aklımda purchasesListesinde görünebilir diye düsünüyorum []
 
-void main() {
-  runApp(const MyApp());
+void main() async {
+  await init();
+  runApp(
+    EasyLocalization(
+      child: MyApp(),
+      supportedLocales: LocaleConstant.supportedLocales,
+      path: LocaleConstant.langPath,
+    ),
+  );
+}
+
+Future<void> init() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await EasyLocalization.ensureInitialized();
 }
 
 class MyApp extends StatelessWidget {
@@ -37,6 +51,9 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      localizationsDelegates: context.localizationDelegates,
+      supportedLocales: context.supportedLocales,
+      locale: context.locale,
       theme: ThemeData.light().copyWith(
         primaryColor: Colors.blueGrey.shade900,
       ),

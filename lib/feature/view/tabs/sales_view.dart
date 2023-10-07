@@ -39,9 +39,12 @@ class _MyPopupMenu extends StatelessWidget with NavigatorManager {
     return MultiBlocProvider(
       providers: [
         BlocProvider<StockCubit>(
-          create: (context) => StockCubit()..updateAppBarTitle('Satışlar'),
+          create: (context) => StockCubit()..updateAppBarTitle(ProjectStrings.salesAppBarTitle),
         ),
-        BlocProvider.value(value: salesCubit)
+        BlocProvider.value(
+            value: salesCubit
+              ..updateSelectedItem(ProjectStrings.pickItem)
+              ..updateSelectedSpecificItem(ProjectStrings.pickDetailItem))
       ],
       child: Scaffold(
         appBar: AppBar(
@@ -51,7 +54,7 @@ class _MyPopupMenu extends StatelessWidget with NavigatorManager {
             },
           ),
           actions: [
-            const Center(child: Text('Eski Kayıtlar')),
+            Center(child: Text(ProjectStrings.oldLogs)),
             BlocBuilder<SalesCubit, SalesState>(
               builder: (context, state) {
                 return IconButton(
@@ -102,7 +105,7 @@ class LogsListView extends StatelessWidget {
             return ListTile(
               title: Text(currentMonthSales?[index].title ?? ''),
               subtitle: Text(
-                  '${currentMonthSales?[index].meter} Metre, x ${currentMonthSales?[index].price} ${currentMonthSales?[index].currency?.getSymbol} = ${currentMonthSales![index].meter! * (currentMonthSales[index].price ?? 1)}'),
+                  '${currentMonthSales?[index].meter} ${ProjectStrings.meter}, x ${currentMonthSales?[index].price} ${currentMonthSales?[index].currency?.getSymbol} = ${currentMonthSales![index].meter! * (currentMonthSales[index].price ?? 1)}'),
               leading: Text(currentMonthSales[index].meter.toString()),
               trailing: context.read<SalesCubit>().getSoldTime(index),
             );
@@ -157,7 +160,8 @@ class _AddLogToSales extends StatelessWidget {
                     Expanded(
                       flex: 2,
                       child: _MyPopupMenuButton<StockModel>(
-                          items: stockState.products, value: salesState.selectedItemOnSales!),
+                          items: stockState.products,
+                          value: salesState.selectedItemOnSales ?? ProjectStrings.pickItem),
                     ),
                     // burada selectedıtemOnSales in Daha seçilmemiş haliyken 2. popupın gözükmemesini sağlıyoruz
                     // ürün rengi seçme yeri eğer ürün adı seçilmemiişse buası gözükmez
@@ -178,11 +182,11 @@ class _AddLogToSales extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    if (salesState.selectedSpecific != 'Rengi seçiniz')
+                    if (salesState.selectedSpecific != ProjectStrings.pickDetailItem)
                       Expanded(
                         flex: 2,
                         child: TextField(
-                          decoration: InputDecoration(hintText: 'Metre'),
+                          decoration: InputDecoration(hintText: ProjectStrings.meter),
                           keyboardType: const TextInputType.numberWithOptions(
                             decimal: true,
                           ),
@@ -198,24 +202,24 @@ class _AddLogToSales extends StatelessWidget {
                       width: 20,
                     ),
                     // ürünleri satış tablosuna ekleme yeri eğer renk seçilmemişse burası gözükmez
-                    if (salesState.selectedSpecific != 'Rengi seçiniz')
+                    if (salesState.selectedSpecific != ProjectStrings.pickDetailItem)
                       Expanded(
                         flex: 2,
                         child: TextField(
                           decoration: InputDecoration(
-                            hintText: 'Fiyat',
+                            hintText: ProjectStrings.salesPriceHint,
                           ),
                           keyboardType: TextInputType.numberWithOptions(decimal: true),
                           controller: priceEditingController,
                         ),
                       ),
-                    if (salesState.selectedSpecific != 'Rengi seçiniz')
+                    if (salesState.selectedSpecific != ProjectStrings.pickDetailItem)
                       Expanded(
                         child: CurrencyPopupButton<SalesModel>(
                           salesState: salesState,
                         ),
                       ),
-                    if (salesState.selectedSpecific != 'Rengi seçiniz')
+                    if (salesState.selectedSpecific != ProjectStrings.pickDetailItem)
                       Expanded(
                         child: IconButton(
                             onPressed: () => performSaleButton(context, salesState),

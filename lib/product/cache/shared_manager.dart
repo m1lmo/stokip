@@ -18,9 +18,8 @@ class SharedManager {
     prefs = await SharedPreferences.getInstance();
   }
 
-  Future<void> writeId(int id,String key) async {
+  Future<void> writeId(int id, String key) async {
     await prefs.setInt(key, id);
-    
   }
 
   int? readId(String key) {

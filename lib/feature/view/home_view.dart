@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:stokip/product/extensions/tabs_extension.dart';
 import '../cubit/importers/importer_cubit.dart';
 import '../cubit/sales/sales_cubit.dart';
 import '../cubit/stock/stock_cubit.dart';
-import 'tabs/dashboard_view.dart';
-import 'tabs/products_view.dart';
-import 'tabs/suppliers_view.dart';
-import 'tabs/sales_view.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -21,6 +18,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
+
     tabController = TabController(vsync: this, length: Tabs.values.length);
     tabController.addListener(() {
       if (tabController.indexIsChanging) {
@@ -32,11 +30,11 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider<StockCubit>(create: (context) {
-          return StockCubit()
-            ..inInit()
-            ..init();
-        }),
+        BlocProvider<StockCubit>(
+          create: (context) {
+            return StockCubit()..init;
+          },
+        ),
         BlocProvider<SalesCubit>(
           create: (context) {
             final stocks = context.read<StockCubit>().state.products;
@@ -67,7 +65,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                         padding: EdgeInsets.symmetric(
                             vertical: MediaQuery.of(context).size.height * 0.016),
                         child: Text(
-                          e.name,
+                          e.tabTitle(),
                           style:
                               TextStyle(color: const Color.fromARGB(255, 36, 34, 34), fontSize: 12),
                         ),
@@ -85,24 +83,5 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
         ),
       ),
     );
-  }
-}
-
-enum Tabs { dashboard, sales, suppliers, products }
-
-extension TabsExtension on Tabs {
-  Widget getPage() {
-    switch (this) {
-      case Tabs.dashboard:
-        return DashBoard();
-      case Tabs.sales:
-        return SalesView();
-
-      case Tabs.suppliers:
-        return SuppliersView();
-
-      case Tabs.products:
-        return ProductsView();
-    }
   }
 }
