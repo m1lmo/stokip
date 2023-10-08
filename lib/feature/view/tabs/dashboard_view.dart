@@ -121,9 +121,17 @@ class ProfitWidget extends StatelessWidget {
     }
 
     double calculateAverageProfitIncrease() {
-      return ((profitMonthly(DateTime.now().month - 1) / 100) *
-              profitMonthly(DateTime.now().month)) *
-          -1;
+      final previousMonthProfit = profitMonthly(DateTime.now().month - 1);
+      print(previousMonthProfit);
+
+      final currentMonthProfit = profitMonthly(DateTime.now().month);
+      print(currentMonthProfit);
+
+      final profitIncreasePercentage =
+          ((currentMonthProfit - previousMonthProfit) / previousMonthProfit) *
+              100 *
+              (currentMonthProfit - previousMonthProfit < 0 ? -1 : 1);
+      return profitIncreasePercentage.ceilToDouble();
     }
 
     return Row(
@@ -138,7 +146,7 @@ class ProfitWidget extends StatelessWidget {
           width: 20,
         ),
         Container(
-          width: 70,
+          width: 100,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
             color: Colors.blue,
