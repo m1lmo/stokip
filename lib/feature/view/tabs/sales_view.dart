@@ -199,12 +199,12 @@ class _AddLogToSales extends StatelessWidget {
                     else
                       const Expanded(child: SizedBox.shrink()),
                     SizedBox(
-                      width: 20,
+                      width: 30,
                     ),
                     // ürünleri satış tablosuna ekleme yeri eğer renk seçilmemişse burası gözükmez
                     if (salesState.selectedSpecific != ProjectStrings.pickDetailItem)
                       Expanded(
-                        flex: 2,
+                        flex: 3,
                         child: TextField(
                           decoration: InputDecoration(
                             hintText: ProjectStrings.salesPriceHint,
