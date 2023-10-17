@@ -22,8 +22,6 @@ final class ImporterModel extends MainModel with HiveModel2Mixin {
     this.currency,
     this.balance,
     this.customerPhoto,
-    this.purchases = const [],
-    this.payments = const [],
   });
 
   /// The line `final int id;` is declaring a final variable named `id` of type `int` in the
@@ -42,9 +40,9 @@ final class ImporterModel extends MainModel with HiveModel2Mixin {
   @HiveField(5)
   Uint8List? customerPhoto;
   @HiveField(6)
-  final List<PurchasesModel> purchases;
+  final List<PurchasesModel> purchases = [];
   @HiveField(7)
-  final List<PaymentModel> payments;
+  final List<PaymentModel> payments = [];
 
   @override
   String get key => id.toString();
