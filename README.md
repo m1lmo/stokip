@@ -1,10 +1,11 @@
 # stokip
 
-A new Flutter project.
+A new Flutter project Which u can manage your inventory.
 
 ## Getting Started
 
 Bu Projemde envanter yönetimini kolaylaştırıcak bi çözüm geliştirmeyi denedim, şuanlık mallar sadece metre cinsinden stoğa eklenebiliyor ileride daha fonksiyonel bi çözüm yapmayı planlıyorum.
+Ayrıca uygulamada çoklu dil desteği altyapısı bulunmaktadır şuanlık ingilizce ve türkçe dil desteği bulunuyor.
 ## Anasayfa
 Uygulamayı İlk olarak açtığımızda bu ekran karşılıyor, bu ekranda bu ayın kar ve zarar hesaplaması ve bir yıllık tüm ayların kar ve satış grafiği bulunuyor
 ![Simulator Screenshot - iPhone 15 Pro - 2023-12-29 at 17 07 09](https://github.com/omo2k/stokip/assets/139264739/0d36cfdf-6a2b-4f08-a3ea-e2b41876a4ad)
