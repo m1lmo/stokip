@@ -103,49 +103,72 @@ void _showModal(
 ) {
   showModalBottomSheet<void>(
     context: context,
+    isScrollControlled: true,
     builder: (_) {
       return BlocProvider<StockCubit>.value(
         value: BlocProvider.of<StockCubit>(context),
-        child: Scaffold(
-          body: Column(
-            children: [
-              Row(
-                children: [
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.all(8),
-                      child: TextField(
-                        decoration:  InputDecoration(
-                          hintText: ProjectStrings.pickDetailItem,
-                        ),
-                        controller: detailTitleController,
-                        onEditingComplete: () {
-                          context.read<StockCubit>().addOrUpdateDetailedStock(
-                                index,
-                                StockDetailModel(
-                                  title: detailTitleController.text,
-                                  meter: 12,
-                                ),
-                              );
-                          context.read<StockCubit>().getProduct();
-                        },
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    child: Padding(
-                      padding:  EdgeInsets.all(8),
-                      child: TextField(
-                        controller: detailMeterController,
-                        decoration:  InputDecoration(
-                          hintText: ProjectStrings.meter,
+        child: FractionallySizedBox(
+          heightFactor: 0.7,
+          child: Scaffold(
+            resizeToAvoidBottomInset: false,
+            body: Column(
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.all(8),
+                        child: TextField(
+                          decoration: InputDecoration(
+                            hintText: ProjectStrings.pickDetailItem,
+                          ),
+                          controller: detailTitleController,
+                          onEditingComplete: () {
+                            context.read<StockCubit>().addOrUpdateDetailedStock(
+                                  index,
+                                  StockDetailModel(
+                                    title: detailTitleController.text,
+                                    meter: 12,
+                                  ),
+                                );
+                            context.read<StockCubit>().getProduct();
+                          },
                         ),
                       ),
                     ),
-                  ),
-                ],
-              ),
-            ],
+                    Expanded(
+                      child: Padding(
+                        padding: EdgeInsets.all(8),
+                        child: TextField(
+                          keyboardType: TextInputType.numberWithOptions(decimal: true),
+                          controller: detailMeterController,
+                          decoration: InputDecoration(
+                            hintText: ProjectStrings.meter,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                IconButton(
+                    onPressed: () {
+                      final meterControllerToDouble =
+                          double.tryParse(detailMeterController.text.toString());
+                      context.read<StockCubit>().addOrUpdateDetailedStock(
+                            index,
+                            StockDetailModel(
+                              title: detailTitleController.text,
+                              meter: meterControllerToDouble,
+                            ),
+                          );
+                      context.read<StockCubit>().getProduct();
+                    },
+                    icon: Icon(
+                      Icons.check,
+                      color: Colors.green,
+                    ))
+              ],
+            ),
           ),
         ),
       );

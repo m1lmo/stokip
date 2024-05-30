@@ -22,8 +22,6 @@ class ImporterModelAdapter extends TypeAdapter<ImporterModel> {
       currency: fields[2] as CurrencyEnum?,
       balance: fields[3] as double?,
       customerPhoto: fields[5] as Uint8List?,
-      purchases: (fields[6] as List).cast<PurchasesModel>(),
-      payments: (fields[7] as List).cast<PaymentModel>(),
     );
   }
 
