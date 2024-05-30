@@ -200,7 +200,11 @@ class ImporterCubit extends Cubit<ImporterState> {
   /// representing different currencies.
   void performAddOrUpdate(int id, String title, CurrencyEnum currency) {
     emit(state.copyWith(importerId: id + 1));
-    final importerModel = ImporterModel(id: state.importerId, title: title, currency: currency, purchases: [], payments: []);
+    final importerModel = ImporterModel(
+      id: state.importerId,
+      title: title,
+      currency: currency,
+    );
     importers.add(importerModel);
     databaseOperation.addOrUpdateItem(importerModel);
     emit(state.copyWith(importers: List.from(importers)));
