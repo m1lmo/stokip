@@ -65,7 +65,7 @@ class PurchasesModelAdapter extends TypeAdapter<PurchasesModel> {
 PurchasesModel _$PurchasesModelFromJson(Map<String, dynamic> json) =>
     PurchasesModel(
       purchasedDate: DateTime.parse(json['purchasedDate'] as String),
-      id: json['id'] as int? ?? 0,
+      id: (json['id'] as num?)?.toInt() ?? 0,
       supplier: json['supplier'] as String?,
       title: json['title'] as String?,
       detailTitle: json['detailTitle'] as String?,

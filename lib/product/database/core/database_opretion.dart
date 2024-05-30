@@ -1,9 +1,8 @@
-
 import 'model/hive_model2_mixin.dart';
 
 import 'hive_manager_mixin.dart';
 
- class HiveDataBaseOperation<T extends HiveModel2Mixin> with HiveManagerMixin<T> {
+class HiveDataBaseOperation<T extends HiveModel2Mixin> with HiveManagerMixin<T> {
   /// The `clear` function clears all data in the `box`.
   Future<void> clear() => box.clear();
   void remove(T model) {
@@ -11,7 +10,7 @@ import 'hive_manager_mixin.dart';
   }
 
   /// The function adds or updates an item in a box using a key-value pair.
-  /// 
+  ///
   /// Args:
   ///   model (T): The parameter "model" is of type T, which means it can be any type. It represents the
   /// item that needs to be added or updated in the "box". The "box" is not defined in the code snippet,
@@ -22,5 +21,4 @@ import 'hive_manager_mixin.dart';
   /// `String` parameter `key` and uses it to retrieve the corresponding item from the `box` using the
   /// `get` method. The retrieved item is not returned or used in any way in the provided code snippet.
   T? getItems(String key) => box.get(key);
-  
 }

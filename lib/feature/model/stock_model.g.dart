@@ -100,7 +100,7 @@ class StockDetailModelAdapter extends TypeAdapter<StockDetailModel> {
 // **************************************************************************
 
 StockModel _$StockModelFromJson(Map<String, dynamic> json) => StockModel(
-      id: json['id'] as int? ?? 0,
+      id: (json['id'] as num?)?.toInt() ?? 0,
       title: json['title'] as String?,
       pPrice: (json['pPrice'] as num?)?.toDouble(),
       sPrice: (json['sPrice'] as num?)?.toDouble(),

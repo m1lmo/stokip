@@ -7,6 +7,7 @@ import 'package:stokip/feature/model/sales_model.dart';
 import 'package:stokip/feature/model/stock_model.dart';
 import 'package:stokip/product/constants/enums/currency_enum.dart';
 import 'package:stokip/product/database/core/hive_types.dart';
+// todo bunu final yaptım belki çalışmaz
 
 abstract class IDataBaseManager {
   Future<void> start();

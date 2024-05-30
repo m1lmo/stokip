@@ -1,9 +1,10 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
+// ignore_for_file: public_member_api_docs,
 
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:stokip/feature/model/customer_model.dart';
 import 'package:stokip/feature/model/stock_model.dart';
 import 'package:stokip/product/constants/enums/currency_enum.dart';
 import 'package:stokip/product/database/core/hive_types.dart';
@@ -15,8 +16,22 @@ part 'sales_model.g.dart';
 @HiveType(typeId: HiveTypes.salesModelId)
 @immutable
 final class SalesModel extends MainModel with EquatableMixin, HiveModel2Mixin {
+  SalesModel({
+    required this.id,
+    required this.dateTime,
+    this.title,
+    this.meter,
+    this.price,
+    this.currency,
+    this.customer,
+  });
+
+  factory SalesModel.fromJson(Map<String, dynamic> json) {
+    return _$SalesModelFromJson(json);
+  }
   @HiveField(0)
   final int id;
+  @override
   @HiveField(1)
   final String? title;
   @HiveField(2)
@@ -27,20 +42,15 @@ final class SalesModel extends MainModel with EquatableMixin, HiveModel2Mixin {
   final double? price;
   @HiveField(5)
   final CurrencyEnum? currency;
-
-  SalesModel({
-    required this.id,
-    required this.dateTime,
-    this.title,
-    this.meter,
-    this.price,
-    this.currency,
-  });
-
+  @HiveField(6)
+  final CustomerModel? customer;
   @override
-  // TODO: implement props
-  List<Object?> get props => [title, meter, dateTime, price];
+  List<Object?> get props => [title, meter, dateTime, price, currency, customer];
 
   @override
   String get key => id.toString();
+
+  Map<String, dynamic> toJson() {
+    return _$SalesModelToJson(this);
+  }
 }

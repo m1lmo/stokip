@@ -13,7 +13,7 @@ import 'package:stokip/product/constants/enums/currency_enum.dart';
 import 'package:stokip/product/database/core/database_hive_manager.dart';
 import 'package:stokip/product/database/operation/importer_hive_operation.dart';
 
-import '../../model/stock_model.dart';
+import 'package:stokip/feature/model/stock_model.dart';
 
 part 'importer_state.dart';
 
@@ -62,6 +62,7 @@ class ImporterCubit extends Cubit<ImporterState> {
       emit(state.copyWith(importers: importers));
       emit(state.copyWith(importerId: importers.last.id));
     } catch (e) {
+      // databaseOperation.box.deleteAll()
       print(e);
     }
   }
@@ -92,23 +93,22 @@ class ImporterCubit extends Cubit<ImporterState> {
   double getPurchaseByMonth(int month) {
     var purchasedByMonth = 0.0;
     if (_getMonthlyPurchases(month) == null) return purchasedByMonth;
-    for (var abc in _getMonthlyPurchases(month)!) {
+    for (final abc in _getMonthlyPurchases(month)!) {
       purchasedByMonth += abc.totalAmount ?? 0;
     }
     return purchasedByMonth;
   }
 
   List<PurchasesModel>? _getMonthlyPurchases(int currentMonth) {
-    final _currentPurchase = state.importers?.expand((element) => element.purchases).toList();
-    final currentMonthPurchases =
-        _currentPurchase?.where((element) => element.purchasedDate.month == currentMonth).toList();
+    final currentPurchase = state.importers?.expand((element) => element.purchases).toList();
+    final currentMonthPurchases = currentPurchase?.where((element) => element.purchasedDate.month == currentMonth).toList();
     return currentMonthPurchases;
   }
 
   double updateMonthlyPurchasesAmount(int month) {
     var totalAmount = 0.0;
     if (_getMonthlyPurchases(month) == null) return totalAmount;
-    for (var purchases in _getMonthlyPurchases(month)!) {
+    for (final purchases in _getMonthlyPurchases(month)!) {
       totalAmount += purchases.totalAmount ?? 0;
     }
     return totalAmount;
@@ -118,17 +118,17 @@ class ImporterCubit extends Cubit<ImporterState> {
     var purchasedMeterByMonth = 0.0;
 
     if (_getMonthlyPurchases(month) == null) return purchasedMeterByMonth;
-    for (var abc in _getMonthlyPurchases(month)!) {
+    for (final abc in _getMonthlyPurchases(month)!) {
       purchasedMeterByMonth += abc.meter ?? 0;
     }
     return purchasedMeterByMonth;
   }
 
   double get allPurchases {
-    double totalMeter = 0.0;
+    var totalMeter = 0.0;
     if (state.importers == null) return totalMeter;
-    for (var abc in state.importers!) {
-      for (var purchases in abc.purchases) {
+    for (final abc in state.importers!) {
+      for (final purchases in abc.purchases) {
         totalMeter += purchases.meter ?? 0;
       }
     }
@@ -177,8 +177,7 @@ class ImporterCubit extends Cubit<ImporterState> {
   /// The `addToStocksPurchaseDetail` method is a helper method in the `ImporterCubit` class. It is
   /// used to create a `StockDetailModel` object based on the provided parameters.
 
-  StockDetailModel addToStocksPurchaseDetail(
-      int index, int stockIndex, String title, double meter) {
+  StockDetailModel addToStocksPurchaseDetail(int index, int stockIndex, String title, double meter) {
     final result = StockDetailModel(title: title, meter: meter);
     return result;
   }
@@ -201,8 +200,7 @@ class ImporterCubit extends Cubit<ImporterState> {
   /// representing different currencies.
   void performAddOrUpdate(int id, String title, CurrencyEnum currency) {
     emit(state.copyWith(importerId: id + 1));
-    final importerModel = ImporterModel(
-        id: state.importerId, title: title, currency: currency, purchases: [], payments: []);
+    final importerModel = ImporterModel(id: state.importerId, title: title, currency: currency, purchases: [], payments: []);
     importers.add(importerModel);
     databaseOperation.addOrUpdateItem(importerModel);
     emit(state.copyWith(importers: List.from(importers)));

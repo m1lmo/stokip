@@ -22,7 +22,7 @@
         "monthlyGraph": "Aylık Alış ve Satış Grafiği"
     },
     "suppliers": {
-        "appBarTitle": "Tedarikçiler",
+        "appBarTitle": "Tedarikçi",
         "nameHint": "Cari Adını Giriniz",
         "purchases": "Alışlar",
         "payments": "Ödemeler",

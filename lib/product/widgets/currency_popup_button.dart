@@ -20,11 +20,11 @@ class CurrencyPopupButton<T extends MainModel> extends StatelessWidget {
   Widget build(BuildContext context) {
     Text popupChild(SalesState? salesState, ImporterState? importerState) {
       if (T == SalesModel && salesState != null) {
-        return Text(salesState.currency?.getSymbol ?? '\$');
+        return Text(salesState.currency?.getSymbol ?? r'$');
       } else if (T == ImporterModel && importerState != null) {
         return Text(importerState.selectedCurrency?.getSymbol ?? 'Para Birimini Giriniz');
       } else {
-        return Text('');
+        return const Text('');
       }
     }
 
