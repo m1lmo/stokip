@@ -60,7 +60,7 @@ class SalesModelAdapter extends TypeAdapter<SalesModel> {
 // **************************************************************************
 
 SalesModel _$SalesModelFromJson(Map<String, dynamic> json) => SalesModel(
-      id: json['id'] as int,
+      id: (json['id'] as num).toInt(),
       dateTime: DateTime.parse(json['dateTime'] as String),
       title: json['title'] as String?,
       meter: (json['meter'] as num?)?.toDouble(),
