@@ -8,7 +8,6 @@ class ImporterState with EquatableMixin {
     this.imageFile,
     this.selectedCurrency,
     this.salesId = 0,
-
   });
   final List<ImporterModel>? importers;
   int importerId;
@@ -16,13 +15,11 @@ class ImporterState with EquatableMixin {
   File? imageFile;
   CurrencyEnum? selectedCurrency;
 
-
   @override
   List<Object?> get props => [
         importers,
         importerId,
         selectedCurrency,
-
       ];
   @override
   bool operator ==(Object other) =>
@@ -35,18 +32,13 @@ class ImporterState with EquatableMixin {
           selectedCurrency == other.selectedCurrency;
 
   @override
-  int get hashCode =>
-      importers.hashCode ^
-      importerId.hashCode ^
-      selectedCurrency.hashCode ^
-      salesId.hashCode;
+  int get hashCode => importers.hashCode ^ importerId.hashCode ^ selectedCurrency.hashCode ^ salesId.hashCode;
   ImporterState copyWith({
     List<ImporterModel>? importers,
     int? importerId,
     int? salesId,
     File? imageFile,
     CurrencyEnum? selectedCurrency,
-
   }) {
     return ImporterState(
       importers: importers ?? this.importers,
@@ -54,7 +46,6 @@ class ImporterState with EquatableMixin {
       salesId: salesId ?? this.salesId,
       imageFile: imageFile ?? this.imageFile,
       selectedCurrency: selectedCurrency ?? this.selectedCurrency,
-
     );
   }
 }

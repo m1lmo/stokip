@@ -23,13 +23,14 @@ class SalesModelAdapter extends TypeAdapter<SalesModel> {
       meter: fields[2] as double?,
       price: fields[4] as double?,
       currency: fields[5] as CurrencyEnum?,
+      customer: fields[6] as CustomerModel?,
     );
   }
 
   @override
   void write(BinaryWriter writer, SalesModel obj) {
     writer
-      ..writeByte(6)
+      ..writeByte(7)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -41,7 +42,9 @@ class SalesModelAdapter extends TypeAdapter<SalesModel> {
       ..writeByte(4)
       ..write(obj.price)
       ..writeByte(5)
-      ..write(obj.currency);
+      ..write(obj.currency)
+      ..writeByte(6)
+      ..write(obj.customer);
   }
 
   @override
@@ -60,12 +63,15 @@ class SalesModelAdapter extends TypeAdapter<SalesModel> {
 // **************************************************************************
 
 SalesModel _$SalesModelFromJson(Map<String, dynamic> json) => SalesModel(
-      id: json['id'] as int,
+      id: (json['id'] as num).toInt(),
       dateTime: DateTime.parse(json['dateTime'] as String),
       title: json['title'] as String?,
       meter: (json['meter'] as num?)?.toDouble(),
       price: (json['price'] as num?)?.toDouble(),
       currency: $enumDecodeNullable(_$CurrencyEnumEnumMap, json['currency']),
+      customer: json['customer'] == null
+          ? null
+          : CustomerModel.fromJson(json['customer'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$SalesModelToJson(SalesModel instance) =>
@@ -76,6 +82,7 @@ Map<String, dynamic> _$SalesModelToJson(SalesModel instance) =>
       'dateTime': instance.dateTime.toIso8601String(),
       'price': instance.price,
       'currency': _$CurrencyEnumEnumMap[instance.currency],
+      'customer': instance.customer,
     };
 
 const _$CurrencyEnumEnumMap = {

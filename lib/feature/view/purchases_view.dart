@@ -1,5 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:stokip/feature/cubit/importers/importer_cubit.dart';
@@ -11,7 +12,7 @@ import 'package:stokip/product/constants/enums/currency_enum.dart';
 import 'package:stokip/product/constants/project_input_Decorations.dart';
 import 'package:stokip/product/constants/project_strings.dart';
 
-class PurchasesView extends StatelessWidget {
+class PurchasesView extends StatefulWidget {
   const PurchasesView({
     required this.index,
     required this.importerState,
@@ -24,36 +25,60 @@ class PurchasesView extends StatelessWidget {
   final ImporterCubit importerCubit;
   final StockCubit stockCubit;
 
+  @override
+  State<PurchasesView> createState() => _PurchasesViewState();
+}
+
+class _PurchasesViewState extends State<PurchasesView> {
   List<PurchasesModel>? get getStocksFromTheImporter {
-    return importerState.importers?[index].purchases;
+    return widget.importerState.importers?[widget.index].purchases;
   }
 
   List<PaymentModel>? get getPaymentsFromTheImporter {
-    return importerState.importers?[index].payments;
+    return widget.importerState.importers?[widget.index].payments;
+  }
+
+  late final TextEditingController titleEditingController;
+  late final TextEditingController priceEditingController;
+  late final TextEditingController meterEditingController;
+  late final TextEditingController detailEditingController;
+  late final TextEditingController paymentEditingController;
+  @override
+  void initState() {
+    super.initState();
+    titleEditingController = TextEditingController();
+    priceEditingController = TextEditingController();
+    meterEditingController = TextEditingController();
+    detailEditingController = TextEditingController();
+    paymentEditingController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    titleEditingController.dispose();
+    priceEditingController.dispose();
+    meterEditingController.dispose();
+    detailEditingController.dispose();
+    paymentEditingController.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final titleEditingController = TextEditingController();
-    final priceEditingController = TextEditingController();
-    final meterEditingController = TextEditingController();
-    final detailEditingController = TextEditingController();
-    final paymentEditingController = TextEditingController();
-
     return MultiBlocProvider(
       providers: [
         BlocProvider<ImporterCubit>.value(
-          value: importerCubit,
+          value: widget.importerCubit,
         ),
         BlocProvider<StockCubit>.value(
-          value: stockCubit,
+          value: widget.stockCubit,
         ),
       ],
       child: Scaffold(
         appBar: AppBar(
           title: BlocBuilder<ImporterCubit, ImporterState>(
             builder: (context, state) {
-              return Text('${state.importers?[index].title}');
+              return Text('${state.importers?[widget.index].title}');
             },
           ),
           actions: [
@@ -61,17 +86,17 @@ class PurchasesView extends StatelessWidget {
               builder: (context, state) {
                 return IconButton(
                   onPressed: () {
-                    showSearch(
-                      context: context,
-                      delegate: _MySearchDelegate(
-                        importerCubit: importerCubit,
-                        importerState: state,
-                        importerIndex: index,
-                        navigateBackButton: () {
-                          Navigator.of(context).pop();
-                        },
-                      ),
-                    );
+                    // showSearch(
+                    //   context: context,
+                    //   delegate: _MySearchDelegate(
+                    //     importerCubit: widget.importerCubit,
+                    //     importerState: state,
+                    //     importerIndex: widget.index,
+                    //     navigateBackButton: () {
+                    //       Navigator.of(context).pop();
+                    //     },
+                    //   ),
+                    // );
                   },
                   icon: const Icon(Icons.search),
                 );
@@ -83,7 +108,7 @@ class PurchasesView extends StatelessWidget {
                   onPressed: () {
                     _showModal(
                       context,
-                      index,
+                      widget.index,
                       titleController: titleEditingController,
                       priceController: priceEditingController,
                       meterController: meterEditingController,
@@ -102,7 +127,7 @@ class PurchasesView extends StatelessWidget {
               context: context,
               builder: (context) {
                 return BlocProvider.value(
-                  value: importerCubit,
+                  value: widget.importerCubit,
                   child: AlertDialog(
                     title: Text(ProjectStrings.suppliersPayAlertTitle),
                     actions: [
@@ -111,11 +136,10 @@ class PurchasesView extends StatelessWidget {
                           return TextButton(
                             onPressed: () {
                               context.read<ImporterCubit>().paymentToIndexedSupplier(
-                                    index,
+                                    widget.index,
                                     double.parse(paymentEditingController.text),
                                   );
-                              context.read<ImporterCubit>().addPaymentLogs(
-                                  index, double.tryParse(paymentEditingController.text) ?? 0);
+                              context.read<ImporterCubit>().addPaymentLogs(widget.index, double.tryParse(paymentEditingController.text) ?? 0);
                               Navigator.of(context).pop();
                             },
                             child: Text(ProjectStrings.suppliersCompletePayment),
@@ -166,9 +190,9 @@ class PurchasesView extends StatelessWidget {
                                 ' '
                                 '${reversedList?[_index].detailTitle} ${reversedList?[_index].meter} ' +
                             ProjectStrings.meter),
-                        trailing: context.read<ImporterCubit>().getPurchasedDate(index, _index),
+                        trailing: context.read<ImporterCubit>().getPurchasedDate(widget.index, _index),
                         subtitle: Text(
-                          '${reversedList?[_index].totalAmount} ${state.importers![index].currency?.getSymbol}',
+                          '${reversedList?[_index].totalAmount} ${state.importers![widget.index].currency?.getSymbol}',
                         ),
                       );
                     },
@@ -182,8 +206,7 @@ class PurchasesView extends StatelessWidget {
                       final reversedList = getPaymentsFromTheImporter?.reversed.toList();
                       return ListTile(
                         title: Text(
-                          '${reversedList?[_index].price} ${state.importers![index].currency?.getSymbol} ' +
-                              ProjectStrings.suppliersPaymentSuccess,
+                          '${reversedList?[_index].price} ${state.importers![widget.index].currency?.getSymbol} ' + ProjectStrings.suppliersPaymentSuccess,
                         ),
                       );
                     },
@@ -224,15 +247,31 @@ void _showModal(
             return BlocBuilder<StockCubit, StockState>(
               builder: (context, state) {
                 return Padding(
-                  padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+                  padding: EdgeInsets.only(
+                    bottom: MediaQuery.of(context).viewInsets.bottom,
+                    top: MediaQuery.of(context).size.height * 0.01,
+                    left: MediaQuery.of(context).size.width * 0.05,
+                    right: MediaQuery.of(context).size.width * 0.05,
+                  ),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      TextField(
-                        decoration: ProjectInputDecorations.suppliersAdd(
-                          ProjectStrings.suppliersHintItem,
-                        ),
-                        controller: titleController,
+                      Row(
+                        children: [
+                          Expanded(
+                            child: TextField(
+                              decoration: ProjectInputDecorations.suppliersAdd(
+                                ProjectStrings.suppliersHintItem,
+                              ),
+                              controller: titleController,
+                              inputFormatters: <TextInputFormatter>[
+                                FilteringTextInputFormatter.deny(RegExp(r'\s')),
+                                // FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*$')),
+                                FilteringTextInputFormatter.deny(RegExp(r'[0-9]'))
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
                       TextField(
                         decoration: ProjectInputDecorations.suppliersAdd(
@@ -292,9 +331,7 @@ void _showModal(
                                 context.read<ImporterCubit>().addToStocksPurchaseDetail(
                                       index,
                                       state.products!.indexWhere(
-                                        (element) =>
-                                            element.title?.toLowerCase() ==
-                                            titleController?.text.toLowerCase(),
+                                        (element) => element.title?.toLowerCase() == titleController?.text.toLowerCase(),
                                       ),
                                       detailTitleController.text,
                                       double.tryParse(meterController.text) ?? 0,
@@ -319,60 +356,5 @@ void _showModal(
   );
 }
 
-class _MySearchDelegate extends SearchDelegate<String> {
-  final int importerIndex;
-  final ImporterCubit importerCubit;
-  final ImporterState importerState;
-  final VoidCallback navigateBackButton;
-  _MySearchDelegate({
-    required this.importerIndex,
-    required this.importerCubit,
-    required this.importerState,
-    required this.navigateBackButton,
-  });
-  @override
-  List<Widget>? buildActions(BuildContext context) {
-    return null;
-  }
-
-  @override
-  Widget? buildLeading(BuildContext context) {
-    return StatefulBuilder(
-      builder: (context, setState) {
-        return IconButton(onPressed: navigateBackButton, icon: const Icon(Icons.navigate_before));
-      },
-    );
-  }
-
-  @override
-  Widget buildResults(BuildContext context) {
-    return Container();
-  }
-
-  @override
-  Widget buildSuggestions(BuildContext context) {
-    final items = importerState.importers?[importerIndex].purchases.where((element) {
-      final result = element.title!.toLowerCase();
-      final input = query.toLowerCase();
-      return result.contains(input);
-    }).toList();
-    return StatefulBuilder(
-      builder: (context, setState) {
-        return ListView.builder(
-          itemCount: items?.length ?? 0,
-          itemBuilder: (BuildContext context, int index) {
-            return ListTile(
-              title: Text('${items?[index].title}'
-                      '${items?[index].detailTitle} ${items?[index].meter} ' +
-                  ProjectStrings.meter),
-              trailing: importerCubit.getPurchasedDate(importerIndex, index),
-              subtitle: Text(
-                '${items?[index].totalAmount} ${importerState.importers![importerIndex].currency?.getSymbol}',
-              ),
-            );
-          },
-        );
-      },
-    );
-  }
-}
+///TODO TYPE ILE YAP
+///

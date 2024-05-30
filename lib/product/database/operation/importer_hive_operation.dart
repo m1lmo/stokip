@@ -1,8 +1,5 @@
+import 'package:stokip/product/database/core/database_opretion.dart';
 
-import '../core/database_opretion.dart';
+import 'package:stokip/feature/model/importer_model.dart';
 
-import '../../../feature/model/importer_model.dart';
-
-class ImporterHiveOperation extends HiveDataBaseOperation<ImporterModel> {
-
-}
+class ImporterHiveOperation extends HiveDataBaseOperation<ImporterModel> {}

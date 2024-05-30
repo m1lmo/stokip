@@ -107,9 +107,7 @@ class LineChartWidget extends StatelessWidget {
                   ? importerState.importers![0].purchases.map((e) {
                       return FlSpot(
                         e.purchasedDate.month.toDouble(),
-                        context
-                            .read<ImporterCubit>()
-                            .getPurchasesMeterByMonth(e.purchasedDate.month),
+                        context.read<ImporterCubit>().getPurchasesMeterByMonth(e.purchasedDate.month),
                       );
                     }).toList()
                   : [const FlSpot(0, 0)],

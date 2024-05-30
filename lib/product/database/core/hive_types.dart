@@ -7,4 +7,5 @@ final class HiveTypes{
   static const int currencyEnumId =4;
   static const int purchasesModelId=5;
   static const int paymentModelId=6;
+  static const int customerModelId = 7;
 }

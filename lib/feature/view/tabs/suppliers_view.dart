@@ -22,7 +22,6 @@ class SuppliersView extends StatelessWidget with NavigatorManager {
   Widget build(BuildContext context) {
     final textEditingController = TextEditingController();
     final stockCubit = BlocProvider.of<StockCubit>(context);
-
     final importerCubit = BlocProvider.of<ImporterCubit>(context);
     return MultiBlocProvider(
       providers: [
@@ -36,7 +35,6 @@ class SuppliersView extends StatelessWidget with NavigatorManager {
       ],
       child: Scaffold(
         appBar: AppBar(
-          centerTitle: false,
           title: BlocBuilder<StockCubit, StockState>(
             builder: (context, state) {
               return Text(
@@ -51,7 +49,7 @@ class SuppliersView extends StatelessWidget with NavigatorManager {
                   onPressed: () {
                     _showModal(context, titleController: textEditingController);
                   },
-                  icon: Icon(Icons.add),
+                  icon: const Icon(Icons.add),
                 );
               },
             ),
@@ -155,7 +153,7 @@ void _showModal(
                 children: [
                   Expanded(
                     child: Padding(
-                      padding: const EdgeInsets.all(8.0),
+                      padding: const EdgeInsets.all(8),
                       child: TextField(
                         decoration: InputDecoration(hintText: ProjectStrings.suppliersNameHint),
                         controller: titleController,
@@ -165,14 +163,15 @@ void _showModal(
                   ),
                   Expanded(
                     child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: BlocBuilder<ImporterCubit, ImporterState>(
-                          builder: (context, state) {
-                            return CurrencyPopupButton<ImporterModel>(
-                              importerState: state,
-                            );
-                          },
-                        )),
+                      padding: const EdgeInsets.all(8),
+                      child: BlocBuilder<ImporterCubit, ImporterState>(
+                        builder: (context, state) {
+                          return CurrencyPopupButton<ImporterModel>(
+                            importerState: state,
+                          );
+                        },
+                      ),
+                    ),
                   ),
                 ],
               ),
@@ -186,7 +185,7 @@ void _showModal(
                             state.selectedCurrency ?? CurrencyEnum.usd,
                           );
                     },
-                    icon: Icon(
+                    icon: const Icon(
                       Icons.done,
                       color: Colors.green,
                     ),

@@ -69,8 +69,7 @@ class SalesCubit extends Cubit<SalesState> {
   final SaleHiveOperation saleDatabaseOperation = SaleHiveOperation();
   List<SalesModel> get currentSales => List<SalesModel>.from(saless);
 
-  int? get selectedSoldItemIndex =>
-      stocks!.indexWhere((element) => element.title == state.selectedItemOnSales);
+  int? get selectedSoldItemIndex => stocks!.indexWhere((element) => element.title == state.selectedItemOnSales);
   //initFor provider.value
 
   Future<void> get init async {
@@ -141,7 +140,7 @@ class SalesCubit extends Cubit<SalesState> {
 
   void updateSelectedSpecificItem(String specItem) {
     emit(state.copyWith(selectedSpecific: specItem));
-  }
+}
 
   void updateCurrency(CurrencyEnum currency) {
     emit(state.copyWith(currency: currency));
@@ -171,16 +170,9 @@ class SalesCubit extends Cubit<SalesState> {
     return stocks?[index].stockDetailModel.elementAt(indexOfDetail);
   }
 
-  void _performSale(
-      int index, String? color, double solded, int id, double amount, CurrencyEnum currency) {
+  void _performSale(int index, String? color, double solded, int id, double amount, CurrencyEnum currency) {
     emit(state.copyWith(salesId: id + 1));
-    final salesModel = SalesModel(
-        id: state.salesId,
-        dateTime: DateTime.now(),
-        title: '${state.selectedItemOnSales} $color',
-        meter: solded,
-        price: amount,
-        currency: currency);
+    final salesModel = SalesModel(id: state.salesId, dateTime: DateTime.now(), title: '${state.selectedItemOnSales} $color', meter: solded, price: amount, currency: currency);
     _addSaleLogs(salesModel, state.salesId);
     final indexOfStock = getStockAtIndex(index, _findIndexForColor(index, color) ?? 0);
 
@@ -190,8 +182,7 @@ class SalesCubit extends Cubit<SalesState> {
     }
   }
 
-  void sold(int index, String? color, double solded, BuildContext context, double price,
-      CurrencyEnum currency) {
+  void sold(int index, String? color, double solded, BuildContext context, double price, CurrencyEnum currency) {
     final indexMatchedColor = _findIndexForColor(index, color);
     if (indexMatchedColor == null) return;
     final indexOfStockDetail = getStockAtIndex(index, indexMatchedColor);

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../feature/cubit/sales/sales_cubit.dart';
-import '../../feature/model/importer_model.dart';
-import '../../feature/model/stock_model.dart';
+import 'package:stokip/feature/cubit/sales/sales_cubit.dart';
+import 'package:stokip/feature/model/importer_model.dart';
+import 'package:stokip/feature/model/stock_model.dart';
 
 /// The class _MyPopupMenuButton<T extends MainModel> is a Dart class that represents a popup menu
 /// button.
@@ -11,7 +11,7 @@ import '../../feature/model/stock_model.dart';
 //
 @immutable
 class MainModelPopup<T extends MainModel> extends StatelessWidget {
-  MainModelPopup({
+  const MainModelPopup({
     required this.value,
     required this.items,
     super.key,
@@ -29,20 +29,22 @@ class MainModelPopup<T extends MainModel> extends StatelessWidget {
                 fit: BoxFit.fitWidth,
                 child: Text(
                   value,
-                  style: TextStyle(),
+                  style: const TextStyle(),
                 ),
               ),
-              Icon(Icons.arrow_drop_down_outlined)
+              const Icon(Icons.arrow_drop_down_outlined),
             ],
           ),
           itemBuilder: (context) {
             return items
-                    ?.map((e) => PopupMenuItem(
-                          value: e.title,
-                          child: Text(
-                            e.title ?? '',
-                          ),
-                        ))
+                    ?.map(
+                      (e) => PopupMenuItem(
+                        value: e.title,
+                        child: Text(
+                          e.title ?? '',
+                        ),
+                      ),
+                    )
                     .toList() ??
                 [];
           },
