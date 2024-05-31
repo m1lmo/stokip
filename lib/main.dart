@@ -92,11 +92,18 @@ class MyApp extends StatelessWidget {
                 fontFamily: 'Montserrat',
                 fontWeight: FontWeight.bold,
               ),
+              headlineMedium: TextStyle(
+                color: Colors.white,
+                fontSize: 16.sp,
+                fontFamily: 'Montserrat',
+                fontWeight: FontWeight.w700,
+              ),
 
               ///mont serrat bold 30sp
               bodyMedium: TextStyle(
                 color: Colors.white,
-                fontSize: 18.sp,
+                fontSize: 16.sp,
+                fontFamily: 'Montserrat',
               ),
 
               ///mont serrat medium 18sp
