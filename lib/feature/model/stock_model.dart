@@ -2,6 +2,7 @@
 
 import 'package:hive/hive.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:stokip/product/constants/enums/currency_enum.dart';
 import 'package:stokip/product/database/core/hive_types.dart';
 import 'package:stokip/product/database/core/model/hive_model2_mixin.dart';
 
@@ -41,8 +42,18 @@ class StockModel extends MainModel with HiveModel2Mixin {
   double? totalMeter;
   @HiveField(6)
   DateTime? purchaseDate;
+  @HiveField(7)
+  CurrencyEnum currency;
 
-  StockModel({this.id = 0, this.title, this.pPrice, this.sPrice, this.stockDetailModel = const [], this.totalMeter, this.purchaseDate});
+  StockModel({
+    this.id = 0,
+    this.title,
+    this.pPrice,
+    this.sPrice,
+    this.stockDetailModel = const [],
+    this.purchaseDate,
+    this.currency = CurrencyEnum.usd,
+  });
   factory StockModel.fromJson(Map<String, dynamic> json) {
     return _$StockModelFromJson(json);
   }

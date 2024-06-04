@@ -22,15 +22,15 @@ class StockModelAdapter extends TypeAdapter<StockModel> {
       pPrice: fields[1] as double?,
       sPrice: fields[2] as double?,
       stockDetailModel: (fields[4] as List).cast<StockDetailModel>(),
-      totalMeter: fields[5] as double?,
       purchaseDate: fields[6] as DateTime?,
-    );
+      currency: fields[7] as CurrencyEnum,
+    )..totalMeter = fields[5] as double?;
   }
 
   @override
   void write(BinaryWriter writer, StockModel obj) {
     writer
-      ..writeByte(7)
+      ..writeByte(8)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -44,7 +44,9 @@ class StockModelAdapter extends TypeAdapter<StockModel> {
       ..writeByte(5)
       ..write(obj.totalMeter)
       ..writeByte(6)
-      ..write(obj.purchaseDate);
+      ..write(obj.purchaseDate)
+      ..writeByte(7)
+      ..write(obj.currency);
   }
 
   @override
@@ -108,11 +110,12 @@ StockModel _$StockModelFromJson(Map<String, dynamic> json) => StockModel(
               ?.map((e) => StockDetailModel.fromJson(e as Map<String, dynamic>))
               .toList() ??
           const [],
-      totalMeter: (json['totalMeter'] as num?)?.toDouble(),
       purchaseDate: json['purchaseDate'] == null
           ? null
           : DateTime.parse(json['purchaseDate'] as String),
-    );
+      currency: $enumDecodeNullable(_$CurrencyEnumEnumMap, json['currency']) ??
+          CurrencyEnum.usd,
+    )..totalMeter = (json['totalMeter'] as num?)?.toDouble();
 
 Map<String, dynamic> _$StockModelToJson(StockModel instance) =>
     <String, dynamic>{
@@ -123,7 +126,13 @@ Map<String, dynamic> _$StockModelToJson(StockModel instance) =>
       'stockDetailModel': instance.stockDetailModel,
       'totalMeter': instance.totalMeter,
       'purchaseDate': instance.purchaseDate?.toIso8601String(),
+      'currency': _$CurrencyEnumEnumMap[instance.currency]!,
     };
+
+const _$CurrencyEnumEnumMap = {
+  CurrencyEnum.tl: 'tl',
+  CurrencyEnum.usd: 'usd',
+};
 
 StockDetailModel _$StockDetailModelFromJson(Map<String, dynamic> json) =>
     StockDetailModel(
