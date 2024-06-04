@@ -1,7 +1,9 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sizer/sizer.dart';
+import 'package:stokip/feature/cubit/sales/sales_cubit.dart';
 import 'package:stokip/feature/model/filter_model.dart';
 import 'package:stokip/feature/model/sales_model.dart';
 import 'package:stokip/feature/view/tabs/sales/sales_view_model.dart';
@@ -44,107 +46,108 @@ class _SalesViewState extends State<SalesView> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(ProjectStrings.salesAppBarTitle),
-        actions: [
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(CustomIcons.add),
+    return BlocSelector<SalesCubit, SalesState, List<SalesModel>?>(
+      selector: (state) {
+        // context.read<SalesCubit>().sold(1, 'red', 40, context, 4, CurrencyEnum.usd);
+        return state.sales;
+      },
+      builder: (context, state) {
+        return Scaffold(
+          appBar: AppBar(
+            title: Text(ProjectStrings.salesAppBarTitle),
+            actions: [
+              IconButton(
+                onPressed: () {},
+                icon: const Icon(CustomIcons.add),
+              ),
+            ],
           ),
-        ],
-      ),
-      body: SingleChildScrollView(
-        physics: const NeverScrollableScrollPhysics(),
-        child: SizedBox(
-          height: 80.h,
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 7.w),
-            child: Column(
-              children: [
-                SizedBox(
-                  height: 2.h,
-                ),
-                const Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          body: SingleChildScrollView(
+            physics: const NeverScrollableScrollPhysics(),
+            child: SizedBox(
+              height: 80.h,
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 7.w),
+                child: Column(
                   children: [
-                    CustomContainer(text: r'400$', title: 'Toplam Bakiye'),
-                    CustomContainer(text: r'400$', title: 'Toplam Bakiye'),
-                  ],
-                ),
-                SizedBox(
-                  height: 1.h,
-                ),
-                const Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    CustomContainer(text: r'400$', title: 'Toplam Bakiye'),
-                    CustomContainer(text: r'400$', title: 'Toplam Bakiye'),
-                  ],
-                ),
-                SizedBox(
-                  height: 2.h,
-                ),
-                Observer(
-                  builder: (_) {
-                    return Wrap(
-                      runSpacing: 1.h,
-                      spacing: 2.w,
-                      children: salesViewModel.filters
-                          .map(
-                            (e) => MyFilterChip<FilterModel<SalesFilterEnum>>(
-                              value: e,
-                              // groupValue: salesViewModel.activeFilters,
-                              onChanged: (value) {
-                                if (value == null) return;
-                                salesViewModel.selectFilter(value);
-                              },
-                              title: e.filterType.name,
+                    SizedBox(
+                      height: 2.h,
+                    ),
+                    const Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        CustomContainer(text: r'400$', title: 'Toplam Bakiye'),
+                        CustomContainer(text: r'400$', title: 'Toplam Bakiye'),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 1.h,
+                    ),
+                    const Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        CustomContainer(text: r'400$', title: 'Toplam Bakiye'),
+                        CustomContainer(text: r'400$', title: 'Toplam Bakiye'),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 2.h,
+                    ),
+                    Observer(
+                      builder: (_) {
+                        return Wrap(
+                          runSpacing: 1.h,
+                          spacing: 2.w,
+                          children: salesViewModel.filters
+                              .map(
+                                (e) => MyFilterChip<FilterModel<SalesFilterEnum>>(
+                                  value: e,
+                                  // groupValue: salesViewModel.activeFilters,
+                                  onChanged: (value) {
+                                    if (value == null) return;
+                                    salesViewModel.selectFilter(value);
+                                  },
+                                  title: e.filterType.name,
+                                ),
+                              )
+                              .toList(),
+                        );
+                      },
+                    ),
+                    SizedBox(
+                      height: 2.h,
+                    ),
+                    SearchContainer(
+                      controller: searchTextEditingController,
+                    ),
+                    SizedBox(
+                      height: 2.h,
+                    ),
+                    Expanded(
+                      child: ListView.builder(
+                        padding: EdgeInsets.zero,
+                        shrinkWrap: true,
+                        itemCount: state?.length ?? 0,
+                        itemBuilder: (context, index) {
+                          return Padding(
+                            padding: EdgeInsets.only(bottom: 1.h),
+                            child: DataContainer(
+                              data: state![index],
                             ),
-                          )
-                          .toList(),
-                    );
-                  },
+                          );
+                        },
+                      ),
+                    ),
+                    SizedBox(
+                      height: 4.h,
+                    ),
+                  ],
                 ),
-                SizedBox(
-                  height: 2.h,
-                ),
-                SearchContainer(
-                  controller: searchTextEditingController,
-                ),
-                SizedBox(
-                  height: 2.h,
-                ),
-                Expanded(
-                  child: ListView.builder(
-                    padding: EdgeInsets.zero,
-                    shrinkWrap: true,
-                    itemCount: 4,
-                    itemBuilder: (context, index) {
-                      return Padding(
-                        padding: EdgeInsets.only(bottom: 1.h),
-                        child: DataContainer(
-                          data: SalesModel(
-                            id: 0,
-                            dateTime: DateTime.now(),
-                            title: 'Lüx Süet - Yeşil',
-                            meter: 10,
-                            price: 100,
-                            currency: CurrencyEnum.tl,
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                ),
-                SizedBox(
-                  height: 4.h,
-                ),
-              ],
+              ),
             ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }
