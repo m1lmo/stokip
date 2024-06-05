@@ -36,6 +36,8 @@ dependencies:
   mobx_codegen: ^2.6.1
   #lint ruler
   very_good_analysis: ^5.1.0
+  #widgets
+  dropdown_textfield: ^1.1.0
   #vb 10 ;)
   kartal: ^3.4.2
   image_cropper: ^5.0.0
