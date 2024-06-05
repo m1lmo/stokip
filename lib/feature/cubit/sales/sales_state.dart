@@ -8,8 +8,10 @@ final class SalesState with EquatableMixin {
     this.selectedItemOnSales,
     this.selectedSpecific,
     this.currency,
+    this.totalIncome,
   });
   int salesId;
+  double? totalIncome;
   final List<SalesModel>? sales;
   //todo final olmayabilir
   final String? selectedItemOnSales;
@@ -23,6 +25,7 @@ final class SalesState with EquatableMixin {
         salesId,
         selectedSpecific,
         currency,
+        totalIncome,
       ];
 
   @override
@@ -34,15 +37,11 @@ final class SalesState with EquatableMixin {
           selectedItemOnSales == other.selectedItemOnSales &&
           salesId == other.salesId &&
           selectedSpecific == other.selectedItemOnSales &&
+          totalIncome == other.totalIncome &&
           currency == other.currency;
 
   @override
-  int get hashCode =>
-      sales.hashCode ^
-      selectedItemOnSales.hashCode ^
-      salesId.hashCode ^
-      selectedSpecific.hashCode ^
-      currency.hashCode;
+  int get hashCode => sales.hashCode ^ selectedItemOnSales.hashCode ^ salesId.hashCode ^ selectedSpecific.hashCode ^ currency.hashCode ^ totalIncome.hashCode;
 
   SalesState copyWith({
     int? salesId,
@@ -50,6 +49,7 @@ final class SalesState with EquatableMixin {
     String? selectedItemOnSales,
     String? selectedSpecific,
     CurrencyEnum? currency,
+    double? totalIncome,
   }) {
     return SalesState(
       salesId: salesId ?? this.salesId,
@@ -57,6 +57,7 @@ final class SalesState with EquatableMixin {
       selectedItemOnSales: selectedItemOnSales ?? this.selectedItemOnSales,
       selectedSpecific: selectedSpecific ?? this.selectedSpecific,
       currency: currency ?? this.currency,
+      totalIncome: totalIncome ?? this.totalIncome,
     );
   }
 }

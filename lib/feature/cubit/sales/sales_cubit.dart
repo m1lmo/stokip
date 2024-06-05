@@ -7,11 +7,11 @@ import 'package:stokip/product/constants/enums/currency_enum.dart';
 
 import 'package:stokip/product/database/operation/stock_hive_operation.dart';
 
-import '../../../product/cache/shared_manager.dart';
-import '../../../product/database/core/database_hive_manager.dart';
-import '../../../product/database/operation/sales_hive_operation.dart';
-import '../../model/sales_model.dart';
-import '../../model/stock_model.dart';
+import 'package:stokip/product/cache/shared_manager.dart';
+import 'package:stokip/product/database/core/database_hive_manager.dart';
+import 'package:stokip/product/database/operation/sales_hive_operation.dart';
+import 'package:stokip/feature/model/sales_model.dart';
+import 'package:stokip/feature/model/stock_model.dart';
 
 part 'sales_state.dart';
 
@@ -58,9 +58,11 @@ class SalesCubit extends Cubit<SalesState> {
   SalesCubit.s({
     this.stockDatabaseOperation,
     this.stocks,
-  }) : super(SalesState(
-          sales: saless,
-        ));
+  }) : super(
+          SalesState(
+            sales: saless,
+          ),
+        );
 
   late final StockHiveOperation? stockDatabaseOperation;
   late final List<StockModel>? stocks;
@@ -99,7 +101,7 @@ class SalesCubit extends Cubit<SalesState> {
   }
 
   Future<void> writeIdToCache(int? id) async {
-    print(id.toString());
+    print(id);
     await sharedManager.writeId(id ?? 0, 'salesid');
   }
 
@@ -140,7 +142,7 @@ class SalesCubit extends Cubit<SalesState> {
 
   void updateSelectedSpecificItem(String specItem) {
     emit(state.copyWith(selectedSpecific: specItem));
-}
+  }
 
   void updateCurrency(CurrencyEnum currency) {
     emit(state.copyWith(currency: currency));
@@ -149,6 +151,7 @@ class SalesCubit extends Cubit<SalesState> {
   void getSales() {
     if (saless.isEmpty) return;
     print('asd');
+    getTotalIncome;
     return emit(state.copyWith(sales: saless));
   }
 
@@ -195,6 +198,15 @@ class SalesCubit extends Cubit<SalesState> {
       writeIdToCache(state.salesId + 1);
       _performSale(index, color, solded, state.salesId, price, currency);
     }
+  }
+
+  void get getTotalIncome {
+    var totalIncome = 0.0;
+    if (state.sales == null) return;
+    for (final sales in state.sales!) {
+      totalIncome += sales.price ?? 0;
+    }
+    emit(state.copyWith(totalIncome: totalIncome));
   }
 
   Future<dynamic> showOutOfDialog(BuildContext context) {
