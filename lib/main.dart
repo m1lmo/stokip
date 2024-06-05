@@ -58,7 +58,7 @@ class MyApp extends StatelessWidget {
           localizationsDelegates: context.localizationDelegates,
           supportedLocales: context.supportedLocales,
           locale: context.locale,
-          theme: ThemeData.light().copyWith(
+          theme: ThemeData.dark().copyWith(
             primaryColor: Colors.blueGrey.shade900,
             scaffoldBackgroundColor: const Color(0xFF001F26),
             tabBarTheme: const TabBarTheme(
@@ -88,7 +88,7 @@ class MyApp extends StatelessWidget {
               ///mont serrat bold 30sp
               headlineLarge: TextStyle(
                 color: Colors.white,
-                fontSize: 30.sp,
+                fontSize: 24.sp,
                 fontFamily: 'Montserrat',
                 fontWeight: FontWeight.bold,
               ),
