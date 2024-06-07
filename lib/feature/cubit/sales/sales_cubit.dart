@@ -101,7 +101,6 @@ class SalesCubit extends Cubit<SalesState> {
   }
 
   Future<void> writeIdToCache(int? id) async {
-    print(id);
     await sharedManager.writeId(id ?? 0, 'salesid');
   }
 
@@ -120,7 +119,7 @@ class SalesCubit extends Cubit<SalesState> {
     var totalMeter = 0.0;
     if (_monthlySales(month) == null) return totalMeter;
     for (final sales in _monthlySales(month)!) {
-      totalMeter += sales.meter ?? 0;
+      totalMeter += sales.quantity ?? 0;
     }
     return totalMeter;
   }
@@ -130,7 +129,7 @@ class SalesCubit extends Cubit<SalesState> {
     if (_monthlySales(month) == null) return amount;
     for (final sales in _monthlySales(month)!) {
       var currentAmount = sales.price ?? 0;
-      currentAmount *= sales.meter ?? 0;
+      currentAmount *= sales.quantity ?? 0;
       amount += currentAmount;
     }
     return amount;
@@ -150,11 +149,32 @@ class SalesCubit extends Cubit<SalesState> {
 
   void getSales() {
     if (saless.isEmpty) return;
-    print('asd');
     getTotalIncome;
     return emit(state.copyWith(sales: saless));
   }
 
+  void addSale({
+    required SalesModel model,
+  }) {
+    if ((model.stockDetailModel?.meter ?? 0) == 0) return; //TODO SHOW NOTIFY
+    _updateStocks(model);
+    saleDatabaseOperation.addOrUpdateItem(model);
+    writeIdToCache(state.salesId + 1);
+
+    saless.add(model);
+    emit(state.copyWith(sales: currentSales));
+  }
+
+  void _updateStocks(SalesModel model) {
+    if (stocks == null) return;
+    for (final stock in stocks!) {
+      if (stock.id != model.stockDetailModel?.itemId) continue;
+      for (final detail in stock.stockDetailModel) {
+        if (detail.itemDetailId != model.stockDetailModel?.itemDetailId) continue;
+        detail.meter = detail.meter! - model.quantity!;
+      }
+    }
+  }
   // void _addSaleLogs(SalesModel model, int currentId) {
   //   saleDatabaseOperation.addOrUpdateItem(model);
   //   saless.add(model);
