@@ -66,12 +66,18 @@ class StockModel extends MainModel with HiveModel2Mixin {
 @JsonSerializable()
 @HiveType(typeId: HiveTypes.stockDetailModelId)
 class StockDetailModel extends MainModel {
-  @override
   @HiveField(0)
-  final String? title;
+  final int itemDetailId;
+  @override
   @HiveField(1)
+  final String? title;
+  @HiveField(2)
   double? meter;
+  @HiveField(3)
+  final int itemId;
   StockDetailModel({
+    required this.itemDetailId,
+    required this.itemId,
     this.title,
     this.meter,
   });

@@ -71,19 +71,25 @@ class StockDetailModelAdapter extends TypeAdapter<StockDetailModel> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return StockDetailModel(
-      title: fields[0] as String?,
-      meter: fields[1] as double?,
+      itemDetailId: fields[0] as int,
+      itemId: fields[3] as int,
+      title: fields[1] as String?,
+      meter: fields[2] as double?,
     );
   }
 
   @override
   void write(BinaryWriter writer, StockDetailModel obj) {
     writer
-      ..writeByte(2)
+      ..writeByte(4)
       ..writeByte(0)
-      ..write(obj.title)
+      ..write(obj.itemDetailId)
       ..writeByte(1)
-      ..write(obj.meter);
+      ..write(obj.title)
+      ..writeByte(2)
+      ..write(obj.meter)
+      ..writeByte(3)
+      ..write(obj.itemId);
   }
 
   @override
@@ -136,12 +142,16 @@ const _$CurrencyEnumEnumMap = {
 
 StockDetailModel _$StockDetailModelFromJson(Map<String, dynamic> json) =>
     StockDetailModel(
+      itemDetailId: (json['itemDetailId'] as num).toInt(),
+      itemId: (json['itemId'] as num).toInt(),
       title: json['title'] as String?,
       meter: (json['meter'] as num?)?.toDouble(),
     );
 
 Map<String, dynamic> _$StockDetailModelToJson(StockDetailModel instance) =>
     <String, dynamic>{
+      'itemDetailId': instance.itemDetailId,
       'title': instance.title,
       'meter': instance.meter,
+      'itemId': instance.itemId,
     };
