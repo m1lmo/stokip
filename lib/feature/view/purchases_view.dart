@@ -322,19 +322,20 @@ void _showModal(
                                   stockDetailModel: [],
                                 ),
                               );
-                          context.read<StockCubit>().addOrUpdateDetailedStock(
-                                state.products!.indexWhere(
-                                  (element) => element.title == titleController?.text,
-                                ),
-                                context.read<ImporterCubit>().addToStocksPurchaseDetail(
-                                      index,
-                                      state.products!.indexWhere(
-                                        (element) => element.title?.toLowerCase() == titleController?.text.toLowerCase(),
-                                      ),
-                                      detailTitleController.text,
-                                      double.tryParse(meterController.text) ?? 0,
-                                    ),
-                              );
+                          // context.read<StockCubit>().addOrUpdateDetailedStock(
+                          //       state.products!.indexWhere(
+                          //         (element) => element.title == titleController?.text,
+                          //       ),
+                          //       context.read<ImporterCubit>().addToStocksPurchaseDetail(
+
+                          //             index,
+                          //             state.products!.indexWhere(
+                          //               (element) => element.title?.toLowerCase() == titleController?.text.toLowerCase(),
+                          //             ),
+                          //             detailTitleController.text,
+                          //             double.tryParse(meterController.text) ?? 0,
+                          //           ),
+                          //     );
                           // context.read<ImporterCubit>().addPurchaseLogs(index);
                         },
                         icon: const Icon(
