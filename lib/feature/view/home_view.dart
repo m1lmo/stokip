@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:stokip/feature/cubit/customers/cubit/customer_cubit.dart';
 import 'package:stokip/feature/cubit/importers/importer_cubit.dart';
 import 'package:stokip/feature/cubit/sales/sales_cubit.dart';
 import 'package:stokip/feature/cubit/stock/stock_cubit.dart';
@@ -80,6 +81,11 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
               ..getImporters;
           },
         ),
+        BlocProvider<CustomerCubit>(
+          create: (context) {
+            return CustomerCubit()..init;
+          },
+        )
       ],
       child: DefaultTabController(
         length: Tabs.values.length,
