@@ -3,24 +3,27 @@
 import 'package:dropdown_textfield/dropdown_textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:sizer/sizer.dart';
+import 'package:stokip/feature/cubit/customers/cubit/customer_cubit.dart';
 import 'package:stokip/feature/cubit/sales/sales_cubit.dart';
+import 'package:stokip/feature/cubit/stock/stock_cubit.dart';
 import 'package:stokip/feature/model/customer_model.dart';
 import 'package:stokip/feature/model/filter_model.dart';
-import 'package:stokip/feature/model/importer_model.dart';
 import 'package:stokip/feature/model/sales_model.dart';
+import 'package:stokip/feature/model/stock_model.dart';
 import 'package:stokip/feature/view/tabs/sales/sales_view_model.dart';
-import 'package:stokip/product/constants/enums/currency_enum.dart';
 import 'package:stokip/product/constants/enums/sales_filter_enum.dart';
-
+import 'package:stokip/product/constants/project_colors.dart';
 import 'package:stokip/product/constants/project_strings.dart';
+import 'package:stokip/product/extensions/string_extension.dart';
+import 'package:stokip/product/widgets/custom_bottom_sheet.dart';
 import 'package:stokip/product/widgets/custom_container.dart';
-
 import 'package:stokip/product/widgets/custom_icon.dart';
 import 'package:stokip/product/widgets/data_container.dart';
 import 'package:stokip/product/widgets/my_filter_chip.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:stokip/product/widgets/search_container.dart';
+
 part 'widgets/bottom_sheet_child.dart';
 
 class SalesView extends StatefulWidget {
@@ -35,11 +38,17 @@ class SalesView extends StatefulWidget {
 class _SalesViewState extends State<SalesView> {
   final salesViewModel = SalesViewModel();
   late final TextEditingController searchTextEditingController;
+  late final TextEditingController titleTextEditingController;
+  late final TextEditingController pPriceEditingController;
+  late final TextEditingController sPriceEditingController;
 
   @override
   void initState() {
     super.initState();
     searchTextEditingController = TextEditingController();
+    titleTextEditingController = TextEditingController();
+    pPriceEditingController = TextEditingController();
+    sPriceEditingController = TextEditingController();
     salesViewModel.init(context);
   }
 
@@ -47,28 +56,55 @@ class _SalesViewState extends State<SalesView> {
   void dispose() {
     super.dispose();
     searchTextEditingController.dispose();
+    titleTextEditingController.dispose();
+    pPriceEditingController.dispose();
+    sPriceEditingController.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider.value(
-      value: salesViewModel.blocProvider,
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider.value(
+          value: salesViewModel.customerCubitProvider,
+        ),
+        BlocProvider.value(
+          value: salesViewModel.blocProvider,
+        ),
+      ],
       child: Scaffold(
         appBar: AppBar(
           title: Text(ProjectStrings.salesAppBarTitle),
           actions: [
-            IconButton(
-              onPressed: () {
-                salesViewModel.blocProvider.sold(
-                  0,
-                  'yeşil',
-                  40,
-                  context,
-                  4,
-                  CurrencyEnum.usd,
+            BlocSelector<StockCubit, StockState, List<StockModel>>(
+              selector: (productState) {
+                return productState.products ?? [];
+              },
+              builder: (context, productState) {
+                return BlocSelector<CustomerCubit, CustomerState, List<CustomerModel>>(
+                  selector: (customerState) {
+                    return customerState.customers ?? [];
+                  },
+                  builder: (context, customerState) {
+                    return IconButton(
+                      onPressed: () {
+                        CustomBottomSheet.show(
+                          context,
+                          child: _BottomSheetChild(
+                            customers: customerState,
+                            stocks: productState,
+                            customerDropDownController: salesViewModel.customerDropDownController,
+                            stockDropDownController: salesViewModel.stockDropDownController,
+                            stockDetailDropDownController: salesViewModel.stockDetailDropDownController,
+                          ),
+                          title: 'Satış Ekle',
+                        );
+                      },
+                      icon: const Icon(CustomIcons.add),
+                    );
+                  },
                 );
               },
-              icon: const Icon(CustomIcons.add),
             ),
           ],
         ),
