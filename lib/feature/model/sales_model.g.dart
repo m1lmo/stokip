@@ -19,8 +19,8 @@ class SalesModelAdapter extends TypeAdapter<SalesModel> {
     return SalesModel(
       id: fields[0] as int,
       dateTime: fields[3] as DateTime,
-      title: fields[1] as String?,
-      meter: fields[2] as double?,
+      stockDetailModel: fields[1] as StockDetailModel?,
+      quantity: fields[2] as double?,
       price: fields[4] as double?,
       currency: fields[5] as CurrencyEnum?,
       customer: fields[6] as CustomerModel?,
@@ -34,9 +34,9 @@ class SalesModelAdapter extends TypeAdapter<SalesModel> {
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
-      ..write(obj.title)
+      ..write(obj.stockDetailModel)
       ..writeByte(2)
-      ..write(obj.meter)
+      ..write(obj.quantity)
       ..writeByte(3)
       ..write(obj.dateTime)
       ..writeByte(4)
@@ -65,8 +65,11 @@ class SalesModelAdapter extends TypeAdapter<SalesModel> {
 SalesModel _$SalesModelFromJson(Map<String, dynamic> json) => SalesModel(
       id: (json['id'] as num).toInt(),
       dateTime: DateTime.parse(json['dateTime'] as String),
-      title: json['title'] as String?,
-      meter: (json['meter'] as num?)?.toDouble(),
+      stockDetailModel: json['stockDetailModel'] == null
+          ? null
+          : StockDetailModel.fromJson(
+              json['stockDetailModel'] as Map<String, dynamic>),
+      quantity: (json['quantity'] as num?)?.toDouble(),
       price: (json['price'] as num?)?.toDouble(),
       currency: $enumDecodeNullable(_$CurrencyEnumEnumMap, json['currency']),
       customer: json['customer'] == null
@@ -77,8 +80,8 @@ SalesModel _$SalesModelFromJson(Map<String, dynamic> json) => SalesModel(
 Map<String, dynamic> _$SalesModelToJson(SalesModel instance) =>
     <String, dynamic>{
       'id': instance.id,
-      'title': instance.title,
-      'meter': instance.meter,
+      'stockDetailModel': instance.stockDetailModel,
+      'quantity': instance.quantity,
       'dateTime': instance.dateTime.toIso8601String(),
       'price': instance.price,
       'currency': _$CurrencyEnumEnumMap[instance.currency],
