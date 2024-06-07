@@ -10,6 +10,7 @@ class ProjectStrings {
   static String oldLogs = LocaleKeys.common_oldLogs.locale();
   static String meter = LocaleKeys.common_meter.locale();
   static String pay = LocaleKeys.common_pay.locale();
+  static String search = 'Ara';
 
   static String productsAppBarTitle = LocaleKeys.products_appBarTitle.locale();
   static String productsTotal = LocaleKeys.products_total.locale();
@@ -18,6 +19,9 @@ class ProjectStrings {
 
   static String salesPriceHint = LocaleKeys.sales_priceHint.locale();
   static String salesAppBarTitle = LocaleKeys.sales_appBarTitle.locale();
+  static String salesCustomerLabelTitle = 'Müşteri';
+  static String salesStockLabelTitle = 'Ürün';
+  static String salesStockDetailLabelTitle = 'Renk';
 
   static String dashBoardAppBarTitle = LocaleKeys.dashboard_appBarTitle.locale();
   static String dashboardMonthlyGraph = LocaleKeys.dashboard_monthlyGraph.locale();
@@ -34,4 +38,5 @@ class ProjectStrings {
   static String suppliersHintDetailItem = LocaleKeys.suppliers_hintDetailItem.locale();
   static String suppliersHintQuantityMeter = LocaleKeys.suppliers_hintQuantityMeter.locale();
   static String suppliersHintPurchasePrice = LocaleKeys.suppliers_hintPurchasePrice.locale();
+
 }

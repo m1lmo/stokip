@@ -3,7 +3,7 @@ import 'package:sizer/sizer.dart';
 import 'package:stokip/feature/model/sales_model.dart';
 import 'package:stokip/product/constants/project_colors.dart';
 
-/// this class is output for data
+/// this class is output for data for sales
 class DataContainer extends StatelessWidget {
   const DataContainer({required this.data, super.key});
   final SalesModel data;
@@ -77,7 +77,7 @@ class DataContainer extends StatelessWidget {
                           ),
                     ),
                     Text(
-                      '${data.meter}m',
+                      '${data.quantity}m',
                       style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                             fontWeight: FontWeight.w700,
                             fontSize: 10.sp,
@@ -113,7 +113,7 @@ class DataContainer extends StatelessWidget {
                           ),
                     ),
                     Text(
-                      '${data.price! * data.meter!}',
+                      '${data.price! * data.quantity!}',
                       style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                             fontWeight: FontWeight.w700,
                             fontSize: 10.sp,
