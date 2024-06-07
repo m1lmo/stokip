@@ -1,6 +1,8 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 part of 'importer_cubit.dart';
 
+
+@immutable
 class ImporterState with EquatableMixin {
   ImporterState({
     this.importers,
@@ -10,10 +12,10 @@ class ImporterState with EquatableMixin {
     this.salesId = 0,
   });
   final List<ImporterModel>? importers;
-  int importerId;
-  int salesId;
-  File? imageFile;
-  CurrencyEnum? selectedCurrency;
+  final int importerId;
+  final int salesId;
+  final File? imageFile;
+  final CurrencyEnum? selectedCurrency;
 
   @override
   List<Object?> get props => [

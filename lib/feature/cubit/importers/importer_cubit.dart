@@ -19,10 +19,6 @@ part 'importer_state.dart';
 
 /// The ImporterCubit class is a state management class that extends the Cubit class.
 class ImporterCubit extends Cubit<ImporterState> {
-  /// The line `ImporterCubit() : super(ImporterState());` is the constructor of the `ImporterCubit`
-  /// class. It calls the constructor of the superclass `Cubit` and passes an instance of
-  /// `ImporterState` as the initial state of the `ImporterCubit`. This sets the initial state of the
-  /// `ImporterCubit` to an instance of `ImporterState`.
   ImporterCubit() : super(ImporterState());
 
   /// The line `static final List<ImporterModel> importers = [];` is declaring a static final list
@@ -177,10 +173,10 @@ class ImporterCubit extends Cubit<ImporterState> {
   /// The `addToStocksPurchaseDetail` method is a helper method in the `ImporterCubit` class. It is
   /// used to create a `StockDetailModel` object based on the provided parameters.
 
-  StockDetailModel addToStocksPurchaseDetail(int index, int stockIndex, String title, double meter) {
-    final result = StockDetailModel(title: title, meter: meter);
-    return result;
-  }
+  // StockDetailModel addToStocksPurchaseDetail(int index, int stockIndex, String title, double meter) {
+  //   final result = StockDetailModel(title: title, meter: meter,itemId:);
+  //   return result;
+  // }
 
   void addPaymentLogs(int index, double price) {
     final paymentModel = PaymentModel(price: price, payedTime: DateTime.now());
