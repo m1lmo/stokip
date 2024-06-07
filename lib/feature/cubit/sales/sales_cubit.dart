@@ -155,50 +155,64 @@ class SalesCubit extends Cubit<SalesState> {
     return emit(state.copyWith(sales: saless));
   }
 
-  void _addSaleLogs(SalesModel model, int currentId) {
-    saleDatabaseOperation.addOrUpdateItem(model);
-    saless.add(model);
-    emit(state.copyWith(sales: currentSales, salesId: currentId));
-  }
+  // void _addSaleLogs(SalesModel model, int currentId) {
+  //   saleDatabaseOperation.addOrUpdateItem(model);
+  //   saless.add(model);
+  //   emit(state.copyWith(sales: currentSales, salesId: currentId));
+  // }
 
-  bool _isOutOfStock(StockDetailModel model, double? sold) {
-    return model.meter! - (sold ?? 0) < 0 ? true : false;
-  }
+  // bool _isOutOfStock(StockDetailModel model, double? sold) {
+  //   return model.meter! - (sold ?? 0) < 0 ? true : false;
+  // }
 
-  int? _findIndexForColor(int index, String? color) {
-    return stocks?[index].stockDetailModel.indexWhere((element) => element.title == color) ?? 0;
-  }
+  // int? _findIndexForColor(int index, String? color) {
+  //   return stocks?[index].stockDetailModel.indexWhere((element) => element.title == color) ?? 0;
+  // }
 
-  StockDetailModel? getStockAtIndex(int index, int indexOfDetail) {
-    return stocks?[index].stockDetailModel.elementAt(indexOfDetail);
-  }
+  // StockDetailModel? getStockAtIndex(int index, int indexOfDetail) {
+  //   return stocks?[index].stockDetailModel.elementAt(indexOfDetail);
+  // }
 
-  void _performSale(int index, String? color, double solded, int id, double amount, CurrencyEnum currency) {
-    emit(state.copyWith(salesId: id + 1));
-    final salesModel = SalesModel(id: state.salesId, dateTime: DateTime.now(), title: '${state.selectedItemOnSales} $color', meter: solded, price: amount, currency: currency);
-    _addSaleLogs(salesModel, state.salesId);
-    final indexOfStock = getStockAtIndex(index, _findIndexForColor(index, color) ?? 0);
+  // void _performSale(int index, String? color, double solded, int id, double amount, CurrencyEnum currency) {
+  //   emit(state.copyWith(salesId: id + 1));
+  //   final salesModel = SalesModel(id: state.salesId, dateTime: DateTime.now(), title: '${state.selectedItemOnSales} $color', meter: solded, price: amount, currency: currency);
+  //   _addSaleLogs(salesModel, state.salesId);
+  //   final indexOfStock = getStockAtIndex(index, _findIndexForColor(index, color) ?? 0);
 
-    if (indexOfStock != null) {
-      indexOfStock.meter = indexOfStock.meter! - solded;
-      stockDatabaseOperation?.addOrUpdateItem(stocks![index]);
-    }
-  }
+  //   if (indexOfStock != null) {
+  //     indexOfStock.meter = indexOfStock.meter! - solded;
+  //     stockDatabaseOperation?.addOrUpdateItem(stocks![index]);
+  //   }
+  // }
+  // void sold(int index, String? color, double solded, BuildContext context, double price, CurrencyEnum currency) {
+  //   final indexMatchedColor = _findIndexForColor(index, color);
+  //   if (indexMatchedColor == null) return;
+  //   final indexOfStockDetail = getStockAtIndex(index, indexMatchedColor);
+  //   if (indexOfStockDetail == null) return;
+  //   if (_isOutOfStock(indexOfStockDetail, solded)) {
+  //     showOutOfDialog(context);
+  //     return;
+  //   } else {
+  //     readId();
+  //     writeIdToCache(state.salesId + 1);
+  //     _performSale(index, color, solded, state.salesId, price, currency);
+  //   }
+  // }
 
-  void sold(int index, String? color, double solded, BuildContext context, double price, CurrencyEnum currency) {
-    final indexMatchedColor = _findIndexForColor(index, color);
-    if (indexMatchedColor == null) return;
-    final indexOfStockDetail = getStockAtIndex(index, indexMatchedColor);
-    if (indexOfStockDetail == null) return;
-    if (_isOutOfStock(indexOfStockDetail, solded)) {
-      showOutOfDialog(context);
-      return;
-    } else {
-      readId();
-      writeIdToCache(state.salesId + 1);
-      _performSale(index, color, solded, state.salesId, price, currency);
-    }
-  }
+  // // void sold(int index, String? color, double solded, BuildContext context, double price, CurrencyEnum currency) {
+  // //   final indexMatchedColor = _findIndexForColor(index, color);
+  // //   if (indexMatchedColor == null) return;
+  // //   final indexOfStockDetail = getStockAtIndex(index, indexMatchedColor);
+  // //   if (indexOfStockDetail == null) return;
+  // //   if (_isOutOfStock(indexOfStockDetail, solded)) {
+  // //     showOutOfDialog(context);
+  // //     return;
+  // //   } else {
+  // //     readId();
+  // //     writeIdToCache(state.salesId + 1);
+  // //     _performSale(index, color, solded, state.salesId, price, currency);
+  // //   }
+  // // }
 
   void get getTotalIncome {
     var totalIncome = 0.0;
