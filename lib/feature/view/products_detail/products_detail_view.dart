@@ -127,6 +127,8 @@ void _showModal(
                                   index,
                                   StockDetailModel(
                                     title: detailTitleController.text,
+                                    itemDetailId: 0,
+                                    itemId: 0,
                                     meter: 12,
                                   ),
                                 );
@@ -155,6 +157,8 @@ void _showModal(
                     context.read<StockCubit>().addOrUpdateDetailedStock(
                           index,
                           StockDetailModel(
+                            itemDetailId: 0,
+                            itemId: 0,
                             title: detailTitleController.text,
                             meter: meterControllerToDouble,
                           ),
