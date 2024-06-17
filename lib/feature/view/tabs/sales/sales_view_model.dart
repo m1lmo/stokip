@@ -3,10 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobx/mobx.dart';
 import 'package:stokip/feature/cubit/customers/cubit/customer_cubit.dart';
-import 'package:stokip/feature/cubit/importers/importer_cubit.dart';
 import 'package:stokip/feature/cubit/sales/sales_cubit.dart';
 import 'package:stokip/feature/cubit/stock/stock_cubit.dart';
+import 'package:stokip/feature/model/customer_model.dart';
 import 'package:stokip/feature/model/filter_model.dart';
+import 'package:stokip/feature/model/sales_model.dart';
+import 'package:stokip/feature/model/stock_model.dart';
+import 'package:stokip/product/constants/enums/currency_enum.dart';
 import 'package:stokip/product/constants/enums/sales_filter_enum.dart';
 part 'sales_view_model.g.dart';
 
@@ -21,6 +24,9 @@ abstract class _SalesVievModelBase with Store {
   late final SingleValueDropDownController? stockDropDownController;
   late final SingleValueDropDownController? customerDropDownController;
   late final SingleValueDropDownController? stockDetailDropDownController;
+  late final SingleValueDropDownController? currencyDropDownController;
+  late final TextEditingController? quantityController;
+  late final TextEditingController? priceController;
 
   @action
   void init(BuildContext context) {
@@ -30,20 +36,24 @@ abstract class _SalesVievModelBase with Store {
     stockDropDownController = SingleValueDropDownController();
     customerDropDownController = SingleValueDropDownController();
     stockDetailDropDownController = SingleValueDropDownController();
+    currencyDropDownController = SingleValueDropDownController();
+    quantityController = TextEditingController();
+    priceController = TextEditingController();
   }
 
   @action
   void sortFilters() {
-    filters.replaceRange(0, filters.length, filters);
-    filters.sort((a, b) {
-      if (a.isSelected && !b.isSelected) {
-        return -1;
-      } else if (!a.isSelected && b.isSelected) {
-        return 1;
-      } else {
-        return 0;
-      }
-    });
+    filters
+      ..replaceRange(0, filters.length, filters)
+      ..sort((a, b) {
+        if (a.isSelected && !b.isSelected) {
+          return -1;
+        } else if (!a.isSelected && b.isSelected) {
+          return 1;
+        } else {
+          return 0;
+        }
+      });
   }
 
   @action
@@ -51,5 +61,20 @@ abstract class _SalesVievModelBase with Store {
     final index = filters.indexWhere((element) => element == filter);
     filters[index].isSelected = !filters[index].isSelected;
     sortFilters();
+  }
+
+  @action
+  void addSale() {
+    final saleModel = SalesModel(
+      customer: customerDropDownController?.dropDownValue?.value as CustomerModel?,
+      id: blocProvider.state.salesId,
+      dateTime: DateTime.now(),
+      stockDetailModel: stockDetailDropDownController?.dropDownValue?.value as StockDetailModel,
+      quantity: double.tryParse(quantityController!.text),
+      price: double.tryParse(priceController!.text),
+      currency: currencyDropDownController!.dropDownValue!.value as CurrencyEnum,
+    );
+    blocProvider.addSale(model: saleModel);
+    stockCubitProvider.updateTotalMeter((stockDropDownController!.dropDownValue!.value as StockModel).id);
   }
 }

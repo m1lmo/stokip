@@ -5,15 +5,18 @@ import 'dart:io';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:stokip/feature/model/importer_model.dart';
 import 'package:stokip/feature/model/payment_model.dart';
 import 'package:stokip/feature/model/purchases_model.dart';
+import 'package:stokip/product/cache/shared_manager.dart';
 import 'package:stokip/product/constants/enums/currency_enum.dart';
 import 'package:stokip/product/database/core/database_hive_manager.dart';
 import 'package:stokip/product/database/operation/importer_hive_operation.dart';
 
 import 'package:stokip/feature/model/stock_model.dart';
+import 'package:stokip/product/widgets/c_notify.dart';
 
 part 'importer_state.dart';
 
@@ -21,40 +24,26 @@ part 'importer_state.dart';
 class ImporterCubit extends Cubit<ImporterState> {
   ImporterCubit() : super(ImporterState());
 
-  /// The line `static final List<ImporterModel> importers = [];` is declaring a static final list
-  /// variable named `importers` of type `ImporterModel`. This list will store instances of the
-  /// `ImporterModel` class. The `static` keyword means that the variable belongs to the class itself,
-  /// rather than an instance of the class. The `final` keyword means that the variable cannot be
-  /// reassigned once it is initialized. In this case, the list is initialized as an empty list.
-  static final List<ImporterModel> importers = [];
+  final List<ImporterModel> importers = [];
 
-  /// The line `static final List<PurchasesModel> purchases = [];` is declaring a static final list
-  /// variable named `purchases` of type `PurchasesModel`. This list will store instances of the
-  /// `PurchasesModel` class.  static final List<PurchasesModel> purchases = [];
+  late final SharedManager sharedManager;
 
-  /// The line `late final SharedManager sharedManager;` is declaring a late final variable named
-  /// `sharedManager` of type `SharedManager`.
-
-  /// The line `final ImporterHiveOperation databaseOperation = ImporterHiveOperation();` is creating an
-  /// instance of the `ImporterHiveOperation` class and assigning it to the variable
-  /// `databaseOperation`. This instance will be used to perform operations related to the importers
-  /// data in the Hive database.
   final ImporterHiveOperation databaseOperation = ImporterHiveOperation();
 
-  /// The `init` method is an asynchronous method that is used to initialize the databaseOperations init on ImporterCubit.
-  /// It is marked with the `async` keyword, which means it can perform asynchronous operations. The
-  /// method returns a `Future<void>`, indicating that it does not return a value.
-  /// u should start this at homeview otherwise cache wont work
   Future<void> get init async {
     try {
       await DatabaseHiveManager().start();
       await databaseOperation.start();
+      sharedManager = await SharedManager.getInstance;
+      readId();
       if (databaseOperation.box.isEmpty) return;
       importers
         ..addAll(databaseOperation.box.values)
         ..sort(
           (a, b) => a.id.compareTo(b.id),
         );
+      updateTotalBalanceUSD();
+
       emit(state.copyWith(importers: importers));
       emit(state.copyWith(importerId: importers.last.id));
     } catch (e) {
@@ -68,8 +57,14 @@ class ImporterCubit extends Cubit<ImporterState> {
     emit(state.copyWith(importers: importers));
   }
 
-  void updateSelectedCurrency(CurrencyEnum newCurrency) {
-    emit(state.copyWith(selectedCurrency: newCurrency));
+  void readId() {
+    final result = sharedManager.readId('importerid');
+    emit(state.copyWith(importerId: result));
+  }
+
+  Future<void> writeIdToCache() async {
+    await sharedManager.writeId(state.importerId + 1, 'importerid');
+    return emit(state.copyWith(importerId: state.importerId + 1));
   }
 
   // void addOrUpdatePurchase(int index, PurchasesModel model) {
@@ -185,47 +180,36 @@ class ImporterCubit extends Cubit<ImporterState> {
     emit(state.copyWith(importers: List.from(importers)));
   }
 
-  /// The function performs an add or update operation with the given id, title, and currency.
-  ///
-  /// Args:
-  ///   id (int): The id parameter is an integer that represents the unique identifier for the item
-  /// being added or updated.
-  ///   title (String): The title parameter is a String that represents the title of the item being
-  /// added or updated.
-  ///   currency (CurrencyEnum): The currency parameter is of type CurrencyEnum, which is an enumeration
-  /// representing different currencies.
-  void performAddOrUpdate(int id, String title, CurrencyEnum currency) {
-    emit(state.copyWith(importerId: id + 1));
-    final importerModel = ImporterModel(
-      id: state.importerId,
-      title: title,
-      currency: currency,
-    );
-    importers.add(importerModel);
-    databaseOperation.addOrUpdateItem(importerModel);
+  void updateTotalBalanceUSD() {
+    final totalBalance = importers.fold<double>(0, (previusValue, element) {
+      if (element.currency == CurrencyEnum.usd) return previusValue + (element.balance ?? 0);
+      return previusValue;
+    });
+    // final totalBalance = importers.fold<double>(0, (previousValue, element) {
+    //   if (element.currency == CurrencyEnum.usd) return previousValue + (element.balance ?? 0);
+    //   return previousValue;
+    // });
+    return emit(state.copyWith(totalBalance: totalBalance));
+  }
+
+  void addImporter(BuildContext context, TickerProvider tickerProviderService, {required ImporterModel model}) {
+    if (importers.isNotEmpty) {
+      if (importers.where((element) => element.title?.toLowerCase() == model.title?.toLowerCase()).isNotEmpty) {
+        return CNotify(
+          tickerProviderService: tickerProviderService,
+          overlayState: Overlay.of(context),
+          title: 'Hata',
+          message: 'Bu isimde bir müşteri zaten var',
+        ).show();
+      }
+    }
+    importers.add(model);
+    writeIdToCache();
+    databaseOperation.addOrUpdateItem(model);
+    updateTotalBalanceUSD();
     emit(state.copyWith(importers: List.from(importers)));
   }
 
-  /// The function adds or updates an item in a list with the given id, title, and currency.
-  ///
-  /// Args:
-  ///   id (int): The unique identifier for the item in the list.
-  ///   title (String): The title parameter is a string that represents the title of an item.
-  ///   currency (CurrencyEnum): The currency parameter is of type CurrencyEnum, which is an enumeration
-  /// representing different currencies.
-  void addOrUpdateToList(int id, String title, CurrencyEnum currency) {
-    performAddOrUpdate(id, title, currency);
-
-    emit(state.copyWith(importers: List.from(importers)));
-  }
-
-  /// The function saves a file to the local storage.
-  ///
-  /// Args:
-  ///   file (XFile): The `file` parameter is of type `XFile?`, which means it can either be `null` or
-  /// an instance of the `XFile` class.
-  ///   index (int): The index parameter is an integer that represents the position or order of the file
-  /// being saved. It is used to determine where the file should be saved in the local storage.
   void saveFileToLocale(XFile? file, int index) {
     if (file == null) return;
     importers[index].customerPhoto = File(file.path).readAsBytesSync();

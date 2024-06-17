@@ -1,6 +1,6 @@
 // DO NOT EDIT. This is code generated via package:easy_localization/generate.dart
 
-abstract class LocaleKeys {
+abstract class  LocaleKeys {
   static const common_pickItem = 'common.pickItem';
   static const common_pickDetailItem = 'common.pickDetailItem';
   static const common_meter = 'common.meter';
@@ -18,6 +18,8 @@ abstract class LocaleKeys {
   static const dashboard_appBarTitle = 'dashboard.appBarTitle';
   static const dashboard_monthlyGraph = 'dashboard.monthlyGraph';
   static const dashboard = 'dashboard';
+  static const current_appBarTitle = 'current.appBarTitle';
+  static const current = 'current';
   static const suppliers_appBarTitle = 'suppliers.appBarTitle';
   static const suppliers_nameHint = 'suppliers.nameHint';
   static const suppliers_purchases = 'suppliers.purchases';
@@ -31,4 +33,5 @@ abstract class LocaleKeys {
   static const suppliers_hintQuantityMeter = 'suppliers.hintQuantityMeter';
   static const suppliers_hintPurchasePrice = 'suppliers.hintPurchasePrice';
   static const suppliers = 'suppliers';
+
 }

@@ -1,5 +1,9 @@
+import 'dart:math';
+
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/widgets.dart';
+import 'package:stokip/feature/model/sales_model.dart';
 import 'package:stokip/product/cache/shared_manager.dart';
 import 'package:stokip/product/database/core/database_hive_manager.dart';
 import 'package:stokip/product/database/operation/stock_hive_operation.dart';
@@ -33,7 +37,9 @@ class StockCubit extends Cubit<StockState> {
     emit(state.copyWith(products: currentStocks));
   }
 
-  void addOrUpdateDetailedStock(int index, StockDetailModel model) {
+  void addOrUpdateDetailedStock(StockDetailModel model) {
+    final index = state.products?.indexWhere((element) => element.id == model.itemId);
+    if (index == null) return;
     final updatedProducts = List<StockModel>.from(state.products ?? []);
     final sameStockIndex = updatedProducts[index].stockDetailModel.indexWhere((element) => element.title?.toLowerCase() == model.title?.toLowerCase());
     // final isStockOld = updatedProducts[index].stockDetailModel?.where((element) => element.title == model.title);
@@ -41,9 +47,11 @@ class StockCubit extends Cubit<StockState> {
       updatedProducts[index].stockDetailModel[sameStockIndex].meter = (updatedProducts[index].stockDetailModel[sameStockIndex].meter ?? 0) + (model.meter ?? 0);
     } else {
       updatedProducts[index].stockDetailModel.add(model);
+      emit(state.copyWith(productDetailId: state.productDetailId + 1));
     }
     updateTotalMeter(index);
     _updateTotalTotalMeter();
+    writeIdToCache(state.productDetailId, 'stockdetailid');
     databaseOperation.addOrUpdateItem(updatedProducts[index]); //todo bunu methoda çıkar
     emit(state.copyWith(products: updatedProducts));
   }
@@ -59,15 +67,10 @@ class StockCubit extends Cubit<StockState> {
     return emit(state.copyWith(totalMeter: result));
   }
 
-  void updateAppBarTitle(String? text) {
-    print(text);
-    emit(state.copyWith(appBarTitle: text));
-  }
-
   /// this method for update total meter in stock detail model
-  void updateTotalMeter(int indexList) {
+  void updateTotalMeter(int itemId) {
     var result = 0.0;
-
+    final indexList = lists.indexWhere((element) => element.id == itemId);
     for (final detailStock in lists[indexList].stockDetailModel) {
       if (detailStock.meter is num) {
         result += detailStock.meter ?? 0;
@@ -85,24 +88,25 @@ class StockCubit extends Cubit<StockState> {
   }
 
   void getProduct() {
-    print('asd');
     _updateTotalTotalMeter();
     emit(state.copyWith(products: lists));
     updateRunnigOutStock;
     getRunningOutStock;
     totalAmountOfMoney;
+    updateRunningOutStockDetail;
   }
 
   void readId() {
     final result = sharedManager.readId('stockid');
-    print('result $result');
-    return emit(state.copyWith(productId: result));
+    final result2 = sharedManager.readId('stockdetailid');
+    return emit(state.copyWith(productId: result, productDetailId: result2));
   }
 
   Future<void> writeIdToCache(
     int? id,
+    String key,
   ) async {
-    await sharedManager.writeId(id ?? 0, 'stockid');
+    await sharedManager.writeId(id ?? 0, key);
   }
 
   /// this is for add product to list and update total meter
@@ -116,7 +120,7 @@ class StockCubit extends Cubit<StockState> {
       await databaseOperation.addOrUpdateItem(lists[indexOfSameProduct]);
     } else {
       emit(state.copyWith(productId: state.productId + 1));
-      await writeIdToCache(state.productId);
+      await writeIdToCache(state.productId, 'stockid');
       lists.add(model);
       updateTotalMeter(lists.indexOf(lists.last));
       await databaseOperation.addOrUpdateItem(model);
@@ -127,7 +131,14 @@ class StockCubit extends Cubit<StockState> {
 
   void get updateRunnigOutStock {
     if (state.runningOutStock == null) {
+      if (lists.isEmpty) return;
       emit(state.copyWith(runningOutStock: lists.first));
+    }
+  }
+
+  void get updateRunningOutStockDetail {
+    if (state.runningOutStockDetail == null) {
+      emit(state.copyWith(runningOutStockDetail: state.runningOutStock?.stockDetailModel.first));
     }
   }
 
@@ -147,5 +158,41 @@ class StockCubit extends Cubit<StockState> {
         emit(state.copyWith(runningOutStock: stock));
       }
     }
+  }
+
+  void getRunningOutStockDetail(int stockId) {
+    final index = lists.indexWhere((element) => element.id == stockId);
+    if (lists[index].stockDetailModel.isEmpty) {
+      return emit(state.copyWith(runningOutStockDetail: StockDetailModel(itemDetailId: -1, itemId: -1)));
+    }
+    emit(state.copyWith(runningOutStockDetail: lists[index].stockDetailModel.first));
+    for (final stockDetail in lists[index].stockDetailModel) {
+      if (stockDetail.meter! < (state.runningOutStockDetail!.meter!) && stockDetail.meter! > 0) {
+        emit(state.copyWith(runningOutStockDetail: stockDetail));
+      } else {}
+    }
+  }
+
+  void updateTrendStock(List<SalesModel>? sales, StockModel stock) {
+    var mostSaled = <SalesModel>[];
+    if (sales == null) return;
+    final salesForStockId = sales.where((element) => element.stockDetailModel?.itemId == stock.id).toList();
+    for (final sale in salesForStockId) {
+      final sale2 = salesForStockId.where((element) => element.stockDetailModel?.itemDetailId == sale.stockDetailModel?.itemDetailId).toList();
+      if (sale2.length > mostSaled.length) {
+        mostSaled = List.from(sale2);
+      }
+      // print(allSalesSpecified.length);
+    }
+    if (mostSaled.isEmpty) return emit(state.copyWith(trendStockDetail: StockDetailModel(itemDetailId: -1, itemId: -1)));
+    emit(state.copyWith(trendStockDetail: mostSaled.first.stockDetailModel));
+  }
+
+  int? getTotalSale(List<SalesModel>? sales, StockDetailModel stockDetailModel) {
+    if (sales == null) return null;
+    final salesForStockId = sales.where((element) => element.stockDetailModel?.itemId == stockDetailModel.itemId).toList();
+    final salesForStockDetailId = salesForStockId.where((element) => element.stockDetailModel?.itemDetailId == stockDetailModel.itemDetailId).toList();
+
+    return salesForStockDetailId.length;
   }
 }

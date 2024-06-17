@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sizer/sizer.dart';
+import 'package:stokip/feature/cubit/sales/sales_cubit.dart';
 import 'package:stokip/feature/cubit/stock/stock_cubit.dart';
 import 'package:stokip/feature/model/stock_model.dart';
 import 'package:stokip/feature/view/products_detail/products_detail_view.dart';
@@ -34,6 +35,7 @@ class _ProductsViewState extends State<ProductsView> with NavigatorManager {
   late final TextEditingController pPriceEditingController;
   late final TextEditingController sPriceEditingController;
   late final StockCubit blocProvider;
+  late final SalesCubit salesCubit;
 
   @override
   void initState() {
@@ -44,6 +46,7 @@ class _ProductsViewState extends State<ProductsView> with NavigatorManager {
     pPriceEditingController = TextEditingController();
     sPriceEditingController = TextEditingController();
     blocProvider = BlocProvider.of<StockCubit>(context)..readId();
+    salesCubit = BlocProvider.of<SalesCubit>(context);
   }
 
   @override
@@ -76,7 +79,7 @@ class _ProductsViewState extends State<ProductsView> with NavigatorManager {
                     CustomBottomSheet.show(
                       context,
                       title: 'add product', // TODOLOCALIZATION
-                      child: BottomSheetChild(
+                      child: _BottomSheetChild(
                         textEditingController: productNameEditingController,
                         pPriceEditingController: pPriceEditingController,
                         sPriceEditingController: sPriceEditingController,
@@ -87,6 +90,7 @@ class _ProductsViewState extends State<ProductsView> with NavigatorManager {
                               title: productNameEditingController.text.toCapitalized(),
                               pPrice: double.tryParse(pPriceEditingController.text) ?? 0,
                               sPrice: double.tryParse(sPriceEditingController.text) ?? 0,
+                              stockDetailModel: [],
                             ),
                           );
                           productNameEditingController.clear();
@@ -105,7 +109,7 @@ class _ProductsViewState extends State<ProductsView> with NavigatorManager {
           padding: ProjectPaddings.mainPadding(),
           child: Column(
             children: [
-              SearchContainer(controller: searchEditingController),
+              // SearchContainer(controller: searchEditingController, items: blocProvider.state.products),
               SizedBox(
                 height: 2.h,
               ),
@@ -120,7 +124,14 @@ class _ProductsViewState extends State<ProductsView> with NavigatorManager {
                       return CustomContainer(text: '${state.toInt()}m', title: 'Toplam');
                     },
                   ), // TODOLOCALIZATION
-                  const CustomContainer(text: 'Lüx', title: 'Trend'), // TODOLOCALIZATION
+                  BlocSelector<SalesCubit, SalesState, StockModel?>(
+                    selector: (state) {
+                      return state.trendProduct;
+                    },
+                    builder: (context, state) {
+                      return CustomContainer(text: '${state?.title}', title: 'Trend');
+                    },
+                  ), // TODOLOCALIZATION
                 ],
               ),
               SizedBox(
@@ -159,12 +170,18 @@ class _ProductsViewState extends State<ProductsView> with NavigatorManager {
                       itemBuilder: (context, index) {
                         return Padding(
                           padding: EdgeInsets.only(bottom: 1.h),
-                          child: ProductDataContainer(
+                          child: _ProductDataContainer(
                             stock: state?[index],
                             onPressed: () {
+                              if (state?[index] == null) return;
+                              // blocProvider.updateStockDetails(state![index].stockDetailModel);
                               navigateToPage(
                                 context,
-                                ProductsDetailView(index: index, stockCubit: blocProvider),
+                                ProductsDetailView(
+                                  stockModel: state![index],
+                                  stockCubit: blocProvider,
+                                  salesCubit: salesCubit,
+                                ),
                               );
                             },
                           ),

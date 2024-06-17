@@ -83,9 +83,9 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
         ),
         BlocProvider<CustomerCubit>(
           create: (context) {
-            return CustomerCubit()..init;
+            return CustomerCubit()..init(this);
           },
-        )
+        ),
       ],
       child: DefaultTabController(
         length: Tabs.values.length,

@@ -26,10 +26,6 @@ import 'package:stokip/product/constants/project_colors.dart';
 ///  dashboardda toplam satışlar ve alışları tutan bi ui yap [√]
 ///  products viewda toplam ürünlerin ve toplam stoğun gözüktüğü yeri animated container ile yönet [√]
 
-// TODOpurchase view da carilerin profil fotoğraflarını koyarken image_cropper ekle []
-// TODOnamed navigator yap [√] yaptım ama daha fazla nasıl geliştirebilirim ona çalış []
-// TODOsuppliers viewda ödeme yapılınca ödemelerin tarihi ve ne kadar ödeme yapıldığı gözüksün aklımda purchasesListesinde görünebilir diye düsünüyorum []
-
 void main() async {
   await init();
   runApp(
@@ -68,6 +64,7 @@ class MyApp extends StatelessWidget {
               dividerColor: Colors.transparent,
             ),
             appBarTheme: AppBarTheme(
+              scrolledUnderElevation: 0,
               titleTextStyle: TextStyle(
                 color: ProjectColors2.primaryContainer,
                 fontSize: 24.sp,
@@ -98,6 +95,12 @@ class MyApp extends StatelessWidget {
                 fontFamily: 'Montserrat',
                 fontWeight: FontWeight.w700,
               ),
+              headlineSmall: TextStyle(
+                color: Colors.white,
+                fontSize: 14.sp,
+                fontFamily: 'Montserrat',
+                fontWeight: FontWeight.w500,
+              ),
 
               ///mont serrat bold 30sp
               bodyMedium: TextStyle(
@@ -120,6 +123,11 @@ class MyApp extends StatelessWidget {
 
             ///input decoration theme
             inputDecorationTheme: InputDecorationTheme(
+              contentPadding: EdgeInsets.symmetric(horizontal: 2.w),
+              floatingLabelBehavior: FloatingLabelBehavior.always,
+              floatingLabelStyle: const TextStyle(
+                color: ProjectColors2.primaryContainer,
+              ),
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(7.sp),
                 borderSide: const BorderSide(
@@ -132,7 +140,6 @@ class MyApp extends StatelessWidget {
                   color: ProjectColors2.primaryContainer,
                 ),
               ),
-              contentPadding: EdgeInsets.zero,
               hintStyle: Theme.of(context).textTheme.bodyMedium!.copyWith(
                     color: ProjectColors2.secondary,
                     fontSize: 12.sp,

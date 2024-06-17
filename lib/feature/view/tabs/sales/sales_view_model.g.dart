@@ -61,6 +61,17 @@ mixin _$SalesViewModel on _SalesVievModelBase, Store {
     }
   }
 
+@override
+  void addSale() {
+    final _$actionInfo = _$_SalesVievModelBaseActionController.startAction(
+        name: '_SalesVievModelBase.addSale');
+    try {
+      return super.addSale();
+    } finally {
+      _$_SalesVievModelBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
   @override
   String toString() {
     return '''

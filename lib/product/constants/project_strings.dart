@@ -26,6 +26,8 @@ class ProjectStrings {
   static String dashBoardAppBarTitle = LocaleKeys.dashboard_appBarTitle.locale();
   static String dashboardMonthlyGraph = LocaleKeys.dashboard_monthlyGraph.locale();
 
+  static String currentAppBarTitle = LocaleKeys.current_appBarTitle.locale();
+
   static String suppliersAppBarTitle = LocaleKeys.suppliers_appBarTitle.locale();
   static String suppliersNameHint = LocaleKeys.suppliers_nameHint.locale();
   static String suppliersPurchases = LocaleKeys.suppliers_purchases.locale();
@@ -38,5 +40,4 @@ class ProjectStrings {
   static String suppliersHintDetailItem = LocaleKeys.suppliers_hintDetailItem.locale();
   static String suppliersHintQuantityMeter = LocaleKeys.suppliers_hintQuantityMeter.locale();
   static String suppliersHintPurchasePrice = LocaleKeys.suppliers_hintPurchasePrice.locale();
-
 }

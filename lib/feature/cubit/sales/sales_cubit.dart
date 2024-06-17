@@ -3,6 +3,7 @@ import 'package:bloc/bloc.dart';
 
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
+import 'package:kartal/kartal.dart';
 import 'package:stokip/product/constants/enums/currency_enum.dart';
 
 import 'package:stokip/product/database/operation/stock_hive_operation.dart';
@@ -71,7 +72,6 @@ class SalesCubit extends Cubit<SalesState> {
   final SaleHiveOperation saleDatabaseOperation = SaleHiveOperation();
   List<SalesModel> get currentSales => List<SalesModel>.from(saless);
 
-  int? get selectedSoldItemIndex => stocks!.indexWhere((element) => element.title == state.selectedItemOnSales);
   //initFor provider.value
 
   Future<void> get init async {
@@ -79,11 +79,11 @@ class SalesCubit extends Cubit<SalesState> {
       await DatabaseHiveManager().start();
       await saleDatabaseOperation.start();
       sharedManager = await SharedManager.getInstance;
-
       if (saleDatabaseOperation.box.isNotEmpty) {
         saless.addAll(saleDatabaseOperation.box.values);
       }
       getSales();
+      updateTrendProduct();
     } catch (e) {
       print(e);
     }
@@ -124,27 +124,54 @@ class SalesCubit extends Cubit<SalesState> {
     return totalMeter;
   }
 
-  double updateMonthlySalesAmount(int month) {
+  void updateMonthlySoldMeter(int month) {
+    var totalMeter = 0.0;
+    if (_monthlySales(month) == null) return;
+    for (final sales in _monthlySales(month)!) {
+      totalMeter += sales.quantity ?? 0;
+    }
+    return emit(state.copyWith(monthlySoldMeter: totalMeter));
+  }
+
+  void updateMonthlySalesAmount(int month) {
     var amount = 0.0;
-    if (_monthlySales(month) == null) return amount;
+    if (_monthlySales(month) == null) return;
     for (final sales in _monthlySales(month)!) {
       var currentAmount = sales.price ?? 0;
       currentAmount *= sales.quantity ?? 0;
       amount += currentAmount;
     }
-    return amount;
+    return emit(state.copyWith(monthlySoldAmount: amount));
   }
 
-  void updateSelectedItem(String newText) {
-    emit(state.copyWith(selectedItemOnSales: newText));
-  }
+  // void totalSaledMeter() {
+  //   var totalMeter = 0.0;
+  //   if (state.sales == null) return;
+  //   for (final sales in state.sales!) {
+  //     totalMeter += sales.quantity ?? 0;
+  //   }
+  //   emit(state.copyWith(soldedMeterThisMonth: totalMeter));
+  // }
 
-  void updateSelectedSpecificItem(String specItem) {
-    emit(state.copyWith(selectedSpecific: specItem));
-  }
+  void updateTrendProduct() {
+    final grouppedSales = state.sales?.groupListsBy<int?>((element) => element.stockDetailModel?.itemId).values.toList();
+    if (grouppedSales == null || grouppedSales.isEmpty) return;
 
-  void updateCurrency(CurrencyEnum currency) {
-    emit(state.copyWith(currency: currency));
+    var maxSoldMeter = 0.0;
+    StockDetailModel? trendProductDetail;
+
+    for (final salesList in grouppedSales) {
+      var totalSoldMeter = 0.0;
+      for (final sales in salesList) {
+        totalSoldMeter += sales.quantity ?? 0;
+      }
+      if (totalSoldMeter > maxSoldMeter) {
+        maxSoldMeter = totalSoldMeter;
+        trendProductDetail = salesList.first.stockDetailModel;
+      }
+    }
+    final trendProduct = stocks?.firstWhere((element) => element.id == trendProductDetail!.itemId);
+    emit(state.copyWith(trendProduct: trendProduct));
   }
 
   void getSales() {
@@ -160,7 +187,6 @@ class SalesCubit extends Cubit<SalesState> {
     _updateStocks(model);
     saleDatabaseOperation.addOrUpdateItem(model);
     writeIdToCache(state.salesId + 1);
-
     saless.add(model);
     emit(state.copyWith(sales: currentSales));
   }
@@ -172,6 +198,7 @@ class SalesCubit extends Cubit<SalesState> {
       for (final detail in stock.stockDetailModel) {
         if (detail.itemDetailId != model.stockDetailModel?.itemDetailId) continue;
         detail.meter = detail.meter! - model.quantity!;
+        stockDatabaseOperation?.addOrUpdateItem(stock);
       }
     }
   }
@@ -241,6 +268,12 @@ class SalesCubit extends Cubit<SalesState> {
       totalIncome += sales.price ?? 0;
     }
     emit(state.copyWith(totalIncome: totalIncome));
+  }
+
+  String? getStockTitleById(int? id) {
+    if (id == null) return null;
+    final stock = stocks?.firstWhere((element) => element.id == id);
+    return stock?.title;
   }
 
   Future<dynamic> showOutOfDialog(BuildContext context) {

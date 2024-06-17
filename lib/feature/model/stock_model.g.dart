@@ -17,11 +17,11 @@ class StockModelAdapter extends TypeAdapter<StockModel> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return StockModel(
+      stockDetailModel: (fields[4] as List).cast<StockDetailModel>(),
       id: fields[0] as int,
       title: fields[3] as String?,
       pPrice: fields[1] as double?,
       sPrice: fields[2] as double?,
-      stockDetailModel: (fields[4] as List).cast<StockDetailModel>(),
       purchaseDate: fields[6] as DateTime?,
       currency: fields[7] as CurrencyEnum,
     )..totalMeter = fields[5] as double?;
@@ -108,14 +108,13 @@ class StockDetailModelAdapter extends TypeAdapter<StockDetailModel> {
 // **************************************************************************
 
 StockModel _$StockModelFromJson(Map<String, dynamic> json) => StockModel(
+      stockDetailModel: (json['stockDetailModel'] as List<dynamic>)
+          .map((e) => StockDetailModel.fromJson(e as Map<String, dynamic>))
+          .toList(),
       id: (json['id'] as num?)?.toInt() ?? 0,
       title: json['title'] as String?,
       pPrice: (json['pPrice'] as num?)?.toDouble(),
       sPrice: (json['sPrice'] as num?)?.toDouble(),
-      stockDetailModel: (json['stockDetailModel'] as List<dynamic>?)
-              ?.map((e) => StockDetailModel.fromJson(e as Map<String, dynamic>))
-              .toList() ??
-          const [],
       purchaseDate: json['purchaseDate'] == null
           ? null
           : DateTime.parse(json['purchaseDate'] as String),

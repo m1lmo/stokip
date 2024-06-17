@@ -21,6 +21,9 @@
         "appBarTitle": "DashBoard",
         "monthlyGraph": "Monthly Purchase and Sales"
     },
+    "current":{
+        "appBarTitle": "Current"
+    },
     "suppliers": {
         "appBarTitle": "Suppliers",
         "nameHint": "Please Enter the Supplier's Name",

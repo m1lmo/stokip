@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:stokip/feature/view/tabs/dashboard_view.dart';
 import 'package:stokip/feature/view/tabs/products/products_view.dart';
 import 'package:stokip/feature/view/tabs/sales/sales_view.dart';
-import 'package:stokip/feature/view/tabs/suppliers_view.dart';
+import 'package:stokip/feature/view/tabs/current/current_view.dart';
 import 'package:stokip/product/constants/enums/tabs_enum.dart';
 import 'package:stokip/product/constants/project_strings.dart';
 import 'package:stokip/product/widgets/custom_icon.dart';
@@ -18,7 +18,7 @@ extension TabsExtension on Tabs {
         return const SalesView();
 
       case Tabs.suppliers:
-        return const SuppliersView();
+        return const CurrentView();
 
       case Tabs.products:
         return const ProductsView();
@@ -35,7 +35,7 @@ extension TabsExtension on Tabs {
         return ProjectStrings.salesAppBarTitle;
 
       case Tabs.suppliers:
-        return ProjectStrings.suppliersAppBarTitle;
+        return ProjectStrings.currentAppBarTitle;
 
       case Tabs.products:
         return ProjectStrings.productsAppBarTitle;
@@ -50,7 +50,7 @@ extension TabsExtension on Tabs {
       case Tabs.sales:
         return CustomIcons.sales;
       case Tabs.suppliers:
-        return CustomIcons.current;
+        return Icons.person_4_rounded;
       case Tabs.products:
         return CustomIcons.product3;
     }

@@ -9,30 +9,45 @@ class CustomContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 8.h,
-      width: 39.w,
-      decoration: BoxDecoration(
-        color: ProjectColors2.secondaryContainer,
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          Text(
-            text,
-            style: Theme.of(context).textTheme.bodyLarge,
-          ),
-          Text(
-            title,
-            style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                  color: ProjectColors2.primaryContainer,
-                ),
-          ),
-          SizedBox(
-            height: 1.h,
-          ),
-        ],
+    return Tooltip(
+      message: text,
+      enableFeedback: true,
+      
+      child: Container(
+        height: 8.h,
+        width: 39.w,
+        decoration: BoxDecoration(
+          color: ProjectColors2.secondaryContainer,
+          borderRadius: BorderRadius.circular(15.sp),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 3.w),
+              child: Text(
+                text,
+                style: Theme.of(context).textTheme.bodyLarge,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 3.w),
+              child: Text(
+                title,
+                overflow: TextOverflow.fade,
+                style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                      color: ProjectColors2.primaryContainer,
+                    ),
+                maxLines: 1,
+              ),
+            ),
+            SizedBox(
+              height: 1.h,
+            ),
+          ],
+        ),
       ),
     );
   }

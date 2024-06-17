@@ -2,12 +2,12 @@ import 'package:flutter/foundation.dart';
 import 'package:hive/hive.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:stokip/feature/model/payment_model.dart';
-import 'stock_model.dart';
-import '../../product/constants/enums/currency_enum.dart';
-import '../../product/database/core/hive_types.dart';
+import 'package:stokip/feature/model/stock_model.dart';
+import 'package:stokip/product/constants/enums/currency_enum.dart';
+import 'package:stokip/product/database/core/hive_types.dart';
 
-import '../../product/database/core/model/hive_model2_mixin.dart';
-import 'purchases_model.dart';
+import 'package:stokip/product/database/core/model/hive_model2_mixin.dart';
+import 'package:stokip/feature/model/purchases_model.dart';
 part 'importer_model.g.dart';
 
 @JsonSerializable()
@@ -17,12 +17,12 @@ final class ImporterModel extends MainModel with HiveModel2Mixin {
   /// this.purchases = const []});` is defining a constructor for the `ImporterModel` class.
 
   ImporterModel({
-    this.id = 0,
+    required this.id,
     this.title,
     this.currency,
     this.balance,
     this.customerPhoto,
-  });
+  }) : super();
 
   /// The line `final int id;` is declaring a final variable named `id` of type `int` in the
   /// `ImporterModel` class. This variable represents the unique identifier for an importer. The `final`
@@ -46,4 +46,8 @@ final class ImporterModel extends MainModel with HiveModel2Mixin {
 
   @override
   String get key => id.toString();
+
+  @override
+  // TODO: implement props
+  List<Object?> get props => [id, title, currency, balance, customerPhoto, purchases, payments];
 }

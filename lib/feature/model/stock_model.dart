@@ -1,5 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 
+import 'package:equatable/equatable.dart';
 import 'package:hive/hive.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:stokip/product/constants/enums/currency_enum.dart';
@@ -21,7 +22,7 @@ abstract class MainModel {
 
 @JsonSerializable()
 @HiveType(typeId: HiveTypes.stockModelId)
-class StockModel extends MainModel with HiveModel2Mixin {
+class StockModel extends MainModel with HiveModel2Mixin, EquatableMixin {
   @override
   String get key {
     return id.toString();
@@ -46,11 +47,11 @@ class StockModel extends MainModel with HiveModel2Mixin {
   CurrencyEnum currency;
 
   StockModel({
+    required this.stockDetailModel,
     this.id = 0,
     this.title,
     this.pPrice,
     this.sPrice,
-    this.stockDetailModel = const [],
     this.purchaseDate,
     this.currency = CurrencyEnum.usd,
   });
@@ -61,6 +62,9 @@ class StockModel extends MainModel with HiveModel2Mixin {
   Map<String, dynamic> toJson() {
     return _$StockModelToJson(this);
   }
+
+  @override
+  List<Object?> get props => [id, pPrice, sPrice, title, stockDetailModel, totalMeter, purchaseDate, currency];
 }
 
 @JsonSerializable()

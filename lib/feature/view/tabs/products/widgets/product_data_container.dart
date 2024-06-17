@@ -1,9 +1,9 @@
 part of '../products_view.dart';
 
 /// Data container for [ProductsView]
-class ProductDataContainer extends StatelessWidget {
-  /// constructor for [ProductDataContainer]
-  const ProductDataContainer({required this.stock, required this.onPressed, super.key});
+class _ProductDataContainer extends StatelessWidget {
+  /// constructor for [_ProductDataContainer]
+  const _ProductDataContainer({required this.stock, required this.onPressed, super.key});
   final StockModel? stock;
   final VoidCallback? onPressed;
   @override

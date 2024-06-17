@@ -2,8 +2,10 @@
 
 import 'package:dropdown_textfield/dropdown_textfield.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:searchable_listview/searchable_listview.dart';
 import 'package:sizer/sizer.dart';
 import 'package:stokip/feature/cubit/customers/cubit/customer_cubit.dart';
 import 'package:stokip/feature/cubit/sales/sales_cubit.dart';
@@ -13,6 +15,8 @@ import 'package:stokip/feature/model/filter_model.dart';
 import 'package:stokip/feature/model/sales_model.dart';
 import 'package:stokip/feature/model/stock_model.dart';
 import 'package:stokip/feature/view/tabs/sales/sales_view_model.dart';
+import 'package:stokip/feature/view/tabs/sales/widgets/sale_delegate.dart';
+import 'package:stokip/product/constants/enums/currency_enum.dart';
 import 'package:stokip/product/constants/enums/sales_filter_enum.dart';
 import 'package:stokip/product/constants/project_colors.dart';
 import 'package:stokip/product/constants/project_strings.dart';
@@ -39,16 +43,13 @@ class _SalesViewState extends State<SalesView> {
   final salesViewModel = SalesViewModel();
   late final TextEditingController searchTextEditingController;
   late final TextEditingController titleTextEditingController;
-  late final TextEditingController pPriceEditingController;
-  late final TextEditingController sPriceEditingController;
 
   @override
   void initState() {
     super.initState();
     searchTextEditingController = TextEditingController();
     titleTextEditingController = TextEditingController();
-    pPriceEditingController = TextEditingController();
-    sPriceEditingController = TextEditingController();
+
     salesViewModel.init(context);
   }
 
@@ -57,8 +58,6 @@ class _SalesViewState extends State<SalesView> {
     super.dispose();
     searchTextEditingController.dispose();
     titleTextEditingController.dispose();
-    pPriceEditingController.dispose();
-    sPriceEditingController.dispose();
   }
 
   @override
@@ -69,7 +68,7 @@ class _SalesViewState extends State<SalesView> {
           value: salesViewModel.customerCubitProvider,
         ),
         BlocProvider.value(
-          value: salesViewModel.blocProvider,
+          value: salesViewModel.blocProvider..updateMonthlySoldMeter(DateTime.now().month),
         ),
       ],
       child: Scaffold(
@@ -96,6 +95,10 @@ class _SalesViewState extends State<SalesView> {
                             customerDropDownController: salesViewModel.customerDropDownController,
                             stockDropDownController: salesViewModel.stockDropDownController,
                             stockDetailDropDownController: salesViewModel.stockDetailDropDownController,
+                            currencyDropDownController: salesViewModel.currencyDropDownController,
+                            quantityController: salesViewModel.quantityController,
+                            priceController: salesViewModel.priceController,
+                            onSave: salesViewModel.addSale,
                           ),
                           title: 'Satış Ekle',
                         );
@@ -131,17 +134,31 @@ class _SalesViewState extends State<SalesView> {
                           return CustomContainer(text: '$state\$', title: 'Toplam Gelir');
                         },
                       ),
-                      const CustomContainer(text: 'Lüx', title: 'En Çok Satan'),
+                      BlocSelector<SalesCubit, SalesState, StockModel?>(
+                        selector: (state) {
+                          return state.trendProduct;
+                        },
+                        builder: (context, state) {
+                          return CustomContainer(text: '${state?.title}', title: 'En Çok Satan');
+                        },
+                      ),
                     ],
                   ),
                   SizedBox(
                     height: 1.h,
                   ),
-                  const Row(
+                  Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      CustomContainer(text: '400m', title: 'Bu Ay Satılan'),
-                      CustomContainer(text: 'Omer Koca', title: 'En Çok Alan'),
+                      BlocSelector<SalesCubit, SalesState, double>(
+                        selector: (state) {
+                          return state.monthlySoldMeter;
+                        },
+                        builder: (context, state) {
+                          return CustomContainer(text: '${state}m', title: 'Bu Ay Satılan');
+                        },
+                      ),
+                      const CustomContainer(text: 'Omer Koca', title: 'En Çok Alan'),
                     ],
                   ),
                   SizedBox(
@@ -171,8 +188,39 @@ class _SalesViewState extends State<SalesView> {
                   SizedBox(
                     height: 2.h,
                   ),
-                  SearchContainer(
-                    controller: searchTextEditingController,
+                  // BlocSelector<SalesCubit, SalesState, List<SalesModel>>(
+                  //   selector: (state) {
+                  //     return state.sales ?? [];
+                  //   },
+                  //   builder: (context, state) {
+                  //     return Expanded(
+                  //       child: SearchableList<SalesModel>(
+                  //         filter: (query) {
+                  //           return state.where((element) => element.title!.contains(query)).toList();
+                  //         },
+                  //         initialList: state,
+                  //         itemBuilder: (item) {
+                  //           return DataContainer(
+                  //             data: item,
+                  //           );
+                  //         },
+                  //       ),
+                  //     );
+                  //   },
+                  // ),
+                  BlocSelector<SalesCubit, SalesState, List<SalesModel>>(
+                    selector: (state) {
+                      return state.sales ?? [];
+                    },
+                    builder: (context, state) {
+                      return Container(
+                        child: SearchContainer<SalesModel>(
+                          controller: searchTextEditingController,
+                          items: state,
+                          delegate: SaleDelegate(items: state ?? []),
+                        ),
+                      );
+                    },
                   ),
                   SizedBox(
                     height: 2.h,

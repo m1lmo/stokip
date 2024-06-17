@@ -5,6 +5,7 @@ import 'package:json_annotation/json_annotation.dart';
 import 'package:stokip/feature/model/payment_model.dart';
 import 'package:stokip/feature/model/sales_model.dart';
 import 'package:stokip/feature/model/stock_model.dart';
+import 'package:stokip/product/constants/enums/currency_enum.dart';
 import 'package:stokip/product/database/core/hive_types.dart';
 import 'package:stokip/product/database/core/model/hive_model2_mixin.dart';
 
@@ -22,6 +23,7 @@ final class CustomerModel extends MainModel with EquatableMixin, HiveModel2Mixin
     this.title,
     this.balance,
     this.boughtProducts,
+    this.currency = CurrencyEnum.usd,
   });
 
   /// fromJson is a factory method that creates a `CustomerModel` object from a `Map<String, dynamic>`.
@@ -39,6 +41,8 @@ final class CustomerModel extends MainModel with EquatableMixin, HiveModel2Mixin
   final List<SalesModel>? boughtProducts;
   @HiveField(4)
   final List<PaymentModel> payments = const [];
+  @HiveField(5)
+  final CurrencyEnum currency;
 
   @override
   List<Object?> get props => [id, title, balance, boughtProducts, payments];

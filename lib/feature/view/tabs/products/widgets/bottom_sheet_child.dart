@@ -1,10 +1,10 @@
 part of '../products_view.dart';
 
 /// Bottom sheet child used for adding new product to the list
-/// in [ProductsView], [BottomSheetChild] is used in [CustomBottomSheet]
-class BottomSheetChild extends StatelessWidget {
-  /// constructor for [BottomSheetChild]
-  const BottomSheetChild({
+/// in [ProductsView], [_BottomSheetChild] is used in [CustomBottomSheet]
+class _BottomSheetChild extends StatelessWidget {
+  /// constructor for [_BottomSheetChild]
+  const _BottomSheetChild({
     required this.onPressed,
     required this.textEditingController,
     required this.pPriceEditingController,
@@ -103,8 +103,8 @@ class BottomSheetChild extends StatelessWidget {
           SizedBox(height: 3.h),
           ElevatedButton(
             style: ButtonStyle(
-              backgroundColor: MaterialStateProperty.all(ProjectColors2.primaryContainer),
-              shape: MaterialStateProperty.all(
+              backgroundColor: WidgetStateProperty.all(ProjectColors2.primaryContainer),
+              shape: WidgetStateProperty.all(
                 RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10.sp),
                 ),

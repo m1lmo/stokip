@@ -1,21 +1,30 @@
 part of 'customer_cubit.dart';
 
 final class CustomerState extends Equatable {
-  const CustomerState({this.customers});
+  CustomerState({this.id = 0, this.totalBalance, this.customers});
   final List<CustomerModel>? customers;
+  final double? totalBalance;
+  final int? id;
+
   @override
-  List<Object?> get props => [customers];
+  List<Object?> get props => [customers, totalBalance, id];
+
   @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-    return other is CustomerState && listEquals(other.customers, customers);
-  }
+  int get hashCode => customers.hashCode ^ totalBalance.hashCode ^ id.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) || other is CustomerState && runtimeType == other.runtimeType && customers == other.customers && totalBalance == other.totalBalance && id == other.id;
 
   CustomerState copyWith({
     List<CustomerModel>? customers,
+    double? totalBalance,
+    int? id,
   }) {
     return CustomerState(
+      totalBalance: totalBalance ?? this.totalBalance,
       customers: customers ?? this.customers,
+      id: id ?? this.id,
     );
   }
 }
