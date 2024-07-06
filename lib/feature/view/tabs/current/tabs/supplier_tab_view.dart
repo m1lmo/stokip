@@ -9,9 +9,11 @@ import 'package:stokip/product/constants/project_paddings.dart';
 import 'package:stokip/product/extensions/string_extension.dart';
 import 'package:stokip/product/widgets/custom_container.dart';
 import 'package:stokip/product/widgets/custom_divider.dart';
+import 'package:stokip/product/widgets/my_search_delegate.dart';
 import 'package:stokip/product/widgets/search_container.dart';
 
 part '../widgets/supplier_list_tile.dart';
+part '../widgets/supplier_search_delegate.dart';
 
 class SupplierTabView extends StatelessWidget {
   const SupplierTabView({required this.importerCubit, required this.searchController, required this.showBottomSheetPressed, super.key});
@@ -49,7 +51,16 @@ class SupplierTabView extends StatelessWidget {
           SizedBox(
             height: 2.h,
           ),
-          // SearchContainer(controller: searchController), //todo flag
+          BlocSelector<ImporterCubit, ImporterState, List<ImporterModel>>(
+            selector: (state) {
+              return state.importers ?? [];
+            },
+            builder: (context, state) {
+              return SearchContainer(
+                delegate: _SupplierSearchDelegate(items: state),
+              );
+            },
+          ),
           BlocSelector<ImporterCubit, ImporterState, List<ImporterModel>?>(
             selector: (state) {
               return state.importers;

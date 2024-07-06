@@ -8,12 +8,13 @@ import 'package:stokip/product/extensions/string_extension.dart';
 
 /// this class is output for data for sales
 class DataContainer extends StatelessWidget {
-  const DataContainer({required this.data, super.key});
+  const DataContainer({required this.data, required this.saleBloc, super.key});
   final SalesModel data;
+  final SalesCubit saleBloc;
   @override
   Widget build(BuildContext context) {
     if (data.title == null) return const SizedBox.shrink();
-    final bloc = BlocProvider.of<SalesCubit>(context);
+    final bloc = saleBloc;
 
     return BlocProvider.value(
       value: bloc,

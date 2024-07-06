@@ -7,13 +7,16 @@ import 'package:stokip/product/constants/enums/currency_enum.dart';
 import 'package:stokip/product/constants/project_colors.dart';
 import 'package:stokip/product/constants/project_paddings.dart';
 import 'package:stokip/product/extensions/string_extension.dart';
+import 'package:stokip/product/navigator_manager.dart';
 import 'package:stokip/product/widgets/custom_container.dart';
 import 'package:stokip/product/widgets/custom_divider.dart';
+import 'package:stokip/product/widgets/my_search_delegate.dart';
 import 'package:stokip/product/widgets/search_container.dart';
 
 part '../widgets/customer_list_tile.dart';
+part '../widgets/customer_search_delegate.dart';
 
-class CustomerTabView extends StatelessWidget {
+final class CustomerTabView extends StatelessWidget {
   const CustomerTabView({required this.controller, required this.customerCubit, required this.showBottomSheetPressed, required this.currentListTileOnTap, super.key});
   final TextEditingController controller;
   final CustomerCubit customerCubit;
@@ -50,7 +53,16 @@ class CustomerTabView extends StatelessWidget {
           SizedBox(
             height: 2.h,
           ),
-          // SearchContainer(controller: controller), //todo flag
+          BlocSelector<CustomerCubit, CustomerState, List<CustomerModel>>(
+            selector: (state) {
+              return state.customers ?? [];
+            },
+            builder: (context, state) {
+              return SearchContainer(
+                delegate: _CustomerSearchDelegate(items: state),
+              );
+            },
+          ),
           SizedBox(
             height: 2.h,
           ),

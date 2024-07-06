@@ -27,6 +27,7 @@ class StockCubit extends Cubit<StockState> {
     sharedManager = await SharedManager.getInstance;
     if (databaseOperation.box.isNotEmpty) {
       lists.addAll(databaseOperation.box.values);
+      emit(state.copyWith(products: currentStocks));
     }
     getProduct();
   }

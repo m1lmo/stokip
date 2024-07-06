@@ -15,9 +15,11 @@ import 'package:stokip/product/extensions/string_extension.dart';
 import 'package:stokip/product/navigator_manager.dart';
 import 'package:stokip/product/widgets/custom_bottom_sheet.dart';
 import 'package:stokip/product/widgets/custom_container.dart';
+import 'package:stokip/product/widgets/my_search_delegate.dart';
 import 'package:stokip/product/widgets/search_container.dart';
 part './widgets/bottom_sheet_child.dart';
 part './widgets/product_data_container.dart';
+part './widgets/product_delegate.dart';
 
 class ProductsView extends StatefulWidget with NavigatorManager {
   const ProductsView({
@@ -61,8 +63,15 @@ class _ProductsViewState extends State<ProductsView> with NavigatorManager {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider.value(
-      value: blocProvider,
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider.value(
+          value: blocProvider,
+        ),
+        BlocProvider.value(
+          value: salesCubit..updateTrendProduct(),
+        ),
+      ],
       child: Scaffold(
         appBar: AppBar(
           title: Text(
@@ -87,7 +96,7 @@ class _ProductsViewState extends State<ProductsView> with NavigatorManager {
                           blocProvider.addProduct(
                             StockModel(
                               id: state,
-                              title: productNameEditingController.text.toCapitalized(),
+                              title: productNameEditingController.text.toLowerCase(),
                               pPrice: double.tryParse(pPriceEditingController.text) ?? 0,
                               sPrice: double.tryParse(sPriceEditingController.text) ?? 0,
                               stockDetailModel: [],
@@ -109,7 +118,20 @@ class _ProductsViewState extends State<ProductsView> with NavigatorManager {
           padding: ProjectPaddings.mainPadding(),
           child: Column(
             children: [
-              // SearchContainer(controller: searchEditingController, items: blocProvider.state.products),
+              BlocSelector<StockCubit, StockState, List<StockModel>?>(
+                selector: (state) {
+                  return state.products;
+                },
+                builder: (context, state) {
+                  return SearchContainer(
+                    delegate: _ProductDelegate(
+                      items: state,
+                      salesCubit: salesCubit,
+                      stockCubit: blocProvider,
+                    ),
+                  );
+                },
+              ),
               SizedBox(
                 height: 2.h,
               ),
@@ -179,8 +201,8 @@ class _ProductsViewState extends State<ProductsView> with NavigatorManager {
                                 context,
                                 ProductsDetailView(
                                   stockModel: state![index],
-                                  stockCubit: blocProvider,
                                   salesCubit: salesCubit,
+                                  stockCubit: blocProvider,
                                 ),
                               );
                             },

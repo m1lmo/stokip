@@ -61,7 +61,7 @@ mixin _$SalesViewModel on _SalesVievModelBase, Store {
     }
   }
 
-@override
+  @override
   void addSale() {
     final _$actionInfo = _$_SalesVievModelBaseActionController.startAction(
         name: '_SalesVievModelBase.addSale');

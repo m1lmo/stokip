@@ -41,8 +41,7 @@ dependencies:
   #vb 10 ;)
   kartal: ^3.4.2
   image_cropper: ^5.0.0
-  #utils
-  searchable_listview: ^2.14.0
+  bloc: ^8.1.4
 
 dev_dependencies:
   flutter_test:

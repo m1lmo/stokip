@@ -40,4 +40,9 @@ class ProjectStrings {
   static String suppliersHintDetailItem = LocaleKeys.suppliers_hintDetailItem.locale();
   static String suppliersHintQuantityMeter = LocaleKeys.suppliers_hintQuantityMeter.locale();
   static String suppliersHintPurchasePrice = LocaleKeys.suppliers_hintPurchasePrice.locale();
+
+  static String filterToday = 'Bugün';
+  static String filterYesterday = 'Dün';
+  static String filterLastWeek = 'Geçen Hafta';
+  static String filterLastMonth = 'Geçen Ay';
 }

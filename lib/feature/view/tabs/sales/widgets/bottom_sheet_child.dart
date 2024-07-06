@@ -187,7 +187,6 @@ class _BottomSheetChildState extends State<_BottomSheetChild> {
                       textFieldDecoration: const InputDecoration(
                         labelText: 'Currency',
                       ),
-                      enableSearch: true,
                       listTextStyle: const TextStyle(
                         fontSize: 14,
                         color: Colors.black,
@@ -285,16 +284,24 @@ class _DropDownTextField<T extends MainModel> extends StatelessWidget {
         return null;
       },
       controller: controller,
-      dropDownItemCount: items?.length ?? 0,
       searchDecoration: InputDecoration(
         hintText: ProjectStrings.search,
         contentPadding: EdgeInsets.symmetric(horizontal: 2.w),
+        fillColor: Colors.red,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(7.sp),
         ),
       ),
       textFieldDecoration: InputDecoration(
         labelText: labelTitle,
+        constraints: BoxConstraints(
+          minHeight: 5.h,
+          maxHeight: 10.h,
+        ),
+      ),
+      searchTextStyle: const TextStyle(
+        fontSize: 14,
+        color: Colors.black,
       ),
       enableSearch: true,
       listTextStyle: const TextStyle(

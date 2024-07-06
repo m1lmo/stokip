@@ -1,15 +1,31 @@
 import 'package:flutter/material.dart';
-import 'package:stokip/feature/model/stock_model.dart';
 import 'package:stokip/product/widgets/custom_icon.dart';
 
 abstract class MySearchDelegate<T> extends SearchDelegate<T> {
   MySearchDelegate({
     required this.items,
   });
-  List<T> items;
+  List<T>? items;
+
+  @override
+  ThemeData appBarTheme(BuildContext context) {
+    return Theme.of(context).copyWith();
+  }
+
   @override
   List<Widget>? buildActions(BuildContext context) {
-    return null;
+    return [
+      IconButton(
+        onPressed: () {
+          if (query.isNotEmpty) {
+            query = '';
+          } else {
+            Navigator.pop(context);
+          }
+        },
+        icon: const Icon(Icons.close),
+      ),
+    ];
   }
 
   @override

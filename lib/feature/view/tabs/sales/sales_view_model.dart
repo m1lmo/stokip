@@ -61,6 +61,7 @@ abstract class _SalesVievModelBase with Store {
     final index = filters.indexWhere((element) => element == filter);
     filters[index].isSelected = !filters[index].isSelected;
     sortFilters();
+    blocProvider.applyFilter(filters, filter);
   }
 
   @action
@@ -74,7 +75,9 @@ abstract class _SalesVievModelBase with Store {
       price: double.tryParse(priceController!.text),
       currency: currencyDropDownController!.dropDownValue!.value as CurrencyEnum,
     );
+    if (saleModel.customer == null || saleModel.stockDetailModel == null || saleModel.quantity == null || saleModel.price == null) return;
     blocProvider.addSale(model: saleModel);
+    customerCubitProvider.updateCustomerBalance(saleModel.customer!, saleModel.price! * saleModel.quantity!);
     stockCubitProvider.updateTotalMeter((stockDropDownController!.dropDownValue!.value as StockModel).id);
   }
 }
