@@ -3,15 +3,12 @@ import 'package:sizer/sizer.dart';
 import 'package:stokip/feature/model/stock_model.dart';
 import 'package:stokip/product/constants/project_colors.dart';
 import 'package:stokip/product/widgets/custom_icon.dart';
-import 'package:stokip/product/widgets/my_search_delegate.dart';
 
 /// SearchContainer is a [StatelessWidget] that contains a [TextField] with a prefix icon.
 @immutable
 final class SearchContainer<T extends MainModel> extends StatelessWidget {
   /// constructor of [SearchContainer]
-  const SearchContainer({required this.controller, required this.items, required this.delegate, super.key, this.edgeInsets});
-  final TextEditingController controller;
-  final List<T>? items;
+  const SearchContainer({required this.delegate, super.key, this.edgeInsets});
   final SearchDelegate<T> delegate;
 
   /// [EdgeInsets] for padding default is [EdgeInsets.symmetric(horizontal: 8.w)]
@@ -23,6 +20,7 @@ final class SearchContainer<T extends MainModel> extends StatelessWidget {
         showSearch<T>(context: context, delegate: delegate);
       },
       child: Container(
+        height: 5.h,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(1.h),
           border: Border.all(color: ProjectColors2.secondary, width: .5.w),
