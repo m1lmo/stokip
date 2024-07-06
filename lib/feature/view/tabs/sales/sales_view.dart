@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:searchable_listview/searchable_listview.dart';
 import 'package:sizer/sizer.dart';
 import 'package:stokip/feature/cubit/customers/cubit/customer_cubit.dart';
 import 'package:stokip/feature/cubit/sales/sales_cubit.dart';
@@ -68,7 +67,10 @@ class _SalesViewState extends State<SalesView> {
           value: salesViewModel.customerCubitProvider,
         ),
         BlocProvider.value(
-          value: salesViewModel.blocProvider..updateMonthlySoldMeter(DateTime.now().month),
+          value: salesViewModel.blocProvider
+            ..updateMonthlySoldMeter(DateTime.now().month)
+            ..updateTrendProduct()
+            ..getTotalIncome,
         ),
       ],
       child: Scaffold(
@@ -127,7 +129,6 @@ class _SalesViewState extends State<SalesView> {
                     children: [
                       BlocSelector<SalesCubit, SalesState, double>(
                         selector: (state) {
-                          salesViewModel.blocProvider.getTotalIncome;
                           return state.totalIncome ?? 0.0;
                         },
                         builder: (context, state) {
@@ -210,14 +211,16 @@ class _SalesViewState extends State<SalesView> {
                   // ),
                   BlocSelector<SalesCubit, SalesState, List<SalesModel>>(
                     selector: (state) {
-                      return state.sales ?? [];
+                      // salesViewModel.blocProvider.filterSales(null);
+                      return state.filteredSales ?? [];
                     },
                     builder: (context, state) {
                       return Container(
                         child: SearchContainer<SalesModel>(
-                          controller: searchTextEditingController,
-                          items: state,
-                          delegate: SaleDelegate(items: state ?? []),
+                          delegate: SaleDelegate(
+                            salesViewModel.blocProvider,
+                            items: state ?? [],
+                          ),
                         ),
                       );
                     },
@@ -228,7 +231,7 @@ class _SalesViewState extends State<SalesView> {
                   Expanded(
                     child: BlocSelector<SalesCubit, SalesState, List<SalesModel>?>(
                       selector: (state) {
-                        return state.sales;
+                        return state.filteredSales ?? state.sales;
                       },
                       builder: (context, state) {
                         return ListView.builder(
@@ -240,6 +243,7 @@ class _SalesViewState extends State<SalesView> {
                               padding: EdgeInsets.only(bottom: 1.h),
                               child: DataContainer(
                                 data: state![index],
+                                saleBloc: salesViewModel.blocProvider,
                               ),
                             );
                           },

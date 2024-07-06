@@ -5,6 +5,7 @@ final class SalesState with EquatableMixin {
   SalesState({
     this.salesId = 0,
     this.sales,
+    this.filteredSales,
     this.totalIncome,
     this.trendProduct,
     this.monthlySoldAmount = 0.0,
@@ -13,12 +14,14 @@ final class SalesState with EquatableMixin {
   int salesId;
   double? totalIncome;
   final List<SalesModel>? sales;
+  final List<SalesModel>? filteredSales;
   final StockModel? trendProduct;
   final double monthlySoldAmount;
   final double monthlySoldMeter;
   @override
   List<Object?> get props => [
         sales,
+        filteredSales,
         salesId,
         totalIncome,
         trendProduct,
@@ -32,6 +35,7 @@ final class SalesState with EquatableMixin {
       other is SalesState &&
           runtimeType == other.runtimeType &&
           sales == other.sales &&
+          filteredSales == other.filteredSales &&
           salesId == other.salesId &&
           totalIncome == other.totalIncome &&
           trendProduct == other.trendProduct &&
@@ -39,11 +43,13 @@ final class SalesState with EquatableMixin {
           monthlySoldMeter == other.monthlySoldMeter;
 
   @override
-  int get hashCode => sales.hashCode ^ salesId.hashCode ^ totalIncome.hashCode ^ trendProduct.hashCode ^ monthlySoldMeter.hashCode ^ monthlySoldAmount.hashCode;
+  int get hashCode =>
+      sales.hashCode ^ filteredSales.hashCode ^ salesId.hashCode ^ totalIncome.hashCode ^ trendProduct.hashCode ^ monthlySoldMeter.hashCode ^ monthlySoldAmount.hashCode;
 
   SalesState copyWith({
     int? salesId,
     List<SalesModel>? sales,
+    List<SalesModel>? filteredSales,
     String? selectedItemOnSales,
     String? selectedSpecific,
     CurrencyEnum? currency,
@@ -55,6 +61,7 @@ final class SalesState with EquatableMixin {
     return SalesState(
       salesId: salesId ?? this.salesId,
       sales: sales ?? this.sales,
+      filteredSales: filteredSales ?? this.filteredSales,
       totalIncome: totalIncome ?? this.totalIncome,
       trendProduct: trendProduct ?? this.trendProduct,
       monthlySoldAmount: monthlySoldAmount ?? this.monthlySoldAmount,
