@@ -6,7 +6,7 @@ part 'payment_model.g.dart';
 
 @JsonSerializable()
 @HiveType(typeId: HiveTypes.paymentModelId)
-class PaymentModel {
+final class PaymentModel {
   PaymentModel({this.price, this.payedTime});
   @HiveField(0)
   final double? price;

@@ -36,7 +36,7 @@ final class CustomerModel extends MainModel with EquatableMixin, HiveModel2Mixin
   @HiveField(1)
   final String? title;
   @HiveField(2)
-  final double? balance;
+  double? balance;
   @HiveField(3)
   final List<SalesModel>? boughtProducts;
   @HiveField(4)

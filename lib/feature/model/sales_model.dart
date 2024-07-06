@@ -53,7 +53,8 @@ final class SalesModel extends MainModel with EquatableMixin, HiveModel2Mixin {
         quantity,
         price,
         currency,
-        customer,];
+        customer,
+      ]; 
 
   @override
   String get key => id.toString();
@@ -62,3 +63,4 @@ final class SalesModel extends MainModel with EquatableMixin, HiveModel2Mixin {
     return _$SalesModelToJson(this);
   }
 }
+  

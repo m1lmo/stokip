@@ -26,7 +26,7 @@ class _CustomerListTile extends StatelessWidget {
                           style: Theme.of(context).textTheme.headlineSmall,
                         ),
                         Text(
-                          'Toplam satış: 4',
+                          'Toplam satış: ${customer.boughtProducts?.length ?? 0} ',
                           style: Theme.of(context).textTheme.bodySmall?.copyWith(
                                 color: Colors.white,
                                 fontWeight: FontWeight.w300,

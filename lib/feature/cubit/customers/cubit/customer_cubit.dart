@@ -1,6 +1,5 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:stokip/feature/model/customer_model.dart';
 import 'package:stokip/product/cache/shared_manager.dart';
@@ -13,11 +12,12 @@ part 'customer_state.dart';
 
 final class CustomerCubit extends Cubit<CustomerState> {
   CustomerCubit() : super(CustomerState());
-  List<CustomerModel> customers = [];
+  final List<CustomerModel> customers = [];
   late final SharedManager sharedManager;
   final databaseOperation = CustomerHiveOperation();
   late final TickerProvider tickerProviderService;
 
+  /// init method for [CustomerCubit]
   Future<void> init(TickerProvider ticker) async {
     try {
       await DatabaseHiveManager().start();
@@ -64,6 +64,14 @@ final class CustomerCubit extends Cubit<CustomerState> {
     updateTotalBalanceUSD();
     return emit(state.copyWith(customers: List.from(customers)));
   }
+
+  void updateCustomerBalance(CustomerModel customer, double balance) {
+    customer.balance = (customer.balance ?? 0) + balance;
+    databaseOperation.addOrUpdateItem(customer);
+    emit(state.copyWith(customers: List.from(customers)));
+  }
+
+  void updateCustomerBoughtedProducts() {}
 
   void updateTotalBalanceUSD() {
     final totalBalance = customers.fold<double>(0, (previousValue, element) {

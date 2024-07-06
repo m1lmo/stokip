@@ -9,7 +9,7 @@ part 'purchases_model.g.dart';
 
 @HiveType(typeId: HiveTypes.purchasesModelId)
 @JsonSerializable()
-class PurchasesModel extends MainModel {
+final class PurchasesModel extends MainModel {
   @HiveField(1)
   final int id;
   @HiveField(2)
