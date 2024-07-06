@@ -58,14 +58,6 @@ class SalesCubit extends Cubit<SalesState> {
     this.stockDatabaseOperation,
     this.stocks,
   }) : super(SalesState());
-  SalesCubit.s({
-    this.stockDatabaseOperation,
-    this.stocks,
-  }) : super(
-          SalesState(
-            sales: saless,
-          ),
-        );
 
   late final StockHiveOperation? stockDatabaseOperation;
   late final List<StockModel>? stocks;
