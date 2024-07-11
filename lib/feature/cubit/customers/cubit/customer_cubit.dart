@@ -2,6 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:stokip/feature/model/customer_model.dart';
+import 'package:stokip/feature/model/sales_model.dart';
 import 'package:stokip/product/cache/shared_manager.dart';
 import 'package:stokip/product/constants/enums/currency_enum.dart';
 import 'package:stokip/product/database/core/database_hive_manager.dart';
@@ -11,8 +12,11 @@ import 'package:stokip/product/widgets/c_notify.dart';
 part 'customer_state.dart';
 
 final class CustomerCubit extends Cubit<CustomerState> {
-  CustomerCubit() : super(CustomerState());
+  CustomerCubit({
+    required this.sales,
+  }) : super(CustomerState());
   final List<CustomerModel> customers = [];
+  late final List<SalesModel> sales;
   late final SharedManager sharedManager;
   final databaseOperation = CustomerHiveOperation();
   late final TickerProvider tickerProviderService;
@@ -71,7 +75,14 @@ final class CustomerCubit extends Cubit<CustomerState> {
     emit(state.copyWith(customers: List.from(customers)));
   }
 
-  void updateCustomerBoughtedProducts() {}
+  void updateCustomerBoughtedProducts() {
+    for (final customer in customers) {
+      final boughtedProducts = sales.where((element) => element.customer == customer).toList();
+      customer.boughtProducts = List.from(boughtedProducts);
+      databaseOperation.addOrUpdateItem(customer);
+    }
+    emit(state.copyWith(customers: List.from(customers)));
+  }
 
   void updateTotalBalanceUSD() {
     final totalBalance = customers.fold<double>(0, (previousValue, element) {
