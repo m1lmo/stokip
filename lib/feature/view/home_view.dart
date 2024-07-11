@@ -83,7 +83,9 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
         ),
         BlocProvider<CustomerCubit>(
           create: (context) {
-            return CustomerCubit()..init(this);
+            return CustomerCubit(
+              sales: context.read<SalesCubit>().state.sales ?? [],
+            )..init(this);
           },
         ),
       ],
