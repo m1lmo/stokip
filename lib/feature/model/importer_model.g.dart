@@ -55,3 +55,32 @@ class ImporterModelAdapter extends TypeAdapter<ImporterModel> {
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }
+
+// **************************************************************************
+// JsonSerializableGenerator
+// **************************************************************************
+
+ImporterModel _$ImporterModelFromJson(Map<String, dynamic> json) =>
+    ImporterModel(
+      id: (json['id'] as num).toInt(),
+      title: json['title'] as String?,
+      currency: $enumDecodeNullable(_$CurrencyEnumEnumMap, json['currency']),
+      balance: (json['balance'] as num?)?.toDouble(),
+      customerPhoto: const Uint8ListConverter()
+          .fromJson(json['customerPhoto'] as List<int>?),
+    );
+
+Map<String, dynamic> _$ImporterModelToJson(ImporterModel instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'title': instance.title,
+      'currency': _$CurrencyEnumEnumMap[instance.currency],
+      'balance': instance.balance,
+      'customerPhoto':
+          const Uint8ListConverter().toJson(instance.customerPhoto),
+    };
+
+const _$CurrencyEnumEnumMap = {
+  CurrencyEnum.tl: 'tl',
+  CurrencyEnum.usd: 'usd',
+};

@@ -3,6 +3,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:hive/hive.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:stokip/feature/service/model/service_model.dart';
 import 'package:stokip/product/constants/enums/currency_enum.dart';
 import 'package:stokip/product/database/core/hive_types.dart';
 import 'package:stokip/product/database/core/model/hive_model2_mixin.dart';
@@ -12,7 +13,7 @@ part 'stock_model.g.dart';
 // enum Models { StockModel, StockDetailModel, ImporterModel }
 
 // abstract class MainModel<T extends Models> {
-abstract class MainModel {
+abstract class MainModel with HiveModel2Mixin, EquatableMixin, ServiceModel {
   final String? title;
 
   MainModel({
@@ -22,7 +23,7 @@ abstract class MainModel {
 
 @JsonSerializable()
 @HiveType(typeId: HiveTypes.stockModelId)
-class StockModel extends MainModel with HiveModel2Mixin, EquatableMixin {
+class StockModel extends MainModel {
   @override
   String get key {
     return id.toString();
@@ -59,6 +60,7 @@ class StockModel extends MainModel with HiveModel2Mixin, EquatableMixin {
     return _$StockModelFromJson(json);
   }
 
+  @override
   Map<String, dynamic> toJson() {
     return _$StockModelToJson(this);
   }
@@ -89,7 +91,15 @@ class StockDetailModel extends MainModel {
     return _$StockDetailModelFromJson(json);
   }
 
+  @override
   Map<String, dynamic> toJson() {
     return _$StockDetailModelToJson(this);
   }
+
+  @override
+  String get key => throw UnimplementedError();
+
+  @override
+  // TODO: implement props
+  List<Object?> get props => throw UnimplementedError();
 }
