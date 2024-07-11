@@ -1,6 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 part of 'importer_cubit.dart';
 
+@immutable
 class ImporterState with EquatableMixin {
   ImporterState({
     this.importers,
@@ -8,12 +9,14 @@ class ImporterState with EquatableMixin {
     this.imageFile,
     this.selectedCurrency,
     this.salesId = 0,
+    this.totalBalance = 0,
   });
   final List<ImporterModel>? importers;
-  int importerId;
-  int salesId;
-  File? imageFile;
-  CurrencyEnum? selectedCurrency;
+  final int importerId;
+  final int salesId;
+  final File? imageFile;
+  final CurrencyEnum? selectedCurrency;
+  final double totalBalance;
 
   @override
   List<Object?> get props => [
@@ -29,16 +32,18 @@ class ImporterState with EquatableMixin {
           importers == other.importers &&
           importerId == other.importerId &&
           salesId == other.salesId &&
+          totalBalance == other.totalBalance &&
           selectedCurrency == other.selectedCurrency;
 
   @override
-  int get hashCode => importers.hashCode ^ importerId.hashCode ^ selectedCurrency.hashCode ^ salesId.hashCode;
+  int get hashCode => importers.hashCode ^ importerId.hashCode ^ selectedCurrency.hashCode ^ salesId.hashCode ^ totalBalance.hashCode;
   ImporterState copyWith({
     List<ImporterModel>? importers,
     int? importerId,
     int? salesId,
     File? imageFile,
     CurrencyEnum? selectedCurrency,
+    double? totalBalance,
   }) {
     return ImporterState(
       importers: importers ?? this.importers,
@@ -46,6 +51,7 @@ class ImporterState with EquatableMixin {
       salesId: salesId ?? this.salesId,
       imageFile: imageFile ?? this.imageFile,
       selectedCurrency: selectedCurrency ?? this.selectedCurrency,
+      totalBalance: totalBalance ?? this.totalBalance,
     );
   }
 }

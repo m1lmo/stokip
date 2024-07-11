@@ -21,6 +21,9 @@
         "appBarTitle" : "Anasayfa",
         "monthlyGraph": "Aylık Alış ve Satış Grafiği"
     },
+    "current":{
+        "appBarTitle": "Cari"
+    },
     "suppliers": {
         "appBarTitle": "Tedarikçi",
         "nameHint": "Cari Adını Giriniz",

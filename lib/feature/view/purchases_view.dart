@@ -238,8 +238,8 @@ void _showModal(
           BlocProvider<ImporterCubit>.value(
             value: BlocProvider.of<ImporterCubit>(context),
           ),
-          BlocProvider.value(
-            value: BlocProvider.of<StockCubit>(context)..readId(),
+          BlocProvider<StockCubit>.value(
+            value: BlocProvider.of<StockCubit>(context),
           ),
         ],
         child: BlocBuilder<ImporterCubit, ImporterState>(
@@ -317,26 +317,25 @@ void _showModal(
                                 double.tryParse(priceController?.text ?? '0') ?? 0,
                               );
                           context.read<StockCubit>().addProduct(
-                                id: state.productId,
                                 StockModel(
-                                  id: state.productId,
                                   title: titleController?.text,
                                   stockDetailModel: [],
                                 ),
                               );
-                          context.read<StockCubit>().addOrUpdateDetailedStock(
-                                state.products!.indexWhere(
-                                  (element) => element.title == titleController?.text,
-                                ),
-                                context.read<ImporterCubit>().addToStocksPurchaseDetail(
-                                      index,
-                                      state.products!.indexWhere(
-                                        (element) => element.title?.toLowerCase() == titleController?.text.toLowerCase(),
-                                      ),
-                                      detailTitleController.text,
-                                      double.tryParse(meterController.text) ?? 0,
-                                    ),
-                              );
+                          // context.read<StockCubit>().addOrUpdateDetailedStock(
+                          //       state.products!.indexWhere(
+                          //         (element) => element.title == titleController?.text,
+                          //       ),
+                          //       context.read<ImporterCubit>().addToStocksPurchaseDetail(
+
+                          //             index,
+                          //             state.products!.indexWhere(
+                          //               (element) => element.title?.toLowerCase() == titleController?.text.toLowerCase(),
+                          //             ),
+                          //             detailTitleController.text,
+                          //             double.tryParse(meterController.text) ?? 0,
+                          //           ),
+                          //     );
                           // context.read<ImporterCubit>().addPurchaseLogs(index);
                         },
                         icon: const Icon(

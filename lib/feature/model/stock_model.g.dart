@@ -17,20 +17,20 @@ class StockModelAdapter extends TypeAdapter<StockModel> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return StockModel(
+      stockDetailModel: (fields[4] as List).cast<StockDetailModel>(),
       id: fields[0] as int,
       title: fields[3] as String?,
       pPrice: fields[1] as double?,
       sPrice: fields[2] as double?,
-      stockDetailModel: (fields[4] as List).cast<StockDetailModel>(),
-      totalMeter: fields[5] as double?,
       purchaseDate: fields[6] as DateTime?,
-    );
+      currency: fields[7] as CurrencyEnum,
+    )..totalMeter = fields[5] as double?;
   }
 
   @override
   void write(BinaryWriter writer, StockModel obj) {
     writer
-      ..writeByte(7)
+      ..writeByte(8)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -44,7 +44,9 @@ class StockModelAdapter extends TypeAdapter<StockModel> {
       ..writeByte(5)
       ..write(obj.totalMeter)
       ..writeByte(6)
-      ..write(obj.purchaseDate);
+      ..write(obj.purchaseDate)
+      ..writeByte(7)
+      ..write(obj.currency);
   }
 
   @override
@@ -69,19 +71,25 @@ class StockDetailModelAdapter extends TypeAdapter<StockDetailModel> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return StockDetailModel(
-      title: fields[0] as String?,
-      meter: fields[1] as double?,
+      itemDetailId: fields[0] as int,
+      itemId: fields[3] as int,
+      title: fields[1] as String?,
+      meter: fields[2] as double?,
     );
   }
 
   @override
   void write(BinaryWriter writer, StockDetailModel obj) {
     writer
-      ..writeByte(2)
+      ..writeByte(4)
       ..writeByte(0)
-      ..write(obj.title)
+      ..write(obj.itemDetailId)
       ..writeByte(1)
-      ..write(obj.meter);
+      ..write(obj.title)
+      ..writeByte(2)
+      ..write(obj.meter)
+      ..writeByte(3)
+      ..write(obj.itemId);
   }
 
   @override
@@ -100,19 +108,19 @@ class StockDetailModelAdapter extends TypeAdapter<StockDetailModel> {
 // **************************************************************************
 
 StockModel _$StockModelFromJson(Map<String, dynamic> json) => StockModel(
+      stockDetailModel: (json['stockDetailModel'] as List<dynamic>)
+          .map((e) => StockDetailModel.fromJson(e as Map<String, dynamic>))
+          .toList(),
       id: (json['id'] as num?)?.toInt() ?? 0,
       title: json['title'] as String?,
       pPrice: (json['pPrice'] as num?)?.toDouble(),
       sPrice: (json['sPrice'] as num?)?.toDouble(),
-      stockDetailModel: (json['stockDetailModel'] as List<dynamic>?)
-              ?.map((e) => StockDetailModel.fromJson(e as Map<String, dynamic>))
-              .toList() ??
-          const [],
-      totalMeter: (json['totalMeter'] as num?)?.toDouble(),
       purchaseDate: json['purchaseDate'] == null
           ? null
           : DateTime.parse(json['purchaseDate'] as String),
-    );
+      currency: $enumDecodeNullable(_$CurrencyEnumEnumMap, json['currency']) ??
+          CurrencyEnum.usd,
+    )..totalMeter = (json['totalMeter'] as num?)?.toDouble();
 
 Map<String, dynamic> _$StockModelToJson(StockModel instance) =>
     <String, dynamic>{
@@ -123,16 +131,26 @@ Map<String, dynamic> _$StockModelToJson(StockModel instance) =>
       'stockDetailModel': instance.stockDetailModel,
       'totalMeter': instance.totalMeter,
       'purchaseDate': instance.purchaseDate?.toIso8601String(),
+      'currency': _$CurrencyEnumEnumMap[instance.currency]!,
     };
+
+const _$CurrencyEnumEnumMap = {
+  CurrencyEnum.tl: 'tl',
+  CurrencyEnum.usd: 'usd',
+};
 
 StockDetailModel _$StockDetailModelFromJson(Map<String, dynamic> json) =>
     StockDetailModel(
+      itemDetailId: (json['itemDetailId'] as num).toInt(),
+      itemId: (json['itemId'] as num).toInt(),
       title: json['title'] as String?,
       meter: (json['meter'] as num?)?.toDouble(),
     );
 
 Map<String, dynamic> _$StockDetailModelToJson(StockDetailModel instance) =>
     <String, dynamic>{
+      'itemDetailId': instance.itemDetailId,
       'title': instance.title,
       'meter': instance.meter,
+      'itemId': instance.itemId,
     };

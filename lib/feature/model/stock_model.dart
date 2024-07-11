@@ -1,7 +1,10 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 
+import 'package:equatable/equatable.dart';
 import 'package:hive/hive.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:stokip/feature/service/model/service_model.dart';
+import 'package:stokip/product/constants/enums/currency_enum.dart';
 import 'package:stokip/product/database/core/hive_types.dart';
 import 'package:stokip/product/database/core/model/hive_model2_mixin.dart';
 
@@ -10,7 +13,7 @@ part 'stock_model.g.dart';
 // enum Models { StockModel, StockDetailModel, ImporterModel }
 
 // abstract class MainModel<T extends Models> {
-abstract class MainModel {
+abstract class MainModel with HiveModel2Mixin, EquatableMixin, ServiceModel {
   final String? title;
 
   MainModel({
@@ -20,7 +23,7 @@ abstract class MainModel {
 
 @JsonSerializable()
 @HiveType(typeId: HiveTypes.stockModelId)
-class StockModel extends MainModel with HiveModel2Mixin {
+class StockModel extends MainModel {
   @override
   String get key {
     return id.toString();
@@ -41,26 +44,46 @@ class StockModel extends MainModel with HiveModel2Mixin {
   double? totalMeter;
   @HiveField(6)
   DateTime? purchaseDate;
+  @HiveField(7)
+  CurrencyEnum currency;
 
-  StockModel({this.id = 0, this.title, this.pPrice, this.sPrice, this.stockDetailModel = const [], this.totalMeter, this.purchaseDate});
+  StockModel({
+    required this.stockDetailModel,
+    this.id = 0,
+    this.title,
+    this.pPrice,
+    this.sPrice,
+    this.purchaseDate,
+    this.currency = CurrencyEnum.usd,
+  });
   factory StockModel.fromJson(Map<String, dynamic> json) {
     return _$StockModelFromJson(json);
   }
 
+  @override
   Map<String, dynamic> toJson() {
     return _$StockModelToJson(this);
   }
+
+  @override
+  List<Object?> get props => [id, pPrice, sPrice, title, stockDetailModel, totalMeter, purchaseDate, currency];
 }
 
 @JsonSerializable()
 @HiveType(typeId: HiveTypes.stockDetailModelId)
 class StockDetailModel extends MainModel {
-  @override
   @HiveField(0)
-  final String? title;
+  final int itemDetailId;
+  @override
   @HiveField(1)
+  final String? title;
+  @HiveField(2)
   double? meter;
+  @HiveField(3)
+  final int itemId;
   StockDetailModel({
+    required this.itemDetailId,
+    required this.itemId,
     this.title,
     this.meter,
   });
@@ -68,7 +91,15 @@ class StockDetailModel extends MainModel {
     return _$StockDetailModelFromJson(json);
   }
 
+  @override
   Map<String, dynamic> toJson() {
     return _$StockDetailModelToJson(this);
   }
+
+  @override
+  String get key => throw UnimplementedError();
+
+  @override
+  // TODO: implement props
+  List<Object?> get props => throw UnimplementedError();
 }

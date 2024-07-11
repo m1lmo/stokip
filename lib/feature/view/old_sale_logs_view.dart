@@ -24,8 +24,8 @@ class OldSaleLogsView extends StatelessWidget {
               itemBuilder: (BuildContext context, int index) {
                 return ListTile(
                   title: Text(state.sales?[index].title ?? ''),
-                  subtitle: Text('${state.sales?[index].meter} ' + ProjectStrings.meter),
-                  leading: Text(state.sales?[index].meter.toString() ?? ''),
+                  subtitle: Text('${state.sales?[index].quantity} ' + ProjectStrings.meter),
+                  leading: Text(state.sales?[index].quantity.toString() ?? ''),
                   trailing: BlocBuilder<SalesCubit, SalesState>(
                     builder: (context, state) {
                       return context.read<SalesCubit>().getSoldTime(index);

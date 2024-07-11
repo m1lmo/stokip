@@ -19,8 +19,8 @@ final class SalesModel extends MainModel with EquatableMixin, HiveModel2Mixin {
   SalesModel({
     required this.id,
     required this.dateTime,
-    this.title,
-    this.meter,
+    this.stockDetailModel,
+    this.quantity,
     this.price,
     this.currency,
     this.customer,
@@ -31,11 +31,10 @@ final class SalesModel extends MainModel with EquatableMixin, HiveModel2Mixin {
   }
   @HiveField(0)
   final int id;
-  @override
   @HiveField(1)
-  final String? title;
+  final StockDetailModel? stockDetailModel;
   @HiveField(2)
-  final double? meter;
+  final double? quantity;
   @HiveField(3)
   final DateTime dateTime;
   @HiveField(4)
@@ -45,7 +44,17 @@ final class SalesModel extends MainModel with EquatableMixin, HiveModel2Mixin {
   @HiveField(6)
   final CustomerModel? customer;
   @override
-  List<Object?> get props => [title, meter, dateTime, price, currency, customer];
+  String? get title => stockDetailModel?.title;
+  @override
+  List<Object?> get props => [
+        id,
+        dateTime,
+        stockDetailModel,
+        quantity,
+        price,
+        currency,
+        customer,
+      ]; 
 
   @override
   String get key => id.toString();
@@ -54,3 +63,4 @@ final class SalesModel extends MainModel with EquatableMixin, HiveModel2Mixin {
     return _$SalesModelToJson(this);
   }
 }
+  

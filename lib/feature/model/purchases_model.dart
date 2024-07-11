@@ -9,7 +9,7 @@ part 'purchases_model.g.dart';
 
 @HiveType(typeId: HiveTypes.purchasesModelId)
 @JsonSerializable()
-class PurchasesModel extends MainModel {
+final class PurchasesModel extends MainModel {
   @HiveField(1)
   final int id;
   @HiveField(2)
@@ -34,4 +34,18 @@ class PurchasesModel extends MainModel {
     this.totalAmount,
     this.meter,
   });
+
+  @override
+  String get key => id.toString();
+
+  @override
+  List<Object?> get props => [id, supplier, title, detailTitle, purchasedDate, totalAmount, meter];
+  factory PurchasesModel.fromJson(Map<String, dynamic> json) {
+    return _$PurchasesModelFromJson(json);
+  }
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$PurchasesModelToJson(this);
+  }
 }

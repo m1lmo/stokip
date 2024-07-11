@@ -1,4 +1,5 @@
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:stokip/feature/model/customer_model.dart';
 
 import 'package:stokip/feature/model/importer_model.dart';
 import 'package:stokip/feature/model/payment_model.dart';
@@ -7,7 +8,6 @@ import 'package:stokip/feature/model/sales_model.dart';
 import 'package:stokip/feature/model/stock_model.dart';
 import 'package:stokip/product/constants/enums/currency_enum.dart';
 import 'package:stokip/product/database/core/hive_types.dart';
-// todo bunu final yaptım belki çalışmaz
 
 abstract class IDataBaseManager {
   Future<void> start();
@@ -48,5 +48,7 @@ final class DatabaseHiveManager extends IDataBaseManager {
     Hive.registerAdapter(PurchasesModelAdapter());
     if (Hive.isAdapterRegistered(HiveTypes.paymentModelId)) return;
     Hive.registerAdapter(PaymentModelAdapter());
+    if (Hive.isAdapterRegistered(HiveTypes.customerModelId)) return;
+    Hive.registerAdapter(CustomerModelAdapter());
   }
 }

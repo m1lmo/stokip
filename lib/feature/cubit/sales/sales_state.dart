@@ -5,24 +5,28 @@ final class SalesState with EquatableMixin {
   SalesState({
     this.salesId = 0,
     this.sales,
-    this.selectedItemOnSales,
-    this.selectedSpecific,
-    this.currency,
+    this.filteredSales,
+    this.totalIncome,
+    this.trendProduct,
+    this.monthlySoldAmount = 0.0,
+    this.monthlySoldMeter = 0.0,
   });
   int salesId;
+  double? totalIncome;
   final List<SalesModel>? sales;
-  //todo final olmayabilir
-  final String? selectedItemOnSales;
-  final String? selectedSpecific;
-  final CurrencyEnum? currency;
-
+  final List<SalesModel>? filteredSales;
+  final StockModel? trendProduct;
+  final double monthlySoldAmount;
+  final double monthlySoldMeter;
   @override
   List<Object?> get props => [
         sales,
-        selectedItemOnSales,
+        filteredSales,
         salesId,
-        selectedSpecific,
-        currency,
+        totalIncome,
+        trendProduct,
+        monthlySoldAmount,
+        monthlySoldMeter,
       ];
 
   @override
@@ -31,32 +35,37 @@ final class SalesState with EquatableMixin {
       other is SalesState &&
           runtimeType == other.runtimeType &&
           sales == other.sales &&
-          selectedItemOnSales == other.selectedItemOnSales &&
+          filteredSales == other.filteredSales &&
           salesId == other.salesId &&
-          selectedSpecific == other.selectedItemOnSales &&
-          currency == other.currency;
+          totalIncome == other.totalIncome &&
+          trendProduct == other.trendProduct &&
+          monthlySoldAmount == other.monthlySoldAmount &&
+          monthlySoldMeter == other.monthlySoldMeter;
 
   @override
   int get hashCode =>
-      sales.hashCode ^
-      selectedItemOnSales.hashCode ^
-      salesId.hashCode ^
-      selectedSpecific.hashCode ^
-      currency.hashCode;
+      sales.hashCode ^ filteredSales.hashCode ^ salesId.hashCode ^ totalIncome.hashCode ^ trendProduct.hashCode ^ monthlySoldMeter.hashCode ^ monthlySoldAmount.hashCode;
 
   SalesState copyWith({
     int? salesId,
     List<SalesModel>? sales,
+    List<SalesModel>? filteredSales,
     String? selectedItemOnSales,
     String? selectedSpecific,
     CurrencyEnum? currency,
+    double? totalIncome,
+    StockModel? trendProduct,
+    double? monthlySoldAmount,
+    double? monthlySoldMeter,
   }) {
     return SalesState(
       salesId: salesId ?? this.salesId,
       sales: sales ?? this.sales,
-      selectedItemOnSales: selectedItemOnSales ?? this.selectedItemOnSales,
-      selectedSpecific: selectedSpecific ?? this.selectedSpecific,
-      currency: currency ?? this.currency,
+      filteredSales: filteredSales ?? this.filteredSales,
+      totalIncome: totalIncome ?? this.totalIncome,
+      trendProduct: trendProduct ?? this.trendProduct,
+      monthlySoldAmount: monthlySoldAmount ?? this.monthlySoldAmount,
+      monthlySoldMeter: monthlySoldMeter ?? this.monthlySoldMeter,
     );
   }
 }

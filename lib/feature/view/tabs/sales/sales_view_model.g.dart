@@ -29,6 +29,17 @@ mixin _$SalesViewModel on _SalesVievModelBase, Store {
       ActionController(name: '_SalesVievModelBase', context: context);
 
   @override
+  void init(BuildContext context) {
+    final _$actionInfo = _$_SalesVievModelBaseActionController.startAction(
+        name: '_SalesVievModelBase.init');
+    try {
+      return super.init(context);
+    } finally {
+      _$_SalesVievModelBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   void sortFilters() {
     final _$actionInfo = _$_SalesVievModelBaseActionController.startAction(
         name: '_SalesVievModelBase.sortFilters');
@@ -45,6 +56,17 @@ mixin _$SalesViewModel on _SalesVievModelBase, Store {
         name: '_SalesVievModelBase.selectFilter');
     try {
       return super.selectFilter(filter);
+    } finally {
+      _$_SalesVievModelBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void addSale() {
+    final _$actionInfo = _$_SalesVievModelBaseActionController.startAction(
+        name: '_SalesVievModelBase.addSale');
+    try {
+      return super.addSale();
     } finally {
       _$_SalesVievModelBaseActionController.endAction(_$actionInfo);
     }

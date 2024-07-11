@@ -1,0 +1,1 @@
+enum CurrentTabsEnum { customer, supplier }
