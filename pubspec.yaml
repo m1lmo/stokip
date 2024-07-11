@@ -15,6 +15,7 @@ dependencies:
   #state management
   flutter_bloc: ^8.1.5
   flutter_mobx: ^2.2.1+1
+  bloc: ^8.1.4
   mobx: ^2.3.3+2
   #flutter
   equatable: ^2.0.5
@@ -34,6 +35,8 @@ dependencies:
   sizer: ^2.0.15
   #codegens
   mobx_codegen: ^2.6.1
+  #service request
+  dio: ^5.5.0+1
   #lint ruler
   very_good_analysis: ^5.1.0
   #widgets
@@ -41,7 +44,6 @@ dependencies:
   #vb 10 ;)
   kartal: ^3.4.2
   image_cropper: ^5.0.0
-  bloc: ^8.1.4
 
 dev_dependencies:
   flutter_test:
