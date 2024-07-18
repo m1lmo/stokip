@@ -7,7 +7,7 @@ final class StockRepository extends IRepository<StockModel> {
   @override
   final Dio dio;
   @override
-  String get path => '/stocks';
+  String get path => '/account/stocks';
 
   @override
   StockModel Function(Map<String, dynamic> json) get fromJson => StockModel.fromJson;
