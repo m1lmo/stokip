@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
+import 'package:stokip/main.dart';
 import 'package:stokip/product/constants/enums/notify_type_enum.dart';
+import 'package:stokip/product/helper/ticker_provider_service.dart';
 
 class CNotify {
   CNotify({
-    required this.tickerProviderService,
-    required this.overlayState,
     this.duration,
     this.title,
     this.type = NotifyType.error,
@@ -18,18 +18,17 @@ class CNotify {
   }
   final String? title;
   final int? duration;
-  final TickerProvider tickerProviderService;
   final NotifyType? type;
   String? message;
   bool isOpen = false;
   late OverlayEntry overlayEntry;
   late AnimationController _animationController;
-  final OverlayState overlayState;
 
   /// call this method to show the notification
   void show() {
     _animationController.forward();
     isOpen = true;
+    final overlayState = navigator.currentState!.overlay!;
     overlayEntry = OverlayEntry(
       builder: (context) {
         return SlideTransition(
