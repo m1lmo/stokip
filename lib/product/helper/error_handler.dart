@@ -19,7 +19,7 @@ final class ErrorHandler implements Exception {
         return ServiceStatus.CONNECT_TIMEOUT.getFailure();
       case DioExceptionType.badResponse:
         if (error.response != null && error.response?.statusCode != null) {
-          return Failure(error.response!.statusCode!, error.response!.data['message'].toString());
+          return Failure(error.response!.statusCode!, error.response!.data['error'].toString());
         }
       default:
         return Failure(error.response!.statusCode!, 'Unknown Error');
