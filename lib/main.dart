@@ -8,6 +8,7 @@ import 'package:stokip/feature/view/login/login_view_inherited.dart';
 import 'package:stokip/product/constants/locales_consts.dart';
 import 'package:stokip/feature/view/home_view.dart';
 import 'package:stokip/product/constants/project_colors.dart';
+
 // homeview da 4 tabli bi sayfa sayfalar dashboard, sales, purchase, products olucak
 // productsda StockModel içeren ürünler olucak bu ürünlerin fiyatını alış ve satış olarak görmek mümkün hangi renkten kaç metre var
 // bi de dashboardta satış ve alışlara göre artan ve azalan grafik yapıcam yapabilirsem
@@ -29,7 +30,7 @@ import 'package:stokip/product/constants/project_colors.dart';
 /// supplier kısmındaki tedarikçiden item satın alınca sayfadaki tedarikciye olan borç değişmiyor[√]
 ///  dashboardda toplam satışlar ve alışları tutan bi ui yap [√]
 ///  products viewda toplam ürünlerin ve toplam stoğun gözüktüğü yeri animated container ile yönet [√]
-
+final navigator = GlobalKey<NavigatorState>();
 void main() async {
   await init();
   runApp(
@@ -48,15 +49,14 @@ Future<void> init() async {
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
-
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return Sizer(
       builder: (context, orientation, deviceType) {
         return BlocProvider<UserCubit>(
-          create: (context) => UserCubit()..init(),
+          create: (context) => UserCubit()..init,
           child: MaterialApp(
+            navigatorKey: navigator,
             localizationsDelegates: context.localizationDelegates,
             supportedLocales: context.supportedLocales,
             locale: context.locale,
