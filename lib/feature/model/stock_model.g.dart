@@ -108,11 +108,11 @@ class StockDetailModelAdapter extends TypeAdapter<StockDetailModel> {
 // **************************************************************************
 
 StockModel _$StockModelFromJson(Map<String, dynamic> json) => StockModel(
-      stockDetailModel: (json['stockDetailModel'] as List<dynamic>)
+      stockDetailModel: (json['itemDetail'] as List<dynamic>)
           .map((e) => StockDetailModel.fromJson(e as Map<String, dynamic>))
           .toList(),
-      id: (json['id'] as num?)?.toInt() ?? 0,
-      title: json['title'] as String?,
+      id: (json['itemId'] as num?)?.toInt() ?? 0,
+      title: json['name'] as String?,
       pPrice: (json['pPrice'] as num?)?.toDouble(),
       sPrice: (json['sPrice'] as num?)?.toDouble(),
       purchaseDate: json['purchaseDate'] == null
@@ -124,11 +124,11 @@ StockModel _$StockModelFromJson(Map<String, dynamic> json) => StockModel(
 
 Map<String, dynamic> _$StockModelToJson(StockModel instance) =>
     <String, dynamic>{
-      'id': instance.id,
+      'itemId': instance.id,
       'pPrice': instance.pPrice,
       'sPrice': instance.sPrice,
-      'title': instance.title,
-      'stockDetailModel': instance.stockDetailModel,
+      'name': instance.title,
+      'itemDetail': instance.stockDetailModel.map((e) => e.toJson()).toList(),
       'totalMeter': instance.totalMeter,
       'purchaseDate': instance.purchaseDate?.toIso8601String(),
       'currency': _$CurrencyEnumEnumMap[instance.currency]!,
@@ -143,14 +143,14 @@ StockDetailModel _$StockDetailModelFromJson(Map<String, dynamic> json) =>
     StockDetailModel(
       itemDetailId: (json['itemDetailId'] as num).toInt(),
       itemId: (json['itemId'] as num).toInt(),
-      title: json['title'] as String?,
-      meter: (json['meter'] as num?)?.toDouble(),
+      title: json['name'] as String?,
+      meter: (json['quantity'] as num?)?.toDouble(),
     );
 
 Map<String, dynamic> _$StockDetailModelToJson(StockDetailModel instance) =>
     <String, dynamic>{
       'itemDetailId': instance.itemDetailId,
-      'title': instance.title,
-      'meter': instance.meter,
+      'name': instance.title,
+      'quantity': instance.meter,
       'itemId': instance.itemId,
     };

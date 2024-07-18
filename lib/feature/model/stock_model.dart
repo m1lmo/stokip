@@ -19,9 +19,10 @@ abstract class MainModel with HiveModel2Mixin, EquatableMixin, ServiceModel {
   MainModel({
     this.title,
   });
+  
 }
 
-@JsonSerializable()
+@JsonSerializable(explicitToJson: true)
 @HiveType(typeId: HiveTypes.stockModelId)
 class StockModel extends MainModel {
   @override
@@ -30,6 +31,7 @@ class StockModel extends MainModel {
   }
 
   @HiveField(0)
+  @JsonKey(name: 'itemId')
   final int id;
   @HiveField(1)
   final double? pPrice;
@@ -37,8 +39,10 @@ class StockModel extends MainModel {
   final double? sPrice;
   @HiveField(3)
   @override
+  @JsonKey(name: 'name')
   final String? title;
   @HiveField(4)
+  @JsonKey(name: 'itemDetail')
   final List<StockDetailModel> stockDetailModel;
   @HiveField(5)
   double? totalMeter;
@@ -73,13 +77,17 @@ class StockModel extends MainModel {
 @HiveType(typeId: HiveTypes.stockDetailModelId)
 class StockDetailModel extends MainModel {
   @HiveField(0)
+  @JsonKey(name: 'itemDetailId')
   final int itemDetailId;
   @override
   @HiveField(1)
+  @JsonKey(name: 'name')
   final String? title;
   @HiveField(2)
+  @JsonKey(name: 'quantity')
   double? meter;
   @HiveField(3)
+  @JsonKey(name: 'itemId')
   final int itemId;
   StockDetailModel({
     required this.itemDetailId,
@@ -97,9 +105,9 @@ class StockDetailModel extends MainModel {
   }
 
   @override
-  String get key => throw UnimplementedError();
+  String get key => itemDetailId.toString();
 
   @override
   // TODO: implement props
-  List<Object?> get props => throw UnimplementedError();
+  List<Object?> get props => [itemDetailId, title, meter, itemId];
 }
