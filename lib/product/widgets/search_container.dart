@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
 import 'package:stokip/feature/model/stock_model.dart';
 import 'package:stokip/product/constants/project_colors.dart';
-import 'package:stokip/product/widgets/custom_icon.dart';
+import 'package:stokip/product/constants/custom_icon.dart';
 
 /// SearchContainer is a [StatelessWidget] that contains a [TextField] with a prefix icon.
 @immutable

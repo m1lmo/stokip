@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
-import 'package:stokip/main.dart';
-
-enum NotifyType { success, warning, error }
+import 'package:stokip/product/constants/enums/notify_type_enum.dart';
 
 class CNotify {
   CNotify({
@@ -27,7 +25,9 @@ class CNotify {
   late OverlayEntry overlayEntry;
   late AnimationController _animationController;
   final OverlayState overlayState;
-  show() {
+
+  /// call this method to show the notification
+  void show() {
     _animationController.forward();
     isOpen = true;
     overlayEntry = OverlayEntry(
@@ -134,8 +134,6 @@ class CNotify {
       case NotifyType.warning:
         return const Icon(Icons.warning_amber_outlined, color: Colors.yellow);
       case NotifyType.error:
-        return const Icon(Icons.error_outline_outlined, color: Colors.red);
-      default:
         return const Icon(Icons.error_outline_outlined, color: Colors.red);
     }
   }

@@ -5,7 +5,7 @@ import 'package:stokip/feature/view/tabs/sales/sales_view.dart';
 import 'package:stokip/feature/view/tabs/current/current_view.dart';
 import 'package:stokip/product/constants/enums/tabs_enum.dart';
 import 'package:stokip/product/constants/project_strings.dart';
-import 'package:stokip/product/widgets/custom_icon.dart';
+import 'package:stokip/product/constants/custom_icon.dart';
 
 /// This extension is used to for the tabs
 extension TabsExtension on Tabs {
