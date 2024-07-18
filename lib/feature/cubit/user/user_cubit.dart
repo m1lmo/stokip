@@ -11,10 +11,11 @@ class UserCubit extends Cubit<UserState> {
   UserCubit() : super(const UserState());
 
   UserModel? currentUser;
+  
   late final UserHiveOperation userHiveOperation = UserHiveOperation();
   late final FlutterSecureStorage jwtCache;
 
-  Future<void> init() async {
+  Future<void> get init async {
     await DatabaseHiveManager().start();
     await userHiveOperation.start();
     jwtCache = const FlutterSecureStorage();
