@@ -1,6 +1,10 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sizer/sizer.dart';
+import 'package:stokip/feature/cubit/user/user_cubit.dart';
+import 'package:stokip/feature/model/user_model.dart';
+import 'package:stokip/feature/view/login/login_view_inherited.dart';
 import 'package:stokip/product/constants/locales_consts.dart';
 import 'package:stokip/feature/view/home_view.dart';
 import 'package:stokip/product/constants/project_colors.dart';
@@ -50,103 +54,114 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return Sizer(
       builder: (context, orientation, deviceType) {
-        return MaterialApp(
-          localizationsDelegates: context.localizationDelegates,
-          supportedLocales: context.supportedLocales,
-          locale: context.locale,
-          theme: ThemeData.dark().copyWith(
-            primaryColor: Colors.blueGrey.shade900,
-            scaffoldBackgroundColor: const Color(0xFF001F26),
-            tabBarTheme: const TabBarTheme(
-              labelColor: Colors.white,
-              unselectedLabelColor: Colors.black,
-              indicatorColor: ProjectColors2.primaryContainer,
-              dividerColor: Colors.transparent,
-            ),
-            appBarTheme: AppBarTheme(
-              scrolledUnderElevation: 0,
-              titleTextStyle: TextStyle(
-                color: ProjectColors2.primaryContainer,
-                fontSize: 24.sp,
-                fontFamily: 'Montserrat',
-                fontWeight: FontWeight.bold,
+        return BlocProvider<UserCubit>(
+          create: (context) => UserCubit()..init(),
+          child: MaterialApp(
+            localizationsDelegates: context.localizationDelegates,
+            supportedLocales: context.supportedLocales,
+            locale: context.locale,
+            theme: ThemeData.dark().copyWith(
+              primaryColor: Colors.blueGrey.shade900,
+              scaffoldBackgroundColor: const Color(0xFF001F26),
+              tabBarTheme: const TabBarTheme(
+                labelColor: Colors.white,
+                unselectedLabelColor: Colors.black,
+                indicatorColor: ProjectColors2.primaryContainer,
+                dividerColor: Colors.transparent,
               ),
-              backgroundColor: Colors.black.withOpacity(.4),
-              elevation: 0,
-              actionsIconTheme: const IconThemeData(
-                color: ProjectColors2.primaryContainer,
-              ),
-              centerTitle: true,
-            ),
-            bottomAppBarTheme: BottomAppBarTheme.of(context).copyWith(
-              color: ProjectColors2.primary,
-            ),
-            textTheme: TextTheme(
-              ///mont serrat bold 30sp
-              headlineLarge: TextStyle(
-                color: Colors.white,
-                fontSize: 24.sp,
-                fontFamily: 'Montserrat',
-                fontWeight: FontWeight.bold,
-              ),
-              headlineMedium: TextStyle(
-                color: Colors.white,
-                fontSize: 16.sp,
-                fontFamily: 'Montserrat',
-                fontWeight: FontWeight.w700,
-              ),
-              headlineSmall: TextStyle(
-                color: Colors.white,
-                fontSize: 14.sp,
-                fontFamily: 'Montserrat',
-                fontWeight: FontWeight.w500,
-              ),
-
-              ///mont serrat bold 30sp
-              bodyMedium: TextStyle(
-                color: Colors.white,
-                fontSize: 16.sp,
-                fontFamily: 'Montserrat',
-              ),
-
-              ///mont serrat medium 18sp
-              bodyLarge: TextStyle(fontSize: 18.sp, fontFamily: 'Montserrat', fontWeight: FontWeight.w500),
-
-              ///mont serrat light 12sp
-              bodySmall: TextStyle(
-                color: ProjectColors2.primaryContainer,
-                fontSize: 12.sp,
-                fontFamily: 'Montserrat',
-                fontWeight: FontWeight.w200,
-              ),
-            ),
-
-            ///input decoration theme
-            inputDecorationTheme: InputDecorationTheme(
-              contentPadding: EdgeInsets.symmetric(horizontal: 2.w),
-              floatingLabelBehavior: FloatingLabelBehavior.always,
-              floatingLabelStyle: const TextStyle(
-                color: ProjectColors2.primaryContainer,
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(7.sp),
-                borderSide: const BorderSide(
-                  color: ProjectColors2.secondary,
+              appBarTheme: AppBarTheme(
+                scrolledUnderElevation: 0,
+                titleTextStyle: TextStyle(
+                  color: ProjectColors2.primaryContainer,
+                  fontSize: 24.sp,
+                  fontFamily: 'Montserrat',
+                  fontWeight: FontWeight.bold,
                 ),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(7.sp),
-                borderSide: const BorderSide(
+                backgroundColor: Colors.black.withOpacity(.4),
+                elevation: 0,
+                actionsIconTheme: const IconThemeData(
                   color: ProjectColors2.primaryContainer,
                 ),
+                centerTitle: true,
               ),
-              hintStyle: Theme.of(context).textTheme.bodyMedium!.copyWith(
+              bottomAppBarTheme: BottomAppBarTheme.of(context).copyWith(
+                color: ProjectColors2.primary,
+              ),
+              textTheme: TextTheme(
+                ///mont serrat bold 30sp
+                headlineLarge: TextStyle(
+                  color: Colors.white,
+                  fontSize: 24.sp,
+                  fontFamily: 'Montserrat',
+                  fontWeight: FontWeight.bold,
+                ),
+                headlineMedium: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16.sp,
+                  fontFamily: 'Montserrat',
+                  fontWeight: FontWeight.w700,
+                ),
+                headlineSmall: TextStyle(
+                  color: Colors.white,
+                  fontSize: 14.sp,
+                  fontFamily: 'Montserrat',
+                  fontWeight: FontWeight.w500,
+                ),
+
+                ///mont serrat bold 30sp
+                bodyMedium: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16.sp,
+                  fontFamily: 'Montserrat',
+                ),
+
+                ///mont serrat medium 18sp
+                bodyLarge: TextStyle(fontSize: 18.sp, fontFamily: 'Montserrat', fontWeight: FontWeight.w500),
+
+                ///mont serrat light 12sp
+                bodySmall: TextStyle(
+                  color: ProjectColors2.primaryContainer,
+                  fontSize: 12.sp,
+                  fontFamily: 'Montserrat',
+                  fontWeight: FontWeight.w200,
+                ),
+              ),
+
+              ///input decoration theme
+              inputDecorationTheme: InputDecorationTheme(
+                contentPadding: EdgeInsets.symmetric(horizontal: 2.w),
+                floatingLabelBehavior: FloatingLabelBehavior.always,
+                floatingLabelStyle: const TextStyle(
+                  color: ProjectColors2.primaryContainer,
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(7.sp),
+                  borderSide: const BorderSide(
                     color: ProjectColors2.secondary,
-                    fontSize: 12.sp,
                   ),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(7.sp),
+                  borderSide: const BorderSide(
+                    color: ProjectColors2.primaryContainer,
+                  ),
+                ),
+                hintStyle: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                      color: ProjectColors2.secondary,
+                      fontSize: 12.sp,
+                    ),
+              ),
+            ),
+            // home: const HomeView(),
+            home: BlocSelector<UserCubit, UserState, UserModel?>(
+              selector: (state) {
+                return state.currentUser;
+              },
+              builder: (context, state) {
+                return state != null ? const HomeView() : const LoginViewHost();
+              },
             ),
           ),
-          home: const HomeView(),
         );
       },
     );
