@@ -19,7 +19,7 @@ class PurchasesModelAdapter extends TypeAdapter<PurchasesModel> {
     return PurchasesModel(
       purchasedDate: fields[5] as DateTime,
       id: fields[1] as int,
-      supplier: fields[2] as String?,
+      supplier: fields[2] as ImporterModel?,
       title: fields[3] as String?,
       detailTitle: fields[4] as String?,
       totalAmount: fields[6] as double?,
@@ -66,7 +66,9 @@ PurchasesModel _$PurchasesModelFromJson(Map<String, dynamic> json) =>
     PurchasesModel(
       purchasedDate: DateTime.parse(json['purchasedDate'] as String),
       id: (json['id'] as num?)?.toInt() ?? 0,
-      supplier: json['supplier'] as String?,
+      supplier: json['supplier'] == null
+          ? null
+          : ImporterModel.fromJson(json['supplier'] as Map<String, dynamic>),
       title: json['title'] as String?,
       detailTitle: json['detailTitle'] as String?,
       totalAmount: (json['totalAmount'] as num?)?.toDouble(),
@@ -76,7 +78,7 @@ PurchasesModel _$PurchasesModelFromJson(Map<String, dynamic> json) =>
 Map<String, dynamic> _$PurchasesModelToJson(PurchasesModel instance) =>
     <String, dynamic>{
       'id': instance.id,
-      'supplier': instance.supplier,
+      'supplier': instance.supplier?.toJson(),
       'title': instance.title,
       'detailTitle': instance.detailTitle,
       'purchasedDate': instance.purchasedDate.toIso8601String(),

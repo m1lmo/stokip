@@ -1,6 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:hive/hive.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:stokip/feature/model/importer_model.dart';
 
 import 'package:stokip/feature/model/stock_model.dart';
 import 'package:stokip/product/database/core/hive_types.dart';
@@ -8,12 +9,12 @@ import 'package:stokip/product/database/core/hive_types.dart';
 part 'purchases_model.g.dart';
 
 @HiveType(typeId: HiveTypes.purchasesModelId)
-@JsonSerializable()
+@JsonSerializable(explicitToJson: true)
 final class PurchasesModel extends MainModel {
   @HiveField(1)
   final int id;
   @HiveField(2)
-  final String? supplier;
+  final ImporterModel? supplier;
   @override
   @HiveField(3)
   final String? title;
