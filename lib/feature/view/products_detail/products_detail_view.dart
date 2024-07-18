@@ -4,10 +4,10 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sizer/sizer.dart';
 import 'package:stokip/feature/cubit/sales/sales_cubit.dart';
-
 import 'package:stokip/feature/cubit/stock/stock_cubit.dart';
 import 'package:stokip/feature/model/stock_model.dart';
 import 'package:stokip/feature/view/tabs/products/products_view.dart';
+import 'package:stokip/product/constants/custom_icon.dart';
 import 'package:stokip/product/constants/enums/currency_enum.dart';
 import 'package:stokip/product/constants/project_colors.dart';
 import 'package:stokip/product/constants/project_paddings.dart';
@@ -15,11 +15,10 @@ import 'package:stokip/product/extensions/string_extension.dart';
 import 'package:stokip/product/widgets/custom_bottom_sheet.dart';
 import 'package:stokip/product/widgets/custom_container.dart';
 import 'package:stokip/product/widgets/custom_divider.dart';
-import 'package:stokip/product/constants/custom_icon.dart';
 
+part './widgets/bottom_sheet_child.dart';
 part './widgets/merged_custom_container.dart';
 part './widgets/product_detail_data_container.dart';
-part './widgets/bottom_sheet_child.dart';
 // part './widgets/data_column_bg.dart';
 
 class ProductsDetailView extends StatefulWidget {
