@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sizer/sizer.dart';
+import 'package:stokip/feature/cubit/user/user_cubit.dart';
 import 'package:stokip/feature/view/login/login_view_inherited.dart';
 import 'package:stokip/product/constants/custom_icon.dart';
 import 'package:stokip/product/constants/my_button_style.dart';
@@ -12,17 +14,20 @@ class LoginView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      backgroundColor: Colors.white,
-      body: Form(
-        child: Stack(
-          fit: StackFit.expand,
-          alignment: Alignment.center,
-          children: [
-            _LoginWithPassword(),
-            _OrLoginWith(),
-            _LoginAndSignButton(),
-          ],
+    return BlocProvider(
+      create: (context) => UserCubit(),
+      child: const Scaffold(
+        backgroundColor: Colors.white,
+        body: Form(
+          child: Stack(
+            fit: StackFit.expand,
+            alignment: Alignment.center,
+            children: [
+              _LoginWithPassword(),
+              _OrLoginWith(),
+              _LoginAndSignButton(),
+            ],
+          ),
         ),
       ),
     );
@@ -36,6 +41,7 @@ class _LoginAndSignButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final currentState = LoginViewInherited.of(context);
     return Positioned(
       top: 57.h,
       left: 0,
@@ -52,7 +58,9 @@ class _LoginAndSignButton extends StatelessWidget {
             SizedBox(width: 5.w),
             ElevatedButton(
               style: MyButtonStyle.registerButtonStyle,
-              onPressed: () {},
+              onPressed: () async {
+                await currentState.loginMethod();
+              },
               child: const Text('LOGIN'),
             ),
           ],
@@ -171,9 +179,7 @@ class _LoginWithPassword extends StatelessWidget {
                 Align(
                   alignment: Alignment.centerRight,
                   child: TextButton(
-                    onPressed: () async {
-                      await currentState.loginMethod();
-                    },
+                    onPressed: () {},
                     child: const Text('Forgot Password?'),
                   ),
                 ),
