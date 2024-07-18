@@ -15,8 +15,7 @@ import 'package:stokip/product/extensions/string_extension.dart';
 import 'package:stokip/product/widgets/custom_bottom_sheet.dart';
 import 'package:stokip/product/widgets/custom_container.dart';
 import 'package:stokip/product/widgets/custom_divider.dart';
-import 'package:stokip/product/widgets/custom_icon.dart';
-import 'package:stokip/product/widgets/search_container.dart';
+import 'package:stokip/product/constants/custom_icon.dart';
 
 part './widgets/merged_custom_container.dart';
 part './widgets/product_detail_data_container.dart';
