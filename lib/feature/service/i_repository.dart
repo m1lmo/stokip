@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:stokip/feature/service/model/service_model.dart';
 import 'package:stokip/feature/service/manager/service_manager.dart';
 import 'package:stokip/product/helper/error_handler.dart';
+import 'package:stokip/product/widgets/c_notify.dart';
 
 /// Base class for repository
 /// extend the class with [ServiceModel] to use the repository
@@ -25,13 +26,26 @@ abstract class IRepository<T extends ServiceModel> extends ServiceManager<T> {
     return null;
   }
 
-  Future<Response<Map<String, dynamic>>?> postWithResponse(T data) async {
+  Future<T?> postWithResponse(T data) async {
     try {
       final response = await dio.post<Map<String, dynamic>>(path, data: data.toJson());
-      return response;
+      final datas = response.data;
+      if (response.statusCode != HttpStatus.ok) return null;
+      if (datas is Map<String, dynamic>) {
+        return fromJson(datas);
+      }
+      // if (datas is List) {
+      //   if (datas?.isEmpty ?? true) return null;
+      //   return (datas! as List).whereType<Map<String, dynamic>>().map((e) => fromJson(e)).toList(); // Replace whereTypeOrNull with whereType
+      // }
     } on DioException catch (e) {
-      print(ErrorHandler.handler(e).failure);
+      final failure = ErrorHandler.handler(e).failure;
+      CNotify(
+        title: 'Hata',
+        message: failure.message,
+      ).show();
       return null;
     }
+    return null;
   }
 }
