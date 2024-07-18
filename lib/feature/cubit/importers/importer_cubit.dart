@@ -15,7 +15,6 @@ import 'package:stokip/product/constants/enums/currency_enum.dart';
 import 'package:stokip/product/database/core/database_hive_manager.dart';
 import 'package:stokip/product/database/operation/importer_hive_operation.dart';
 
-import 'package:stokip/feature/model/stock_model.dart';
 import 'package:stokip/product/widgets/c_notify.dart';
 
 part 'importer_state.dart';
@@ -43,9 +42,7 @@ class ImporterCubit extends Cubit<ImporterState> {
           (a, b) => a.id.compareTo(b.id),
         );
       updateTotalBalanceUSD();
-
-      emit(state.copyWith(importers: importers));
-      emit(state.copyWith(importerId: importers.last.id));
+      emit(state.copyWith(importers: importers, importerId: importers.last.id));
     } catch (e) {
       // databaseOperation.box.deleteAll()
       print(e);
@@ -196,8 +193,6 @@ class ImporterCubit extends Cubit<ImporterState> {
     if (importers.isNotEmpty) {
       if (importers.where((element) => element.title?.toLowerCase() == model.title?.toLowerCase()).isNotEmpty) {
         return CNotify(
-          tickerProviderService: tickerProviderService,
-          overlayState: Overlay.of(context),
           title: 'Hata',
           message: 'Bu isimde bir müşteri zaten var',
         ).show();

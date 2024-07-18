@@ -55,8 +55,6 @@ final class CustomerCubit extends Cubit<CustomerState> {
     if (customers.isNotEmpty) {
       if (customers.where((element) => element.title?.toLowerCase() == customer.title?.toLowerCase()).isNotEmpty) {
         return CNotify(
-          tickerProviderService: tickerProviderService,
-          overlayState: Overlay.of(context),
           title: 'Hata',
           message: 'Bu isimde bir müşteri zaten var',
         ).show();
