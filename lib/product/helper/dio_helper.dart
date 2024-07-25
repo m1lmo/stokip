@@ -20,4 +20,12 @@ final class DioHelper {
     _instance ??= DioHelper._init();
     return _instance!;
   }
+
+  void setToken(String? token) {
+    if (token?.isEmpty ?? true) return;
+    if (dio.options.headers.containsKey('Authorization')) {
+      dio.options.headers.remove('Authorization');
+    }
+    dio.options.headers['Authorization'] = token;
+  }
 }
