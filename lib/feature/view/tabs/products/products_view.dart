@@ -69,7 +69,7 @@ class _ProductsViewState extends State<ProductsView> with NavigatorManager {
           value: blocProvider,
         ),
         BlocProvider.value(
-          value: salesCubit..updateTrendProduct(),
+          value: salesCubit,
         ),
       ],
       child: Scaffold(
@@ -151,7 +151,7 @@ class _ProductsViewState extends State<ProductsView> with NavigatorManager {
                       return state.trendProduct;
                     },
                     builder: (context, state) {
-                      return CustomContainer(text: '${state?.title}', title: 'Trend');
+                      return CustomContainer(text: '${state?.title?.toTitleCase()}', title: 'Trend');
                     },
                   ), // TODOLOCALIZATION
                 ],
@@ -175,7 +175,7 @@ class _ProductsViewState extends State<ProductsView> with NavigatorManager {
                       return state.runningOutStock?.title ?? '';
                     },
                     builder: (context, state) {
-                      return CustomContainer(text: state, title: 'Tükeniyor');
+                      return CustomContainer(text: state.toTitleCase(), title: 'Tükeniyor');
                     },
                   ), // TODOLOCALIZATION
                 ],
