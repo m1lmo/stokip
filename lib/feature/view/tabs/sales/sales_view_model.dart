@@ -69,6 +69,7 @@ abstract class _SalesVievModelBase with Store {
     final saleModel = SalesModel(
       customer: customerDropDownController?.dropDownValue?.value as CustomerModel?,
       id: blocProvider.state.salesId,
+      itemName: stockDropDownController?.dropDownValue?.value?.title as String,
       dateTime: DateTime.now(),
       stockDetailModel: stockDetailDropDownController?.dropDownValue?.value as StockDetailModel,
       quantity: double.tryParse(quantityController!.text),
@@ -78,6 +79,6 @@ abstract class _SalesVievModelBase with Store {
     if (saleModel.customer == null || saleModel.stockDetailModel == null || saleModel.quantity == null || saleModel.price == null) return;
     blocProvider.addSale(model: saleModel);
     customerCubitProvider.updateCustomerBalance(saleModel.customer!, saleModel.price! * saleModel.quantity!);
-    stockCubitProvider.updateTotalMeter((stockDropDownController!.dropDownValue!.value as StockModel).id);
+    stockCubitProvider.updateTotalMeter(itemId: (stockDropDownController!.dropDownValue!.value as StockModel).id);
   }
 }
