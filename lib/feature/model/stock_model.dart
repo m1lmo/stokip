@@ -19,7 +19,6 @@ abstract class MainModel with HiveModel2Mixin, EquatableMixin, ServiceModel {
   MainModel({
     this.title,
   });
-  
 }
 
 @JsonSerializable(explicitToJson: true)
@@ -39,7 +38,7 @@ class StockModel extends MainModel {
   final double? sPrice;
   @HiveField(3)
   @override
-  @JsonKey(name: 'name')
+  @JsonKey(name: 'title')
   final String? title;
   @HiveField(4)
   @JsonKey(name: 'itemDetail')
