@@ -29,7 +29,7 @@ class _ProductDataContainer extends StatelessWidget {
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 8.w),
                     child: Text(
-                      stock!.title ?? '',
+                      stock!.title?.toTitleCase() ?? '',
                       style: Theme.of(context).textTheme.headlineMedium,
                     ),
                   ),
@@ -70,14 +70,14 @@ class _ProductDataContainer extends StatelessWidget {
                     Column(
                       children: [
                         Text(
-                          'Satış Fiyatı',
+                          stock?.sPrice != null ? 'Satış Fiyatı' : '',
                           style: Theme.of(context).textTheme.bodySmall!.copyWith(
                                 fontWeight: FontWeight.w500,
                                 fontSize: 10.sp,
                               ),
                         ), // TODOLOCALIZATION
                         Text(
-                          '${stock!.sPrice} ${stock!.currency.currencySymbol}', // TODOLOCALIZATION
+                          stock?.sPrice != null ? '${stock?.sPrice} ${stock!.currency.currencySymbol}' : '', // TODOLOCALIZATION
                           style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                                 fontWeight: FontWeight.w700,
                                 fontSize: 10.sp,
