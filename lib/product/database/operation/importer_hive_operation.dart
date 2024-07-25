@@ -1,4 +1,4 @@
-import 'package:stokip/product/database/core/database_opretion.dart';
+import 'package:stokip/product/database/core/database_operation.dart';
 
 import 'package:stokip/feature/model/importer_model.dart';
 
