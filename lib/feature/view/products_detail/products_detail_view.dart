@@ -8,9 +8,9 @@ import 'package:stokip/feature/cubit/stock/stock_cubit.dart';
 import 'package:stokip/feature/model/stock_model.dart';
 import 'package:stokip/feature/view/tabs/products/products_view.dart';
 import 'package:stokip/product/constants/custom_icon.dart';
-import 'package:stokip/product/constants/enums/currency_enum.dart';
 import 'package:stokip/product/constants/project_colors.dart';
 import 'package:stokip/product/constants/project_paddings.dart';
+import 'package:stokip/product/extensions/currency_enum_extension.dart';
 import 'package:stokip/product/extensions/string_extension.dart';
 import 'package:stokip/product/widgets/custom_bottom_sheet.dart';
 import 'package:stokip/product/widgets/custom_container.dart';
@@ -65,7 +65,7 @@ class _ProductsDetailViewState extends State<ProductsDetailView> {
       ],
       child: Scaffold(
         appBar: AppBar(
-          title: Text(widget.stockModel.title ?? ''),
+          title: Text('${widget.stockModel.title?.toTitleCase()}' ?? ''),
           actions: [
             BlocSelector<StockCubit, StockState, int>(
               selector: (state) {
