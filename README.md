@@ -4,9 +4,9 @@ A new Flutter project Which u can manage your inventory.
 
 ## BUILT WITH
 
-*FLUTTER
-*DART
-*GOLANG
+  FLUTTER
+  DART
+  GOLANG
 
 ## Getting Started
 
