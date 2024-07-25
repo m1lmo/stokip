@@ -22,7 +22,7 @@ final class ErrorHandler implements Exception {
           return Failure(error.response!.statusCode!, error.response!.data['error'].toString());
         }
       default:
-        return Failure(error.response!.statusCode!, 'Unknown Error');
+        return ServiceStatus.INTERNAL_SERVER_ERROR.getFailure();
     }
     return ServiceStatus.INTERNAL_SERVER_ERROR.getFailure();
   }
