@@ -4,10 +4,11 @@ A new Flutter project Which u can manage your inventory.
 
 ## BUILT WITH
 
-  FLUTTER <br \>
-  DART <br \>
-  GOLANG <br \>
-
+<pre>
+  FLUTTER 
+  DART
+  GOLANG 
+</pre>
 ## Getting Started
 
 In this project, I tried to develop a solution to facilitate inventory management. Currently, goods can only be added to the stock in meters, but I plan to create a more functional solution in the future. Additionally, the application has a multilingual support infrastructure, currently supporting English and Turkish.
