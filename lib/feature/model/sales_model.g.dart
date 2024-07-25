@@ -97,4 +97,5 @@ Map<String, dynamic> _$SalesModelToJson(SalesModel instance) =>
 const _$CurrencyEnumEnumMap = {
   CurrencyEnum.tl: 'tl',
   CurrencyEnum.usd: 'usd',
+  CurrencyEnum.nullValue: '',
 };

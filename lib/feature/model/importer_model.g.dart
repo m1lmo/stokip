@@ -62,14 +62,23 @@ class ImporterModelAdapter extends TypeAdapter<ImporterModel> {
 
 ImporterModel _$ImporterModelFromJson(Map<String, dynamic> json) =>
     ImporterModel(
-      id: (json['supplierID'] as num).toInt(),
+      id: (json['supplierId'] as num).toInt(),
       title: json['name'] as String?,
+      currency:
+          $enumDecodeNullable(_$CurrencyEnumEnumMap, json['currencyType']),
       balance: (json['balance'] as num?)?.toDouble() ?? 0,
     );
 
 Map<String, dynamic> _$ImporterModelToJson(ImporterModel instance) =>
     <String, dynamic>{
-      'supplierID': instance.id,
+      'supplierId': instance.id,
       'name': instance.title,
+      'currencyType': _$CurrencyEnumEnumMap[instance.currency],
       'balance': instance.balance,
     };
+
+const _$CurrencyEnumEnumMap = {
+  CurrencyEnum.tl: 'tl',
+  CurrencyEnum.usd: 'usd',
+  CurrencyEnum.nullValue: '',
+};

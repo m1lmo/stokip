@@ -112,7 +112,7 @@ StockModel _$StockModelFromJson(Map<String, dynamic> json) => StockModel(
           .map((e) => StockDetailModel.fromJson(e as Map<String, dynamic>))
           .toList(),
       id: (json['itemId'] as num?)?.toInt() ?? 0,
-      title: json['name'] as String?,
+      title: json['title'] as String?,
       pPrice: (json['pPrice'] as num?)?.toDouble(),
       sPrice: (json['sPrice'] as num?)?.toDouble(),
       purchaseDate: json['purchaseDate'] == null
@@ -127,7 +127,7 @@ Map<String, dynamic> _$StockModelToJson(StockModel instance) =>
       'itemId': instance.id,
       'pPrice': instance.pPrice,
       'sPrice': instance.sPrice,
-      'name': instance.title,
+      'title': instance.title,
       'itemDetail': instance.stockDetailModel.map((e) => e.toJson()).toList(),
       'totalMeter': instance.totalMeter,
       'purchaseDate': instance.purchaseDate?.toIso8601String(),
@@ -137,6 +137,7 @@ Map<String, dynamic> _$StockModelToJson(StockModel instance) =>
 const _$CurrencyEnumEnumMap = {
   CurrencyEnum.tl: 'tl',
   CurrencyEnum.usd: 'usd',
+  CurrencyEnum.nullValue: '',
 };
 
 StockDetailModel _$StockDetailModelFromJson(Map<String, dynamic> json) =>
