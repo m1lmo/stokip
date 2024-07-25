@@ -20,6 +20,7 @@ import 'package:stokip/product/constants/enums/currency_enum.dart';
 import 'package:stokip/product/constants/enums/sales_filter_enum.dart';
 import 'package:stokip/product/constants/project_colors.dart';
 import 'package:stokip/product/constants/project_strings.dart';
+import 'package:stokip/product/extensions/currency_enum_extension.dart';
 import 'package:stokip/product/extensions/string_extension.dart';
 import 'package:stokip/product/widgets/custom_bottom_sheet.dart';
 import 'package:stokip/product/widgets/custom_container.dart';
@@ -69,8 +70,9 @@ class _SalesViewState extends State<SalesView> {
         BlocProvider.value(
           value: salesViewModel.blocProvider
             ..updateMonthlySoldMeter(DateTime.now().month)
-            ..updateTrendProduct()
-            ..getTotalIncome,
+            ..getTotalIncome
+            ..updateTopCustomer(DateTime.now().month)
+            ..updateTrendProduct(),
         ),
       ],
       child: Scaffold(
@@ -140,7 +142,7 @@ class _SalesViewState extends State<SalesView> {
                           return state.trendProduct;
                         },
                         builder: (context, state) {
-                          return CustomContainer(text: '${state?.title}', title: 'En Çok Satan');
+                          return CustomContainer(text: '${state?.title?.toTitleCase()}', title: 'En Çok Satan');
                         },
                       ),
                     ],
@@ -159,7 +161,14 @@ class _SalesViewState extends State<SalesView> {
                           return CustomContainer(text: '${state}m', title: 'Bu Ay Satılan');
                         },
                       ),
-                      const CustomContainer(text: 'Omer Koca', title: 'En Çok Alan'),
+                      BlocSelector<SalesCubit, SalesState, CustomerModel?>(
+                        selector: (state) {
+                          return state.topCustomer;
+                        },
+                        builder: (context, state) {
+                          return CustomContainer(text: state?.title?.toTitleCase() ?? '', title: 'En Çok Alan');
+                        },
+                      ), //todo change this
                     ],
                   ),
                   SizedBox(
@@ -189,26 +198,6 @@ class _SalesViewState extends State<SalesView> {
                   SizedBox(
                     height: 2.h,
                   ),
-                  // BlocSelector<SalesCubit, SalesState, List<SalesModel>>(
-                  //   selector: (state) {
-                  //     return state.sales ?? [];
-                  //   },
-                  //   builder: (context, state) {
-                  //     return Expanded(
-                  //       child: SearchableList<SalesModel>(
-                  //         filter: (query) {
-                  //           return state.where((element) => element.title!.contains(query)).toList();
-                  //         },
-                  //         initialList: state,
-                  //         itemBuilder: (item) {
-                  //           return DataContainer(
-                  //             data: item,
-                  //           );
-                  //         },
-                  //       ),
-                  //     );
-                  //   },
-                  // ),
                   BlocSelector<SalesCubit, SalesState, List<SalesModel>>(
                     selector: (state) {
                       // salesViewModel.blocProvider.filterSales(null);
@@ -219,7 +208,7 @@ class _SalesViewState extends State<SalesView> {
                         child: SearchContainer<SalesModel>(
                           delegate: SaleDelegate(
                             salesViewModel.blocProvider,
-                            items: state ?? [],
+                            items: state,
                           ),
                         ),
                       );
