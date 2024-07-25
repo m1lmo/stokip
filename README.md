@@ -4,26 +4,25 @@ A new Flutter project Which u can manage your inventory.
 
 ## Getting Started
 
-Bu Projemde envanter yönetimini kolaylaştırıcak bi çözüm geliştirmeyi denedim, şuanlık mallar sadece metre cinsinden stoğa eklenebiliyor ileride daha fonksiyonel bi çözüm yapmayı planlıyorum.
-Ayrıca uygulamada çoklu dil desteği altyapısı bulunmaktadır şuanlık ingilizce ve türkçe dil desteği bulunuyor.
-## Anasayfa
-Uygulamayı İlk olarak açtığımızda bu ekran karşılıyor, bu ekranda bu ayın kar ve zarar hesaplaması ve bir yıllık tüm ayların kar ve satış grafiği bulunuyor
+In this project, I tried to develop a solution to facilitate inventory management. Currently, goods can only be added to the stock in meters, but I plan to create a more functional solution in the future. Additionally, the application has a multilingual support infrastructure, currently supporting English and Turkish.
 
+## Anasayfa
+
+After login, this screen greets us. On this screen, there is the profit and loss calculation for the current month and a graph of profit and sales for all months of the year
 
 ## Satışlar
-Bu ekranda yaptığımız satışları kaydediyoruz satışı yapmak için malzemenin önceden stokta olması lazım yoksa satış başarısız olur ve kayıtlara eklenmez, yapılan satışın miktarı stoklardan silinir.
 
-Bulunan ayın satışları listelenir eğer geçmiş kayıtlara bakmak istiyorsanız sağ üstten Eski kayıtlar'a girmelisiniz
+On this screen, we record our sales. To make a sale, the item must be in stock beforehand; otherwise, the sale will fail and will not be added to the records. The quantity of the sold item is deducted from the stock.
 
+Sales of the current month are listed. If you want to view past records, you should enter 'Old records' from the top right.
 
 ## Tedarikciler
-Bu ekranda malzemeleri satın aldığımız kişi veya şirketleri ekliyoruz tedarikçiyle çalıştığımız para birimini seçip kaydediyoruz
 
+On this screen, we add the individuals or companies from whom we purchase materials. We select the currency we work with for the supplier and save it.
 
 ## Ürünler
-Burada Satın aldığımız ürünleri görüntüleyebiliyoruz ayrıca bu ekrandanda ürün ekliyebilirsiniz. eklediğiniz ürünler isimleri aynıysa o ismin altında eğer renkleri aynıysa aynı rengin içine metreleri eklenir. Sattığımız ürünler buradan'da silinir.
 
-
+Here, we can view the products we have purchased. Additionally, you can add products from this screen as well. If the products you add have the same name, they will be grouped under that name; if their colors are the same, their meters will be added under the same color. The products we have sold are also removed from here.
 
 Ömer Faruk Koca
 omerfarukkoca35@gmail.com
