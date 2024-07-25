@@ -2,12 +2,11 @@ import 'package:flutter/foundation.dart';
 import 'package:hive/hive.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:stokip/feature/model/payment_model.dart';
+import 'package:stokip/feature/model/purchases_model.dart';
 import 'package:stokip/feature/model/stock_model.dart';
 import 'package:stokip/product/constants/enums/currency_enum.dart';
 import 'package:stokip/product/database/core/hive_types.dart';
 
-import 'package:stokip/feature/model/purchases_model.dart';
-import 'package:stokip/product/helper/uint8list_converter.dart';
 part 'importer_model.g.dart';
 
 @JsonSerializable()
@@ -32,18 +31,18 @@ final class ImporterModel extends MainModel {
   /// `ImporterModel` class. This variable represents the unique identifier for an importer. The `final`
   /// keyword indicates that the value of `id` cannot be changed once it is assigned a value.
   @HiveField(0)
-  @JsonKey(name: 'supplierID')
+  @JsonKey(name: 'supplierId')
   final int id;
   @override
   @HiveField(1)
   @JsonKey(name: 'name')
   final String? title;
   @HiveField(2)
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  // @CurrencyEnumConverter()
+  @JsonKey(name: 'currencyType')
   final CurrencyEnum? currency;
   @HiveField(3)
   double? balance;
-
   @HiveField(5)
   // @Uint8ListConverter()
   @JsonKey(includeFromJson: false, includeToJson: false)
