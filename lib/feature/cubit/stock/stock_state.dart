@@ -27,7 +27,6 @@ class StockState extends Equatable {
   StockModel? runningOutStock;
   StockDetailModel? runningOutStockDetail;
   StockDetailModel? trendStockDetail;
-
   double? totalAmount;
 
   @override

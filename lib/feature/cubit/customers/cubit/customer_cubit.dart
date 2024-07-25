@@ -1,13 +1,17 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:stokip/feature/model/customer_model.dart';
 import 'package:stokip/feature/model/sales_model.dart';
+import 'package:stokip/feature/service/repository/customer_repository.dart';
 import 'package:stokip/product/cache/shared_manager.dart';
 import 'package:stokip/product/constants/enums/currency_enum.dart';
 import 'package:stokip/product/database/core/database_hive_manager.dart';
 import 'package:stokip/product/database/operation/customer_hive_operation.dart';
+import 'package:stokip/product/helper/dio_helper.dart';
 import 'package:stokip/product/widgets/c_notify.dart';
+import 'package:stokip/test_global.dart' as globals;
 
 part 'customer_state.dart';
 
@@ -15,28 +19,35 @@ final class CustomerCubit extends Cubit<CustomerState> {
   CustomerCubit({
     required this.sales,
   }) : super(CustomerState());
+  final List<SalesModel> sales;
   final List<CustomerModel> customers = [];
-  late final List<SalesModel> sales;
-  late final SharedManager sharedManager;
   final databaseOperation = CustomerHiveOperation();
-  late final TickerProvider tickerProviderService;
+  final dioHelper = DioHelper.instance();
+  late final SharedManager sharedManager; //TODO REMOVE
+  late final CustomerRepository customerRepository;
+  final secureStorage = const FlutterSecureStorage();
 
   /// init method for [CustomerCubit]
-  Future<void> init(TickerProvider ticker) async {
-    try {
-      await DatabaseHiveManager().start();
-      await databaseOperation.start();
-      sharedManager = await SharedManager.getInstance;
-      if (databaseOperation.box.isNotEmpty) {
-        customers.addAll(databaseOperation.box.values);
+  Future<void> init() async {
+    await DatabaseHiveManager().start();
+    await databaseOperation.start();
+    dioHelper.setToken(await secureStorage.read(key: 'jwt'));
+    customerRepository = CustomerRepository(dioHelper.dio);
+    sharedManager = await SharedManager.getInstance;
+    if (databaseOperation.box.isNotEmpty && !globals.globalInternetConnection) {
+      customers.addAll(databaseOperation.box.values);
+    } else {
+      final data = await customerRepository.fetchData();
+      if (data == null) return;
+      for (final item in data) {
+        if (item == null) continue;
+        customers.add(item);
+        // await databaseOperation.addOrUpdateItem(item);
       }
-      readId();
-      emit(state.copyWith(customers: customers));
-      updateTotalBalanceUSD();
-      tickerProviderService = ticker;
-    } catch (e) {
-      print(e);
     }
+    readId();
+    emit(state.copyWith(customers: customers));
+    updateTotalBalanceUSD();
   }
 
   void readId() {
@@ -60,6 +71,7 @@ final class CustomerCubit extends Cubit<CustomerState> {
         ).show();
       }
     }
+    customerRepository.postData(customer);
     writeIdToCache();
     customers.add(customer);
     databaseOperation.addOrUpdateItem(customer);

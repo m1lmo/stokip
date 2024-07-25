@@ -1,9 +1,13 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:stokip/feature/model/sales_model.dart';
+import 'package:stokip/feature/service/repository/stock_repository.dart';
 import 'package:stokip/product/cache/shared_manager.dart';
 import 'package:stokip/product/database/core/database_hive_manager.dart';
 import 'package:stokip/product/database/operation/stock_hive_operation.dart';
+import 'package:stokip/product/helper/dio_helper.dart';
+import 'package:stokip/test_global.dart' as globals;
 
 import 'package:stokip/feature/model/stock_model.dart';
 
@@ -14,18 +18,34 @@ class StockCubit extends Cubit<StockState> {
 
   static final List<StockModel> lists = [];
   late final SharedManager sharedManager;
+  final secureStorage = const FlutterSecureStorage();
   final StockHiveOperation databaseOperation = StockHiveOperation();
+  final dioHelper = DioHelper.instance();
+  late final StockRepository stockRepository;
 
   List<StockModel> get currentStocks => List<StockModel>.from(lists);
-
   Future<void> get init async {
     await DatabaseHiveManager().start();
     await databaseOperation.start();
+    final token = await secureStorage.read(key: 'jwt');
+    print(token);
+    stockRepository = StockRepository(dioHelper.dio);
     sharedManager = await SharedManager.getInstance;
-    if (databaseOperation.box.isNotEmpty) {
+    if (databaseOperation.box.isNotEmpty && !globals.globalInternetConnection) {
       lists.addAll(databaseOperation.box.values);
       emit(state.copyWith(products: currentStocks));
+    } else {
+      dioHelper.setToken(token ?? '');
+      final data = await stockRepository.fetchData();
+      if (data == null) return;
+      for (final item in data) {
+        if (item == null) continue;
+        lists.add(item);
+        updateTotalMeter(stock: item);
+        // await databaseOperation.addOrUpdateItem(item);
+      }
     }
+
     getProduct();
   }
 
@@ -40,17 +60,17 @@ class StockCubit extends Cubit<StockState> {
     if (index == null) return;
     final updatedProducts = List<StockModel>.from(state.products ?? []);
     final sameStockIndex = updatedProducts[index].stockDetailModel.indexWhere((element) => element.title?.toLowerCase() == model.title?.toLowerCase());
-    // final isStockOld = updatedProducts[index].stockDetailModel?.where((element) => element.title == model.title);
+    stockRepository.postData(updatedProducts[index]);
     if (sameStockIndex != -1) {
       updatedProducts[index].stockDetailModel[sameStockIndex].meter = (updatedProducts[index].stockDetailModel[sameStockIndex].meter ?? 0) + (model.meter ?? 0);
     } else {
       updatedProducts[index].stockDetailModel.add(model);
       emit(state.copyWith(productDetailId: state.productDetailId + 1));
     }
-    updateTotalMeter(index);
+    updateTotalMeter(stock: updatedProducts[index]);
     _updateTotalTotalMeter();
     writeIdToCache(state.productDetailId, 'stockdetailid');
-    databaseOperation.addOrUpdateItem(updatedProducts[index]); //todo bunu methoda çıkar
+    databaseOperation.addOrUpdateItem(updatedProducts[index]);
     emit(state.copyWith(products: updatedProducts));
   }
 
@@ -65,18 +85,41 @@ class StockCubit extends Cubit<StockState> {
     return emit(state.copyWith(totalMeter: result));
   }
 
+  void addLocalDatabase() {}
+
   /// this method for update total meter in stock detail model
-  void updateTotalMeter(int itemId) {
+  void updateTotalMeter({StockModel? stock, int? itemId}) {
     var result = 0.0;
-    final indexList = lists.indexWhere((element) => element.id == itemId);
-    for (final detailStock in lists[indexList].stockDetailModel) {
-      if (detailStock.meter is num) {
-        result += detailStock.meter ?? 0;
+    if (stock == null) {
+      final indexList = lists.indexWhere((element) => element.id == itemId);
+      for (final detailStock in lists[indexList].stockDetailModel) {
+        if (detailStock.meter is num) {
+          result += detailStock.meter ?? 0;
+        }
       }
+      lists[indexList].totalMeter = result;
+      emit(state.copyWith(products: currentStocks));
+    } else {
+      for (final detailStock in stock.stockDetailModel) {
+        if (detailStock.meter is num) {
+          result += detailStock.meter ?? 0;
+        }
+      }
+      stock.totalMeter = result;
+      emit(state.copyWith(products: currentStocks));
     }
-    lists[indexList].totalMeter = result;
-    emit(state.copyWith(products: currentStocks));
   }
+  // void updateTotalMeter(int itemId,{}) {
+  //   var result = 0.0;
+  //   final indexList = lists.indexWhere((element) => element.id == itemId);
+  //   for (final detailStock in lists[indexList].stockDetailModel) {
+  //     if (detailStock.meter is num) {
+  //       result += detailStock.meter ?? 0;
+  //     }
+  //   }
+  //   lists[indexList].totalMeter = result;
+  //   emit(state.copyWith(products: currentStocks));
+  // }
 
   void removeProduct(int index) {
     databaseOperation.remove(lists[index]);
@@ -112,15 +155,16 @@ class StockCubit extends Cubit<StockState> {
     StockModel model,
   ) async {
     final indexOfSameProduct = lists.indexWhere((element) => element.title?.toLowerCase() == model.title?.toLowerCase());
+    stockRepository.postData(model); // todo
     if (indexOfSameProduct != -1) {
       lists[indexOfSameProduct].totalMeter = lists[indexOfSameProduct].totalMeter ?? 0 + (model.totalMeter ?? 0);
-      updateTotalMeter(lists.indexOf(lists[indexOfSameProduct]));
+      updateTotalMeter(stock: lists[indexOfSameProduct]);
       await databaseOperation.addOrUpdateItem(lists[indexOfSameProduct]);
     } else {
       emit(state.copyWith(productId: state.productId + 1));
       await writeIdToCache(state.productId, 'stockid');
       lists.add(model);
-      updateTotalMeter(lists.indexOf(lists.last));
+      updateTotalMeter(stock: lists.last);
       await databaseOperation.addOrUpdateItem(model);
     }
     emit(state.copyWith(products: List.from(currentStocks)));
@@ -152,7 +196,7 @@ class StockCubit extends Cubit<StockState> {
 
   void get getRunningOutStock {
     for (final stock in lists) {
-      if (stock.totalMeter! < (state.runningOutStock!.totalMeter!) && stock.totalMeter! > 0) {
+      if ((stock.totalMeter ?? 0) < (state.runningOutStock!.totalMeter!) && stock.totalMeter! > 0) {
         emit(state.copyWith(runningOutStock: stock));
       }
     }

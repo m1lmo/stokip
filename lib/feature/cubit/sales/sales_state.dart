@@ -5,6 +5,7 @@ final class SalesState with EquatableMixin {
   SalesState({
     this.salesId = 0,
     this.sales,
+    this.topCustomer,
     this.filteredSales,
     this.totalIncome,
     this.trendProduct,
@@ -18,6 +19,7 @@ final class SalesState with EquatableMixin {
   final StockModel? trendProduct;
   final double monthlySoldAmount;
   final double monthlySoldMeter;
+  final CustomerModel? topCustomer;
   @override
   List<Object?> get props => [
         sales,
@@ -39,12 +41,20 @@ final class SalesState with EquatableMixin {
           salesId == other.salesId &&
           totalIncome == other.totalIncome &&
           trendProduct == other.trendProduct &&
+          topCustomer == other.topCustomer &&
           monthlySoldAmount == other.monthlySoldAmount &&
           monthlySoldMeter == other.monthlySoldMeter;
 
   @override
   int get hashCode =>
-      sales.hashCode ^ filteredSales.hashCode ^ salesId.hashCode ^ totalIncome.hashCode ^ trendProduct.hashCode ^ monthlySoldMeter.hashCode ^ monthlySoldAmount.hashCode;
+      sales.hashCode ^
+      filteredSales.hashCode ^
+      salesId.hashCode ^
+      totalIncome.hashCode ^
+      trendProduct.hashCode ^
+      monthlySoldMeter.hashCode ^
+      topCustomer.hashCode ^
+      monthlySoldAmount.hashCode;
 
   SalesState copyWith({
     int? salesId,
@@ -56,6 +66,7 @@ final class SalesState with EquatableMixin {
     double? totalIncome,
     StockModel? trendProduct,
     double? monthlySoldAmount,
+    CustomerModel? topCustomer,
     double? monthlySoldMeter,
   }) {
     return SalesState(
@@ -64,6 +75,7 @@ final class SalesState with EquatableMixin {
       filteredSales: filteredSales ?? this.filteredSales,
       totalIncome: totalIncome ?? this.totalIncome,
       trendProduct: trendProduct ?? this.trendProduct,
+      topCustomer: topCustomer ?? this.topCustomer,
       monthlySoldAmount: monthlySoldAmount ?? this.monthlySoldAmount,
       monthlySoldMeter: monthlySoldMeter ?? this.monthlySoldMeter,
     );

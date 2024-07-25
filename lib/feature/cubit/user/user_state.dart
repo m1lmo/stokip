@@ -4,6 +4,7 @@ part of 'user_cubit.dart';
 class UserState with EquatableMixin {
   const UserState({this.currentUser});
   final UserModel? currentUser;
+  // final bool haveInternetConnection;
 
   @override
   List<Object?> get props => [currentUser];
