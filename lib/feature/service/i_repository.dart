@@ -26,14 +26,23 @@ abstract class IRepository<T extends ServiceModel> extends ServiceManager<T> {
   }
 
   Future<List<T?>?> fetchData() async {
-    final response = await dio.get<List<dynamic>>(path);
-    if (response.statusCode != HttpStatus.ok) return null;
-    final datas = response.data;
-    if (datas is List) {
-      if (datas.isEmpty ?? true) return null;
-      return datas.whereType<Map<String, dynamic>>().map((e) => fromJson(e)).toList(); // Replace whereTypeOrNull with whereType
+    try {
+      final response = await dio.get<List<dynamic>>(path);
+      if (response.statusCode != HttpStatus.ok) return null;
+      final datas = response.data;
+      if (datas is List) {
+        if (datas.isEmpty ?? true) return null;
+        return datas.whereType<Map<String, dynamic>>().map((e) => fromJson(e)).toList(); // Replace whereTypeOrNull with whereType
+      }
+      return null;
+    } on DioException catch (e) {
+      final failure = ErrorHandler.handler(e).failure;
+      CNotify(
+        title: 'Hata',
+        message: failure.message,
+      ).show();
+      return null;
     }
-    return null;
   }
 
   Future<T?> postWithResponse(T data) async {
