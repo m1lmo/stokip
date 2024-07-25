@@ -35,7 +35,7 @@ class DataContainer extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      '${bloc.getStockTitleById(data.stockDetailModel?.itemId)} ${data.title?.toCapitalized()}',
+                      '${bloc.getStockTitleById(data.stockDetailModel?.itemId)?.toTitleCase()} ${data.title?.toCapitalized()}',
                       style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                             fontWeight: FontWeight.w700,
                             fontSize: 16.sp,
