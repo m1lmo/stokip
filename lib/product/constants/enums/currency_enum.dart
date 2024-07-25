@@ -1,4 +1,5 @@
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:json_annotation/json_annotation.dart';
 
 import 'package:stokip/product/database/core/hive_types.dart';
 part 'currency_enum.g.dart';
@@ -6,18 +7,12 @@ part 'currency_enum.g.dart';
 @HiveType(typeId: HiveTypes.currencyEnumId)
 enum CurrencyEnum {
   @HiveField(0)
+  @JsonValue('tl')
   tl,
   @HiveField(1)
-  usd
-}
-
-extension CurrencyEnumMixin on CurrencyEnum {
-  String get getSymbol {
-    switch (this) {
-      case CurrencyEnum.tl:
-        return '₺';
-      case CurrencyEnum.usd:
-        return r'$';
-    }
-  }
+  @JsonValue('usd')
+  usd,
+  @HiveField(2)
+  @JsonValue('')
+  nullValue
 }
