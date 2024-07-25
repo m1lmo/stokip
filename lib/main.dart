@@ -1,13 +1,16 @@
+import 'dart:async';
+
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sizer/sizer.dart';
 import 'package:stokip/feature/cubit/user/user_cubit.dart';
-import 'package:stokip/feature/model/user_model.dart';
-import 'package:stokip/feature/view/login/login_view_inherited.dart';
+import 'package:stokip/feature/view/splash/splash_inherited.dart';
 import 'package:stokip/product/constants/locales_consts.dart';
-import 'package:stokip/feature/view/home_view.dart';
 import 'package:stokip/product/constants/project_colors.dart';
+import 'package:stokip/product/widgets/c_notify.dart';
+import 'package:stokip/test_global.dart' as globals;
 
 // homeview da 4 tabli bi sayfa sayfalar dashboard, sales, purchase, products olucak
 // productsda StockModel içeren ürünler olucak bu ürünlerin fiyatını alış ve satış olarak görmek mümkün hangi renkten kaç metre var
@@ -45,6 +48,21 @@ void main() async {
 Future<void> init() async {
   WidgetsFlutterBinding.ensureInitialized();
   await EasyLocalization.ensureInitialized();
+  globals.globalInternetConnection = await checkInternet();
+  // final subscription = Connectivity().onConnectivityChanged.listen((List<ConnectivityResult> result) {
+  //   if (result.contains(ConnectivityResult.none)) {
+  //     CNotify(message: 'İnternet bağlantınızı kontrol edin', title: 'Hata').show();
+  //   }
+  // });
+}
+
+Future<bool> checkInternet() async {
+  final result = await Connectivity().checkConnectivity();
+  if (result.contains(ConnectivityResult.none)) {
+    CNotify(message: 'İnternet bağlantınızı kontrol edin', title: 'Hata').show();
+    return false;
+  }
+  return true;
 }
 
 class MyApp extends StatelessWidget {
@@ -54,7 +72,7 @@ class MyApp extends StatelessWidget {
     return Sizer(
       builder: (context, orientation, deviceType) {
         return BlocProvider<UserCubit>(
-          create: (context) => UserCubit()..init,
+          create: (context) => UserCubit(),
           child: MaterialApp(
             navigatorKey: navigator,
             localizationsDelegates: context.localizationDelegates,
@@ -153,14 +171,15 @@ class MyApp extends StatelessWidget {
               ),
             ),
             // home: const HomeView(),
-            home: BlocSelector<UserCubit, UserState, UserModel?>(
-              selector: (state) {
-                return state.currentUser;
-              },
-              builder: (context, state) {
-                return state != null ? const HomeView() : const LoginViewHost();
-              },
-            ),
+            home: const SplashViewHost(),
+            // home: BlocSelector<UserCubit, UserState, UserModel?>(
+            //   selector: (state) {
+            //     return state.currentUser;
+            //   },
+            //   builder: (context, state) {
+            //     return state != null ? const HomeView() : const LoginViewHost();
+            //   },
+            // ),
           ),
         );
       },
