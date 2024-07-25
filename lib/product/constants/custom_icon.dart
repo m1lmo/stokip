@@ -27,4 +27,5 @@ class CustomIcons {
   static const IconData add_square = IconData(0xe813, fontFamily: _kFontFam);
   static const IconData three_dot = IconData(0xe814, fontFamily: _kFontFam);
   static const IconData product3 = IconData(0xe815, fontFamily: _kFontFam);
+  static const IconData google = IconData(0xf1a0, fontFamily: _kFontFam);
 }

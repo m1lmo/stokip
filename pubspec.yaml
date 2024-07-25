@@ -27,8 +27,9 @@ dependencies:
   hive: ^2.2.3
   hive_flutter: ^1.1.0
   hive_generator: ^2.0.1
+  flutter_secure_storage: ^9.2.2
   #flchart
-  fl_chart: ^0.63.0
+  fl_chart: ^0.68.0
   #dart
   easy_localization: ^3.0.3
   #package for making responsive ui
@@ -43,7 +44,9 @@ dependencies:
   dropdown_textfield: ^1.1.0
   #vb 10 ;)
   kartal: ^3.4.2
+
   image_cropper: ^5.0.0
+  connectivity_plus: ^6.0.3
 
 dev_dependencies:
   flutter_test:

@@ -3,9 +3,13 @@ import 'package:bloc/bloc.dart';
 
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:kartal/kartal.dart';
+import 'package:stokip/feature/model/customer_model.dart';
 import 'package:stokip/feature/model/filter_model.dart';
+import 'package:stokip/feature/service/repository/sale_repository.dart';
 import 'package:stokip/product/constants/enums/currency_enum.dart';
+import 'package:stokip/product/constants/enums/notify_type_enum.dart';
 import 'package:stokip/product/constants/enums/sales_filter_enum.dart';
 
 import 'package:stokip/product/database/operation/stock_hive_operation.dart';
@@ -15,6 +19,9 @@ import 'package:stokip/product/database/core/database_hive_manager.dart';
 import 'package:stokip/product/database/operation/sales_hive_operation.dart';
 import 'package:stokip/feature/model/sales_model.dart';
 import 'package:stokip/feature/model/stock_model.dart';
+import 'package:stokip/product/helper/dio_helper.dart';
+import 'package:stokip/product/widgets/c_notify.dart';
+import 'package:stokip/test_global.dart';
 
 part 'sales_state.dart';
 
@@ -64,7 +71,10 @@ class SalesCubit extends Cubit<SalesState> {
   static final List<SalesModel> saless = [];
   final List<SalesModel> filteredSales = [];
   late final SharedManager sharedManager;
+  final dioHelper = DioHelper.instance();
+  late final SaleRepository saleRepository;
   final SaleHiveOperation saleDatabaseOperation = SaleHiveOperation();
+  final secureStorage = const FlutterSecureStorage();
   List<SalesModel> get currentSales => List<SalesModel>.from(saless);
 
   //initFor provider.value
@@ -73,13 +83,20 @@ class SalesCubit extends Cubit<SalesState> {
     await DatabaseHiveManager().start();
     await saleDatabaseOperation.start();
     sharedManager = await SharedManager.getInstance;
-    if (saleDatabaseOperation.box.isNotEmpty) {
+    dioHelper.setToken(await secureStorage.read(key: 'jwt'));
+    saleRepository = SaleRepository(dioHelper.dio);
+    if (saleDatabaseOperation.box.isNotEmpty && !globalInternetConnection) {
       saless.addAll(saleDatabaseOperation.box.values);
+    } else {
+      final data = await saleRepository.fetchData();
+      if (data == null) return;
+      for (final item in data) {
+        if (item == null) continue;
+        saless.add(item);
+        await saleDatabaseOperation.addOrUpdateItem(item);
+      }
     }
     getSales();
-    // } catch (e) {
-    //   print(e);
-    // }
   }
 
   List<SalesModel>? _monthlySales(int currentMonth) {
@@ -101,205 +118,6 @@ class SalesCubit extends Cubit<SalesState> {
     final reversedSales = state.sales?.reversed.toList();
     final times = reversedSales?[index].dateTime;
     return Text('${times?.day} ${times?.month} ${times?.year}');
-  }
-
-//todo bunun içinde isSelected değilse applyfilterı tekrar çağır ve diğer value ları kontrol ettir
-  void applyFilter2(List<FilterModel<SalesFilterEnum>> values, FilterModel value) {
-    print('a');
-    switch (value.filterType) {
-      case SalesFilterEnum.lastMonth:
-        if (!value.isSelected) {
-          filteredSales.removeWhere((element) => element.dateTime.month == DateTime.now().month - 1);
-          values.map(
-            (e) {
-              if (e.isSelected) {
-                return applyFilter2(values, e);
-              }
-            },
-          );
-          break;
-        } else {
-          filteredSales.addAll(
-            saless.where(
-              (element) {
-                if (filteredSales.contains(element)) {
-                  return false;
-                } else {
-                  return element.dateTime.isAfter(DateTime.now().subtract(const Duration(days: 30)));
-                }
-              },
-            ),
-          );
-          break;
-        }
-      case SalesFilterEnum.lastWeek:
-        if (!value.isSelected) {
-          filteredSales.removeWhere((element) => element.dateTime.isAfter(DateTime.now().subtract(const Duration(days: 7))));
-          for (final filter in values) {
-            if (filter.isSelected) {
-              applyFilter2(values, filter);
-            }
-          }
-          break;
-        } else {
-          filteredSales.addAll(
-            saless.where(
-              (element) {
-                if (filteredSales.contains(element)) {
-                  return false;
-                } else {
-                  return element.dateTime.isAfter(DateTime.now().subtract(const Duration(days: 7)));
-                }
-              },
-            ),
-          );
-          break;
-        }
-      case SalesFilterEnum.today:
-        if (!value.isSelected) {
-          filteredSales.removeWhere((element) => element.dateTime.day == DateTime.now().day);
-          values.map(
-            (e) {
-              if (e.isSelected) {
-                return applyFilter2(values, e);
-              }
-            },
-          );
-          break;
-        } else {
-          filteredSales.addAll(
-            saless.where(
-              (element) {
-                if (filteredSales.contains(element)) {
-                  return false;
-                } else {
-                  return element.dateTime.day == DateTime.now().day;
-                }
-              },
-            ),
-          );
-          break;
-        }
-      case SalesFilterEnum.yesterday:
-        if (!value.isSelected) {
-          filteredSales.removeWhere((element) => element.dateTime.day == DateTime.now().subtract(const Duration(days: 1)).day);
-          values.map(
-            (e) {
-              if (e.isSelected) {
-                return applyFilter2(values, e);
-              }
-            },
-          );
-          break;
-        } else {
-          filteredSales.addAll(
-            saless.where(
-              (element) {
-                if (filteredSales.contains(element)) {
-                  return false;
-                } else {
-                  return element.dateTime.day == DateTime.now().subtract(const Duration(days: 1)).day;
-                }
-              },
-            ),
-          );
-          break;
-        }
-
-      default:
-    }
-    emit(state.copyWith(filteredSales: filteredSales));
-
-    // void filterSales(
-    //   List<FilterModel<SalesFilterEnum>?> filters,
-    // ) {
-    //   for (final filter in filters) {
-    //     switch (filter?.filterType) {
-    //       case SalesFilterEnum.lastMonth:
-    //         if (!filter!.isSelected) {
-    //           filteredSales.removeWhere((element) => element.dateTime.month == DateTime.now().month - 1);
-    //         } else {
-    //           filteredSales.addAll(
-    //             saless.where((element) {
-    //               if (filteredSales.contains(element)) {
-    //                 return false;
-    //               } else {
-    //                 return element.dateTime.month == DateTime.now().month - 1;
-    //               }
-    //             }),
-    //           );
-    //         }
-    //         emit(state.copyWith(filteredSales: filteredSales));
-    //       case SalesFilterEnum.lastWeek:
-    //         if (!filter!.isSelected) {
-
-    //           filteredSales.removeWhere((element) => element.dateTime.isAfter(DateTime.now().subtract(const Duration(days: 7))));
-    //         } else {
-    //           filteredSales.addAll(
-    //             saless.where((element) {
-    //               if (filteredSales.contains(element)) {
-    //                 return false;
-    //               } else {
-    //                 return element.dateTime.isAfter(DateTime.now().subtract(const Duration(days: 7)));
-    //               }
-    //             }),
-    //           );
-    //         }
-    //         emit(state.copyWith(filteredSales: filteredSales));
-    //       case SalesFilterEnum.today:
-    //         if (!filter!.isSelected) {
-    //           filteredSales.removeWhere((element) => element.dateTime.day == DateTime.now().day);
-    //         } else {
-    //           filteredSales.addAll(
-    //             saless.where((element) {
-    //               if (filteredSales.contains(element)) {
-    //                 return false;
-    //               } else {
-    //                 return element.dateTime.day == DateTime.now().day;
-    //               }
-    //             }),
-    //           );
-    //         }
-    //         emit(state.copyWith(filteredSales: filteredSales));
-    //       case SalesFilterEnum.yesterday:
-    //         if (!filter!.isSelected) {
-    //           filteredSales.removeWhere((element) => element.dateTime.day == DateTime.now().subtract(const Duration(days: 1)).day);
-    //         } else {
-    //           filteredSales.addAll(
-    //             saless.where((element) {
-    //               if (filteredSales.contains(element)) {
-    //                 return false;
-    //               } else {
-    //                 return element.dateTime.day == DateTime.now().subtract(const Duration(days: 1)).day;
-    //               }
-    //             }),
-    //           );
-    //         }
-    //         emit(state.copyWith(filteredSales: filteredSales));
-    //       default:
-    //     }
-    //   }
-    // switch (filter?.filterType) {
-    //   case SalesFilterEnum.lastMonth:
-    //     if (filter!.isSelected) {
-    //       filteredSales.clear();
-    //     }
-    //     filteredSales.addAll(saless.where((element) => element.dateTime.month == DateTime.now().month - 1));
-    //     return emit(state.copyWith(filteredSales: filteredSales));
-    //   case SalesFilterEnum.lastWeek:
-    //     if (!filter!.isSelected) {
-    //       filteredSales.clear();
-    //     }
-    //     filteredSales.addAll(saless.where((element) => element.dateTime.isAfter(DateTime.now().subtract(const Duration(days: 7)))));
-    //     return emit(state.copyWith(filteredSales: filteredSales));
-    //   case SalesFilterEnum.today:
-    //     filteredSales.addAll(saless.where((element) => element.dateTime.day == DateTime.now().day));
-    //     return emit(state.copyWith(filteredSales: filteredSales));
-    //   case SalesFilterEnum.yesterday:
-    //     filteredSales.addAll(saless.where((element) => element.dateTime.day == DateTime.now().subtract(const Duration(days: 1)).day));
-    //     return emit(state.copyWith(filteredSales: filteredSales));
-    //   default:
-    // }
   }
 
   void _applySelectedFilters(List<FilterModel<SalesFilterEnum>> values) {
@@ -362,8 +180,6 @@ class SalesCubit extends Cubit<SalesState> {
     emit(state.copyWith(filteredSales: List.from(filteredSales)));
   }
 
-  void _filterSales() {}
-
   List<SalesModel>? getSalesByMonth(int month) {
     final reversedCurrentMonthSales = _monthlySales(month)?.reversed.toList();
     return reversedCurrentMonthSales;
@@ -376,6 +192,24 @@ class SalesCubit extends Cubit<SalesState> {
       totalMeter += sales.quantity ?? 0;
     }
     return totalMeter;
+  }
+
+  void updateTopCustomer(int month) {
+    final grouppedSales = _monthlySales(month)?.groupListsBy((element) => element.customer?.title).values.toList();
+    if (grouppedSales == null || grouppedSales.isEmpty) return;
+    var maxSoldMeter = 0.0;
+    CustomerModel? topCustomer;
+    for (final salesList in grouppedSales) {
+      var totalSoldMeter = 0.0;
+      for (final sales in salesList) {
+        totalSoldMeter += sales.quantity ?? 0;
+      }
+      if (totalSoldMeter > maxSoldMeter) {
+        maxSoldMeter = totalSoldMeter;
+        topCustomer = salesList.first.customer;
+      }
+    }
+    emit(state.copyWith(topCustomer: topCustomer));
   }
 
   void updateMonthlySoldMeter(int month) {
@@ -429,7 +263,7 @@ class SalesCubit extends Cubit<SalesState> {
     if (stocks?.isEmpty ?? true) {
       return;
     }
-    final trendProduct = stocks?.firstWhere((element) => element.id == trendProductDetail!.itemId);
+    final trendProduct = stocks?.firstWhere((element) => element.id == trendProductDetail?.itemId);
     emit(state.copyWith(trendProduct: trendProduct));
   }
 
@@ -443,12 +277,15 @@ class SalesCubit extends Cubit<SalesState> {
     );
   }
 
-  void addSale({
+  Future<void> addSale({
     required SalesModel model,
-  }) {
-    if ((model.stockDetailModel?.meter ?? 0) == 0) return; //TODO SHOW NOTIFY
-    _updateStocks(model);
+  }) async {
+    if ((model.stockDetailModel?.meter ?? 0) == 0) return CNotify(message: 'Ürünün stoğu yetersiz', title: 'Stok Yetersiz').show();
+    final isOkay = await saleRepository.postData(model);
+    print(isOkay);
+    if (!isOkay) return;
     saleDatabaseOperation.addOrUpdateItem(model);
+
     writeIdToCache(state.salesId + 1);
     saless.add(model);
     emit(state.copyWith(sales: currentSales));
@@ -465,64 +302,6 @@ class SalesCubit extends Cubit<SalesState> {
       }
     }
   }
-  // void _addSaleLogs(SalesModel model, int currentId) {
-  //   saleDatabaseOperation.addOrUpdateItem(model);
-  //   saless.add(model);
-  //   emit(state.copyWith(sales: currentSales, salesId: currentId));
-  // }
-
-  // bool _isOutOfStock(StockDetailModel model, double? sold) {
-  //   return model.meter! - (sold ?? 0) < 0 ? true : false;
-  // }
-
-  // int? _findIndexForColor(int index, String? color) {
-  //   return stocks?[index].stockDetailModel.indexWhere((element) => element.title == color) ?? 0;
-  // }
-
-  // StockDetailModel? getStockAtIndex(int index, int indexOfDetail) {
-  //   return stocks?[index].stockDetailModel.elementAt(indexOfDetail);
-  // }
-
-  // void _performSale(int index, String? color, double solded, int id, double amount, CurrencyEnum currency) {
-  //   emit(state.copyWith(salesId: id + 1));
-  //   final salesModel = SalesModel(id: state.salesId, dateTime: DateTime.now(), title: '${state.selectedItemOnSales} $color', meter: solded, price: amount, currency: currency);
-  //   _addSaleLogs(salesModel, state.salesId);
-  //   final indexOfStock = getStockAtIndex(index, _findIndexForColor(index, color) ?? 0);
-
-  //   if (indexOfStock != null) {
-  //     indexOfStock.meter = indexOfStock.meter! - solded;
-  //     stockDatabaseOperation?.addOrUpdateItem(stocks![index]);
-  //   }
-  // }
-  // void sold(int index, String? color, double solded, BuildContext context, double price, CurrencyEnum currency) {
-  //   final indexMatchedColor = _findIndexForColor(index, color);
-  //   if (indexMatchedColor == null) return;
-  //   final indexOfStockDetail = getStockAtIndex(index, indexMatchedColor);
-  //   if (indexOfStockDetail == null) return;
-  //   if (_isOutOfStock(indexOfStockDetail, solded)) {
-  //     showOutOfDialog(context);
-  //     return;
-  //   } else {
-  //     readId();
-  //     writeIdToCache(state.salesId + 1);
-  //     _performSale(index, color, solded, state.salesId, price, currency);
-  //   }
-  // }
-
-  // // void sold(int index, String? color, double solded, BuildContext context, double price, CurrencyEnum currency) {
-  // //   final indexMatchedColor = _findIndexForColor(index, color);
-  // //   if (indexMatchedColor == null) return;
-  // //   final indexOfStockDetail = getStockAtIndex(index, indexMatchedColor);
-  // //   if (indexOfStockDetail == null) return;
-  // //   if (_isOutOfStock(indexOfStockDetail, solded)) {
-  // //     showOutOfDialog(context);
-  // //     return;
-  // //   } else {
-  // //     readId();
-  // //     writeIdToCache(state.salesId + 1);
-  // //     _performSale(index, color, solded, state.salesId, price, currency);
-  // //   }
-  // // }
 
   void get getTotalIncome {
     var totalIncome = 0.0;
@@ -538,6 +317,31 @@ class SalesCubit extends Cubit<SalesState> {
     final stock = stocks?.firstWhere((element) => element.id == id);
     return stock?.title;
   }
+
+  double? getTotalSalesInMonth(int month) {
+    var total = 0.0;
+    if (state.sales == null) return total;
+    for (final sales in state.sales!) {
+      if (sales.dateTime.month == month) {
+        total += sales.quantity ?? 0;
+      }
+    }
+    return total;
+  }
+
+//  void getTotalSalesInMonth(int month) {
+//     var total = 0.0;
+//     if (state.sales == null) {
+//       emit(state.copyWith(totalSalesInMonth: total));
+//       return;
+//     }
+//     for (final sales in state.sales!) {
+//       if (sales.dateTime.month == month) {
+//         total += sales.price ?? 0;
+//       }
+//     }
+//     emit(state.copyWith(totalSalesInMonth: total));
+//   }
 
   Future<dynamic> showOutOfDialog(BuildContext context) {
     return showDialog(

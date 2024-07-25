@@ -18,6 +18,7 @@ import 'package:stokip/product/constants/enums/current_tabs_enum.dart';
 import 'package:stokip/product/constants/enums/images_enum.dart';
 import 'package:stokip/product/constants/project_colors.dart';
 import 'package:stokip/product/constants/project_strings.dart';
+import 'package:stokip/product/extensions/currency_enum_extension.dart';
 import 'package:stokip/product/extensions/current_tabs_extension.dart';
 import 'package:stokip/product/image_picker_manager.dart';
 import 'package:stokip/product/navigator_manager.dart';
@@ -59,7 +60,6 @@ class _CurrentViewState extends State<CurrentView> with TickerProviderStateMixin
 
   @override
   Widget build(BuildContext context) {
-    final textEditingController = TextEditingController();
     final stockCubit = BlocProvider.of<StockCubit>(context);
     final importerCubit = BlocProvider.of<ImporterCubit>(context);
     final customerCubit = BlocProvider.of<CustomerCubit>(context);

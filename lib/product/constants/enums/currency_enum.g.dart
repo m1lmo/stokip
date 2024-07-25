@@ -17,6 +17,8 @@ class CurrencyEnumAdapter extends TypeAdapter<CurrencyEnum> {
         return CurrencyEnum.tl;
       case 1:
         return CurrencyEnum.usd;
+      case 2:
+        return CurrencyEnum.nullValue;
       default:
         return CurrencyEnum.tl;
     }
@@ -30,6 +32,9 @@ class CurrencyEnumAdapter extends TypeAdapter<CurrencyEnum> {
         break;
       case CurrencyEnum.usd:
         writer.writeByte(1);
+        break;
+      case CurrencyEnum.nullValue:
+        writer.writeByte(2);
         break;
     }
   }

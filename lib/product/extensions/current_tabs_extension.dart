@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:stokip/product/constants/enums/current_tabs_enum.dart';
-import 'package:stokip/product/widgets/custom_icon.dart';
+import 'package:stokip/product/constants/custom_icon.dart';
 
 extension CurrentTabExtension on CurrentTabsEnum {
   String get tabTitle {

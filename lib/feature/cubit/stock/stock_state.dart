@@ -1,9 +1,19 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
-
 part of 'stock_cubit.dart';
 
 // ignore: must_be_immutable
 class StockState extends Equatable {
+  StockState({
+    this.productId = 0,
+    this.productDetailId = 0,
+    this.products,
+    this.details,
+    this.appBarTitle,
+    this.totalMeter,
+    this.runningOutStock,
+    this.runningOutStockDetail,
+    this.trendStockDetail,
+    this.totalAmount,
+  });
   final List<StockModel>? products;
   final List<StockDetailModel>? details;
 
@@ -17,20 +27,7 @@ class StockState extends Equatable {
   StockModel? runningOutStock;
   StockDetailModel? runningOutStockDetail;
   StockDetailModel? trendStockDetail;
-
   double? totalAmount;
-  StockState({
-    this.productId = 0,
-    this.productDetailId = 0,
-    this.products,
-    this.details,
-    this.appBarTitle,
-    this.totalMeter,
-    this.runningOutStock,
-    this.runningOutStockDetail,
-    this.trendStockDetail,
-    this.totalAmount,
-  });
 
   @override
   List<Object?> get props {

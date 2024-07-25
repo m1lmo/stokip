@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:stokip/product/widgets/custom_icon.dart';
+import 'package:stokip/product/constants/custom_icon.dart';
 
 abstract class MySearchDelegate<T> extends SearchDelegate<T> {
   MySearchDelegate({

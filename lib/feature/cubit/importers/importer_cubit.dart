@@ -6,16 +6,19 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:stokip/feature/model/importer_model.dart';
 import 'package:stokip/feature/model/payment_model.dart';
 import 'package:stokip/feature/model/purchases_model.dart';
+import 'package:stokip/feature/service/repository/importer_repository.dart';
 import 'package:stokip/product/cache/shared_manager.dart';
 import 'package:stokip/product/constants/enums/currency_enum.dart';
 import 'package:stokip/product/database/core/database_hive_manager.dart';
 import 'package:stokip/product/database/operation/importer_hive_operation.dart';
+import 'package:stokip/product/helper/dio_helper.dart';
+import 'package:stokip/test_global.dart' as globals;
 
-import 'package:stokip/feature/model/stock_model.dart';
 import 'package:stokip/product/widgets/c_notify.dart';
 
 part 'importer_state.dart';
@@ -30,26 +33,36 @@ class ImporterCubit extends Cubit<ImporterState> {
 
   final ImporterHiveOperation databaseOperation = ImporterHiveOperation();
 
-  Future<void> get init async {
-    try {
-      await DatabaseHiveManager().start();
-      await databaseOperation.start();
-      sharedManager = await SharedManager.getInstance;
-      readId();
-      if (databaseOperation.box.isEmpty) return;
-      importers
-        ..addAll(databaseOperation.box.values)
-        ..sort(
-          (a, b) => a.id.compareTo(b.id),
-        );
-      updateTotalBalanceUSD();
+  final DioHelper dioHelper = DioHelper.instance();
+  late final ImporterRepository importerRepository;
+  final FlutterSecureStorage secureStorage = const FlutterSecureStorage();
 
+  Future<void> get init async {
+    await DatabaseHiveManager().start();
+    await databaseOperation.start();
+    importerRepository = ImporterRepository(dioHelper.dio);
+    sharedManager = await SharedManager.getInstance;
+    final token = await secureStorage.read(key: 'jwt');
+    dioHelper.setToken(token);
+    readId();
+    if (!globals.globalInternetConnection && databaseOperation.box.isNotEmpty) {
+      importers.addAll(databaseOperation.box.values);
+      updateTotalBalanceUSD();
       emit(state.copyWith(importers: importers));
-      emit(state.copyWith(importerId: importers.last.id));
-    } catch (e) {
-      // databaseOperation.box.deleteAll()
-      print(e);
+      return;
+    } else {
+      final data = await importerRepository.fetchData();
+      if (data == null) return;
+      for (final item in data) {
+        if (item == null) continue;
+        importers.add(item);
+        updateTotalBalanceUSD();
+        await databaseOperation.addOrUpdateItem(item);
+      }
     }
+    updateTotalBalanceUSD();
+    emit(state.copyWith(importers: importers, importerId: importers.last.id));
+    // databaseOperation.box.deleteAll()
   }
 
   void get getImporters {
@@ -66,14 +79,6 @@ class ImporterCubit extends Cubit<ImporterState> {
     await sharedManager.writeId(state.importerId + 1, 'importerid');
     return emit(state.copyWith(importerId: state.importerId + 1));
   }
-
-  // void addOrUpdatePurchase(int index, PurchasesModel model) {
-  //   List<ImporterModel>? updatedPurchase = List.from(state.importers ?? []);
-  //   updatedPurchase[index].purchases.add(model);
-  //   print(updatedPurchase[index]);
-  //   databaseOperation.addOrUpdateItem(updatedPurchase[index]);
-  //   emit(state.copyWith(importers: updatedPurchase));
-  // }
 
   Text getPurchasedDate(int index, int indexOfPurchases) {
     final reversedPurchaseDate = state.importers?[index].purchases.reversed.toList();
@@ -126,57 +131,8 @@ class ImporterCubit extends Cubit<ImporterState> {
     return totalMeter;
   }
 
-  /// The function adds purchase logs with specified details to a list.
-  ///
-  /// Args:
-  ///   index (int): The index parameter is an integer that represents the position at which the
-  /// purchase log will be added in a list or array.
-  ///   title (String): The title parameter is a String that represents the title of the purchase log.
-  ///   detailTitle (String): The `detailTitle` parameter is a string that represents the title or
-  /// description of the purchase log.
-  ///   meter (double): The "meter" parameter is a double value that represents the quantity or amount
-  /// of the purchase. It could be the number of items purchased, the length of a material purchased, or
-  /// any other unit of measurement relevant to the purchase.
-  ///   price (double): The price parameter is a double data type, which means it can store decimal
-  /// numbers. It represents the price of the purchase.
-  void addPurchaseLogs(int index, String title, String detailTitle, double meter, double price) {
-    final totalAmount = meter * price;
-    final displayResult = PurchasesModel(
-      id: state.salesId,
-      purchasedDate: DateTime.now(),
-      title: title,
-      detailTitle: detailTitle,
-      meter: meter,
-      totalAmount: totalAmount,
-    );
-    importers[index].purchases.add(displayResult);
-    updateBalance(index, totalAmount);
-    databaseOperation.addOrUpdateItem(importers[index]);
-    emit(state.copyWith(importers: List.from(importers)));
-  }
-
-  void updateBalance(int index, double totalAmount) {
-    importers[index].balance = (importers[index].balance ?? 0) + totalAmount;
-    emit(state.copyWith(importers: List.from(importers)));
-  }
-
-  void paymentToIndexedSupplier(int index, double payment) {
-    importers[index].balance = (importers[index].balance ?? 0) - payment;
-    emit(state.copyWith(importers: List.from(importers)));
-  }
-
-  /// The `addToStocksPurchaseDetail` method is a helper method in the `ImporterCubit` class. It is
-  /// used to create a `StockDetailModel` object based on the provided parameters.
-
-  // StockDetailModel addToStocksPurchaseDetail(int index, int stockIndex, String title, double meter) {
-  //   final result = StockDetailModel(title: title, meter: meter,itemId:);
-  //   return result;
-  // }
-
-  void addPaymentLogs(int index, double price) {
-    final paymentModel = PaymentModel(price: price, payedTime: DateTime.now());
-    importers[index].payments.add(paymentModel);
-    databaseOperation.addOrUpdateItem(importers[index]);
+  void updateBalance(ImporterModel importer) {
+    databaseOperation.addOrUpdateItem(importer);
     emit(state.copyWith(importers: List.from(importers)));
   }
 
@@ -185,27 +141,23 @@ class ImporterCubit extends Cubit<ImporterState> {
       if (element.currency == CurrencyEnum.usd) return previusValue + (element.balance ?? 0);
       return previusValue;
     });
-    // final totalBalance = importers.fold<double>(0, (previousValue, element) {
-    //   if (element.currency == CurrencyEnum.usd) return previousValue + (element.balance ?? 0);
-    //   return previousValue;
-    // });
     return emit(state.copyWith(totalBalance: totalBalance));
   }
 
-  void addImporter(BuildContext context, TickerProvider tickerProviderService, {required ImporterModel model}) {
+  Future<void> addImporter(BuildContext context, TickerProvider tickerProviderService, {required ImporterModel model}) async {
     if (importers.isNotEmpty) {
       if (importers.where((element) => element.title?.toLowerCase() == model.title?.toLowerCase()).isNotEmpty) {
         return CNotify(
-          tickerProviderService: tickerProviderService,
-          overlayState: Overlay.of(context),
           title: 'Hata',
           message: 'Bu isimde bir müşteri zaten var',
         ).show();
       }
     }
+    final result = await importerRepository.postData(model);
+    if (!result) return;
     importers.add(model);
-    writeIdToCache();
-    databaseOperation.addOrUpdateItem(model);
+    await writeIdToCache();
+    await databaseOperation.addOrUpdateItem(model);
     updateTotalBalanceUSD();
     emit(state.copyWith(importers: List.from(importers)));
   }

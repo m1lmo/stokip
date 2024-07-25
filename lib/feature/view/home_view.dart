@@ -4,6 +4,8 @@ import 'package:stokip/feature/cubit/customers/cubit/customer_cubit.dart';
 import 'package:stokip/feature/cubit/importers/importer_cubit.dart';
 import 'package:stokip/feature/cubit/sales/sales_cubit.dart';
 import 'package:stokip/feature/cubit/stock/stock_cubit.dart';
+import 'package:stokip/feature/cubit/user/user_cubit.dart';
+import 'package:stokip/feature/model/user_model.dart';
 import 'package:stokip/product/constants/enums/tabs_enum.dart';
 import 'package:stokip/product/constants/project_colors.dart';
 import 'package:stokip/product/extensions/tabs_extension.dart';
@@ -76,64 +78,78 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
         ),
         BlocProvider<ImporterCubit>(
           create: (context) {
-            return ImporterCubit()
-              ..init
-              ..getImporters;
+            return ImporterCubit()..init;
           },
         ),
         BlocProvider<CustomerCubit>(
           create: (context) {
             return CustomerCubit(
               sales: context.read<SalesCubit>().state.sales ?? [],
-            )..init(this);
+            )..init();
           },
         ),
       ],
-      child: DefaultTabController(
-        length: Tabs.values.length,
-        child: Scaffold(
-          resizeToAvoidBottomInset: false,
-          bottomNavigationBar: BottomAppBar(
-            child: TabBar(
-              tabs: Tabs.values.map(
-                (e) {
-                  print(e.index);
-                  return Center(
-                    child: ValueListenableBuilder(
-                      valueListenable: tabIndex,
-                      builder: (_, tabIndexValue, child) {
-                        return Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(
-                              e.getIconData(),
-                              color: tabIndexValue == e.index ? ProjectColors2.primaryContainer : Colors.black,
-                              size: MediaQuery.of(context).size.width / 20,
-                            ),
-                            Text(
-                              e.tabTitle(),
-                              style: TextStyle(color: tabIndexValue == e.index ? ProjectColors2.primaryContainer : Colors.black, fontSize: 12),
-                            ),
-                          ],
-                        );
-                      },
-                    ),
-                  );
-                },
-              ).toList(),
-              controller: _tabController,
-            ),
-          ),
-          body: TabBarView(
-            physics: const NeverScrollableScrollPhysics(),
+      child: TabView(tabIndex: tabIndex, tabController: _tabController),
+    );
+  }
+}
+
+class TabView extends StatelessWidget {
+  const TabView({
+    required this.tabIndex,
+    required TabController tabController,
+    super.key,
+  }) : _tabController = tabController;
+
+  final ValueNotifier<int> tabIndex;
+  final TabController _tabController;
+
+  @override
+  Widget build(BuildContext context) {
+    return DefaultTabController(
+      length: Tabs.values.length,
+      child: Scaffold(
+        resizeToAvoidBottomInset: false,
+        bottomNavigationBar: BottomAppBar(
+          child: TabBar(
+            tabs: Tabs.values.map(
+              (e) {
+                print(e.index);
+                return Center(
+                  child: ValueListenableBuilder(
+                    valueListenable: tabIndex,
+                    builder: (_, tabIndexValue, child) {
+                      return Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            e.getIconData(),
+                            color: tabIndexValue == e.index ? ProjectColors2.primaryContainer : Colors.black,
+                            size: MediaQuery.of(context).size.width / 20,
+                          ),
+                          Text(
+                            e.tabTitle(),
+                            style: TextStyle(color: tabIndexValue == e.index ? ProjectColors2.primaryContainer : Colors.black, fontSize: 12),
+                          ),
+                        ],
+                      );
+                    },
+                  ),
+                );
+              },
+            ).toList(),
             controller: _tabController,
-            children: [
-              Tabs.dashboard.getPage(),
-              Tabs.sales.getPage(),
-              Tabs.products.getPage(),
-              Tabs.suppliers.getPage(),
-            ],
           ),
+        ),
+        body: TabBarView(
+          physics: const NeverScrollableScrollPhysics(),
+          controller: _tabController,
+          children: [
+            Tabs.dashboard.getPage(),
+            Tabs.sales.getPage(),
+            Tabs.products.getPage(),
+            Tabs.suppliers.getPage(),
+          ],
         ),
       ),
     );

@@ -6,6 +6,7 @@ import 'package:stokip/feature/model/payment_model.dart';
 import 'package:stokip/feature/model/purchases_model.dart';
 import 'package:stokip/feature/model/sales_model.dart';
 import 'package:stokip/feature/model/stock_model.dart';
+import 'package:stokip/feature/model/user_model.dart';
 import 'package:stokip/product/constants/enums/currency_enum.dart';
 import 'package:stokip/product/database/core/hive_types.dart';
 
@@ -50,5 +51,7 @@ final class DatabaseHiveManager extends IDataBaseManager {
     Hive.registerAdapter(PaymentModelAdapter());
     if (Hive.isAdapterRegistered(HiveTypes.customerModelId)) return;
     Hive.registerAdapter(CustomerModelAdapter());
+    if (Hive.isAdapterRegistered(HiveTypes.userModelId)) return;
+    Hive.registerAdapter(UserModelAdapter());
   }
 }

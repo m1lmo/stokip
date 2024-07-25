@@ -23,6 +23,7 @@ class SalesModelAdapter extends TypeAdapter<SalesModel> {
       quantity: fields[2] as double?,
       price: fields[4] as double?,
       currency: fields[5] as CurrencyEnum?,
+      itemName: fields[7] as String?,
       customer: fields[6] as CustomerModel?,
     );
   }
@@ -30,7 +31,7 @@ class SalesModelAdapter extends TypeAdapter<SalesModel> {
   @override
   void write(BinaryWriter writer, SalesModel obj) {
     writer
-      ..writeByte(7)
+      ..writeByte(8)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -44,7 +45,9 @@ class SalesModelAdapter extends TypeAdapter<SalesModel> {
       ..writeByte(5)
       ..write(obj.currency)
       ..writeByte(6)
-      ..write(obj.customer);
+      ..write(obj.customer)
+      ..writeByte(7)
+      ..write(obj.itemName);
   }
 
   @override
@@ -63,15 +66,17 @@ class SalesModelAdapter extends TypeAdapter<SalesModel> {
 // **************************************************************************
 
 SalesModel _$SalesModelFromJson(Map<String, dynamic> json) => SalesModel(
-      id: (json['id'] as num).toInt(),
-      dateTime: DateTime.parse(json['dateTime'] as String),
-      stockDetailModel: json['stockDetailModel'] == null
+      id: (json['saleId'] as num).toInt(),
+      dateTime: SalesModel._dateTimeFromJson(json['soldDate'] as String),
+      stockDetailModel: json['itemDetail'] == null
           ? null
           : StockDetailModel.fromJson(
-              json['stockDetailModel'] as Map<String, dynamic>),
-      quantity: (json['quantity'] as num?)?.toDouble(),
-      price: (json['price'] as num?)?.toDouble(),
-      currency: $enumDecodeNullable(_$CurrencyEnumEnumMap, json['currency']),
+              json['itemDetail'] as Map<String, dynamic>),
+      quantity: (json['quantitySold'] as num?)?.toDouble(),
+      price: (json['salePrice'] as num?)?.toDouble(),
+      currency:
+          $enumDecodeNullable(_$CurrencyEnumEnumMap, json['currencyType']),
+      itemName: json['itemName'] as String?,
       customer: json['customer'] == null
           ? null
           : CustomerModel.fromJson(json['customer'] as Map<String, dynamic>),
@@ -79,16 +84,18 @@ SalesModel _$SalesModelFromJson(Map<String, dynamic> json) => SalesModel(
 
 Map<String, dynamic> _$SalesModelToJson(SalesModel instance) =>
     <String, dynamic>{
-      'id': instance.id,
-      'stockDetailModel': instance.stockDetailModel,
-      'quantity': instance.quantity,
-      'dateTime': instance.dateTime.toIso8601String(),
-      'price': instance.price,
-      'currency': _$CurrencyEnumEnumMap[instance.currency],
-      'customer': instance.customer,
+      'saleId': instance.id,
+      'itemDetail': instance.stockDetailModel?.toJson(),
+      'quantitySold': instance.quantity,
+      'soldDate': SalesModel._dateTimeToJson(instance.dateTime),
+      'salePrice': instance.price,
+      'currencyType': _$CurrencyEnumEnumMap[instance.currency],
+      'customer': instance.customer?.toJson(),
+      'itemName': instance.itemName,
     };
 
 const _$CurrencyEnumEnumMap = {
   CurrencyEnum.tl: 'tl',
   CurrencyEnum.usd: 'usd',
+  CurrencyEnum.nullValue: '',
 };

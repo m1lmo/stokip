@@ -60,26 +60,24 @@ class CustomerModelAdapter extends TypeAdapter<CustomerModel> {
 
 CustomerModel _$CustomerModelFromJson(Map<String, dynamic> json) =>
     CustomerModel(
-      id: (json['id'] as num).toInt(),
-      title: json['title'] as String?,
-      balance: (json['balance'] as num?)?.toDouble(),
-      boughtProducts: (json['boughtProducts'] as List<dynamic>?)
-          ?.map((e) => SalesModel.fromJson(e as Map<String, dynamic>))
-          .toList(),
-      currency: $enumDecodeNullable(_$CurrencyEnumEnumMap, json['currency']) ??
-          CurrencyEnum.usd,
+      id: (json['customerId'] as num).toInt(),
+      title: json['name'] as String?,
+      balance: (json['balance'] as num?)?.toDouble() ?? 0,
+      currency:
+          $enumDecodeNullable(_$CurrencyEnumEnumMap, json['currencyType']) ??
+              CurrencyEnum.usd,
     );
 
 Map<String, dynamic> _$CustomerModelToJson(CustomerModel instance) =>
     <String, dynamic>{
-      'id': instance.id,
-      'title': instance.title,
+      'customerId': instance.id,
+      'name': instance.title,
       'balance': instance.balance,
-      'boughtProducts': instance.boughtProducts,
-      'currency': _$CurrencyEnumEnumMap[instance.currency]!,
+      'currencyType': _$CurrencyEnumEnumMap[instance.currency]!,
     };
 
 const _$CurrencyEnumEnumMap = {
   CurrencyEnum.tl: 'tl',
   CurrencyEnum.usd: 'usd',
+  CurrencyEnum.nullValue: '',
 };

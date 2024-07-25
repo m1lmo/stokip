@@ -12,7 +12,7 @@ import 'package:stokip/product/database/core/model/hive_model2_mixin.dart';
 
 part 'sales_model.g.dart';
 
-@JsonSerializable()
+@JsonSerializable(explicitToJson: true)
 @HiveType(typeId: HiveTypes.salesModelId)
 @immutable
 final class SalesModel extends MainModel with EquatableMixin, HiveModel2Mixin {
@@ -23,6 +23,7 @@ final class SalesModel extends MainModel with EquatableMixin, HiveModel2Mixin {
     this.quantity,
     this.price,
     this.currency,
+    this.itemName,
     this.customer,
   });
 
@@ -30,19 +31,27 @@ final class SalesModel extends MainModel with EquatableMixin, HiveModel2Mixin {
     return _$SalesModelFromJson(json);
   }
   @HiveField(0)
+  @JsonKey(name: 'saleId')
   final int id;
   @HiveField(1)
+  @JsonKey(name: 'itemDetail')
   final StockDetailModel? stockDetailModel;
   @HiveField(2)
+  @JsonKey(name: 'quantitySold')
   final double? quantity;
   @HiveField(3)
+  @JsonKey(name: 'soldDate', fromJson: _dateTimeFromJson, toJson: _dateTimeToJson)
   final DateTime dateTime;
   @HiveField(4)
+  @JsonKey(name: 'salePrice')
   final double? price;
   @HiveField(5)
+  @JsonKey(name: 'currencyType')
   final CurrencyEnum? currency;
   @HiveField(6)
   final CustomerModel? customer;
+  @HiveField(7)
+  final String? itemName;
   @override
   String? get title => stockDetailModel?.title;
   @override
@@ -54,13 +63,21 @@ final class SalesModel extends MainModel with EquatableMixin, HiveModel2Mixin {
         price,
         currency,
         customer,
-      ]; 
+      ];
 
   @override
   String get key => id.toString();
 
+  @override
   Map<String, dynamic> toJson() {
     return _$SalesModelToJson(this);
   }
+
+  static DateTime _dateTimeFromJson(String date) {
+    return DateTime.parse(date);
+  }
+
+  static String _dateTimeToJson(DateTime date) {
+    return date.toUtc().toIso8601String();
+  }
 }
-  
