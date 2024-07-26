@@ -47,7 +47,7 @@ class _ProductsViewState extends State<ProductsView> with NavigatorManager {
     productNameEditingController = TextEditingController();
     pPriceEditingController = TextEditingController();
     sPriceEditingController = TextEditingController();
-    blocProvider = BlocProvider.of<StockCubit>(context)..readId();
+    blocProvider = BlocProvider.of<StockCubit>(context);
     salesCubit = BlocProvider.of<SalesCubit>(context);
   }
 
@@ -78,12 +78,7 @@ class _ProductsViewState extends State<ProductsView> with NavigatorManager {
             ProjectStrings.productsAppBarTitle,
           ),
           actions: [
-            BlocSelector<StockCubit, StockState, int>(
-              selector: (state) {
-                return state.productId;
-              },
-              builder: (context, state) {
-                return IconButton(
+           IconButton(
                   onPressed: () {
                     CustomBottomSheet.show(
                       context,
@@ -95,7 +90,6 @@ class _ProductsViewState extends State<ProductsView> with NavigatorManager {
                         onPressed: () {
                           blocProvider.addProduct(
                             StockModel(
-                              id: state,
                               title: productNameEditingController.text.toLowerCase(),
                               pPrice: double.tryParse(pPriceEditingController.text) ?? 0,
                               sPrice: double.tryParse(sPriceEditingController.text) ?? 0,
@@ -109,8 +103,6 @@ class _ProductsViewState extends State<ProductsView> with NavigatorManager {
                     );
                   },
                   icon: const Icon(Icons.add),
-                );
-              },
             ),
           ],
         ),

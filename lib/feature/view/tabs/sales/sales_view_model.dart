@@ -30,7 +30,7 @@ abstract class _SalesVievModelBase with Store {
 
   @action
   void init(BuildContext context) {
-    blocProvider = BlocProvider.of<SalesCubit>(context)..readId();
+    blocProvider = BlocProvider.of<SalesCubit>(context);
     customerCubitProvider = BlocProvider.of<CustomerCubit>(context);
     stockCubitProvider = BlocProvider.of<StockCubit>(context);
     stockDropDownController = SingleValueDropDownController();
@@ -68,7 +68,6 @@ abstract class _SalesVievModelBase with Store {
   void addSale() {
     final saleModel = SalesModel(
       customer: customerDropDownController?.dropDownValue?.value as CustomerModel?,
-      id: blocProvider.state.salesId,
       itemName: stockDropDownController?.dropDownValue?.value?.title as String,
       dateTime: DateTime.now(),
       stockDetailModel: stockDetailDropDownController?.dropDownValue?.value as StockDetailModel,

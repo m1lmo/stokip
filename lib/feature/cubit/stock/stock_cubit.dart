@@ -3,7 +3,6 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:stokip/feature/model/sales_model.dart';
 import 'package:stokip/feature/service/repository/stock_repository.dart';
-import 'package:stokip/product/cache/shared_manager.dart';
 import 'package:stokip/product/database/core/database_hive_manager.dart';
 import 'package:stokip/product/database/operation/stock_hive_operation.dart';
 import 'package:stokip/product/helper/dio_helper.dart';
@@ -17,7 +16,6 @@ class StockCubit extends Cubit<StockState> {
   StockCubit() : super(StockState(products: lists));
 
   static final List<StockModel> lists = [];
-  late final SharedManager sharedManager;
   final secureStorage = const FlutterSecureStorage();
   final StockHiveOperation databaseOperation = StockHiveOperation();
   final dioHelper = DioHelper.instance();
@@ -30,7 +28,6 @@ class StockCubit extends Cubit<StockState> {
     final token = await secureStorage.read(key: 'jwt');
     print(token);
     stockRepository = StockRepository(dioHelper.dio);
-    sharedManager = await SharedManager.getInstance;
     if (databaseOperation.box.isNotEmpty && !globals.globalInternetConnection) {
       lists.addAll(databaseOperation.box.values);
       emit(state.copyWith(products: currentStocks));
@@ -64,12 +61,13 @@ class StockCubit extends Cubit<StockState> {
     if (sameStockIndex != -1) {
       updatedProducts[index].stockDetailModel[sameStockIndex].meter = (updatedProducts[index].stockDetailModel[sameStockIndex].meter ?? 0) + (model.meter ?? 0);
     } else {
-      updatedProducts[index].stockDetailModel.add(model);
-      emit(state.copyWith(productDetailId: state.productDetailId + 1));
+      final copyModel = model.copyWith(itemDetailId: updatedProducts[index].stockDetailModel.length + 1);
+
+      updatedProducts[index].stockDetailModel.add(copyModel);
+      // emit(state.copyWith(productDetailId: state.productDetailId + 1));
     }
     updateTotalMeter(stock: updatedProducts[index]);
     _updateTotalTotalMeter();
-    writeIdToCache(state.productDetailId, 'stockdetailid');
     databaseOperation.addOrUpdateItem(updatedProducts[index]);
     emit(state.copyWith(products: updatedProducts));
   }
@@ -84,8 +82,6 @@ class StockCubit extends Cubit<StockState> {
     }
     return emit(state.copyWith(totalMeter: result));
   }
-
-  void addLocalDatabase() {}
 
   /// this method for update total meter in stock detail model
   void updateTotalMeter({StockModel? stock, int? itemId}) {
@@ -109,17 +105,6 @@ class StockCubit extends Cubit<StockState> {
       emit(state.copyWith(products: currentStocks));
     }
   }
-  // void updateTotalMeter(int itemId,{}) {
-  //   var result = 0.0;
-  //   final indexList = lists.indexWhere((element) => element.id == itemId);
-  //   for (final detailStock in lists[indexList].stockDetailModel) {
-  //     if (detailStock.meter is num) {
-  //       result += detailStock.meter ?? 0;
-  //     }
-  //   }
-  //   lists[indexList].totalMeter = result;
-  //   emit(state.copyWith(products: currentStocks));
-  // }
 
   void removeProduct(int index) {
     databaseOperation.remove(lists[index]);
@@ -137,35 +122,22 @@ class StockCubit extends Cubit<StockState> {
     updateRunningOutStockDetail;
   }
 
-  void readId() {
-    final result = sharedManager.readId('stockid');
-    final result2 = sharedManager.readId('stockdetailid');
-    return emit(state.copyWith(productId: result, productDetailId: result2));
-  }
-
-  Future<void> writeIdToCache(
-    int? id,
-    String key,
-  ) async {
-    await sharedManager.writeId(id ?? 0, key);
-  }
-
   /// this is for add product to list and update total meter
   Future<void> addProduct(
     StockModel model,
   ) async {
+    final copyModel = model.copyWith(id: lists.length + 1);
     final indexOfSameProduct = lists.indexWhere((element) => element.title?.toLowerCase() == model.title?.toLowerCase());
-    stockRepository.postData(model); // todo
+    stockRepository.postData(copyModel); // todo
     if (indexOfSameProduct != -1) {
       lists[indexOfSameProduct].totalMeter = lists[indexOfSameProduct].totalMeter ?? 0 + (model.totalMeter ?? 0);
       updateTotalMeter(stock: lists[indexOfSameProduct]);
       await databaseOperation.addOrUpdateItem(lists[indexOfSameProduct]);
     } else {
-      emit(state.copyWith(productId: state.productId + 1));
-      await writeIdToCache(state.productId, 'stockid');
-      lists.add(model);
+      // emit(state.copyWith(productId: state.productId + 1));
+      lists.add(copyModel);
       updateTotalMeter(stock: lists.last);
-      await databaseOperation.addOrUpdateItem(model);
+      await databaseOperation.addOrUpdateItem(copyModel);
     }
     emit(state.copyWith(products: List.from(currentStocks)));
     _updateTotalTotalMeter();

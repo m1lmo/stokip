@@ -11,7 +11,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:stokip/feature/model/importer_model.dart';
 import 'package:stokip/feature/model/purchases_model.dart';
 import 'package:stokip/feature/service/repository/importer_repository.dart';
-import 'package:stokip/product/cache/shared_manager.dart';
 import 'package:stokip/product/constants/enums/currency_enum.dart';
 import 'package:stokip/product/database/core/database_hive_manager.dart';
 import 'package:stokip/product/database/operation/importer_hive_operation.dart';
@@ -28,8 +27,6 @@ class ImporterCubit extends Cubit<ImporterState> {
 
   final List<ImporterModel> importers = [];
 
-  late final SharedManager sharedManager;
-
   final ImporterHiveOperation databaseOperation = ImporterHiveOperation();
 
   final DioHelper dioHelper = DioHelper.instance();
@@ -40,10 +37,8 @@ class ImporterCubit extends Cubit<ImporterState> {
     await DatabaseHiveManager().start();
     await databaseOperation.start();
     importerRepository = ImporterRepository(dioHelper.dio);
-    sharedManager = await SharedManager.getInstance;
     final token = await secureStorage.read(key: 'jwt');
     dioHelper.setToken(token);
-    readId();
     if (!globals.globalInternetConnection && databaseOperation.box.isNotEmpty) {
       importers.addAll(databaseOperation.box.values);
       updateTotalBalanceUSD();
@@ -60,23 +55,13 @@ class ImporterCubit extends Cubit<ImporterState> {
       }
     }
     updateTotalBalanceUSD();
-    emit(state.copyWith(importers: importers, importerId: importers.last.id));
+    emit(state.copyWith(importers: importers));
     // databaseOperation.box.deleteAll()
   }
 
   void get getImporters {
     if (importers.isEmpty) return;
     emit(state.copyWith(importers: importers));
-  }
-
-  void readId() {
-    final result = sharedManager.readId('importerid');
-    emit(state.copyWith(importerId: result));
-  }
-
-  Future<void> writeIdToCache() async {
-    await sharedManager.writeId(state.importerId + 1, 'importerid');
-    return emit(state.copyWith(importerId: state.importerId + 1));
   }
 
   Text getPurchasedDate(int index, int indexOfPurchases) {
@@ -144,19 +129,19 @@ class ImporterCubit extends Cubit<ImporterState> {
   }
 
   Future<void> addImporter(BuildContext context, TickerProvider tickerProviderService, {required ImporterModel model}) async {
+    final copyModel = model.copyWith(id: importers.length + 1);
     if (importers.isNotEmpty) {
-      if (importers.where((element) => element.title?.toLowerCase() == model.title?.toLowerCase()).isNotEmpty) {
+      if (importers.where((element) => element.title?.toLowerCase() == copyModel.title?.toLowerCase()).isNotEmpty) {
         return CNotify(
           title: 'Hata',
           message: 'Bu isimde bir müşteri zaten var',
         ).show();
       }
     }
-    final result = await importerRepository.postData(model);
+    final result = await importerRepository.postData(copyModel);
     if (!result) return;
-    importers.add(model);
-    await writeIdToCache();
-    await databaseOperation.addOrUpdateItem(model);
+    importers.add(copyModel);
+    await databaseOperation.addOrUpdateItem(copyModel);
     updateTotalBalanceUSD();
     emit(state.copyWith(importers: List.from(importers)));
   }

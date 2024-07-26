@@ -110,7 +110,6 @@ class _CurrentViewState extends State<CurrentView> with TickerProviderStateMixin
                           formKey.currentState?.validate();
                           customerCubit.addCustomer(
                             CustomerModel(
-                              id: customerCubit.state.id ?? 0,
                               title: currentTitleController.text.toLowerCase(),
                               balance: double.parse(currentBalanceController.text.toLowerCase()),
                               currency: currentCurrencyController.dropDownValue?.value as CurrencyEnum,
@@ -138,7 +137,6 @@ class _CurrentViewState extends State<CurrentView> with TickerProviderStateMixin
                               context,
                               this,
                               model: ImporterModel(
-                                id: importerCubit.state.importerId,
                                 title: currentTitleController.text.toLowerCase(),
                                 balance: double.parse(currentBalanceController.text.toLowerCase()),
                                 currency: currentCurrencyController.dropDownValue?.value as CurrencyEnum,

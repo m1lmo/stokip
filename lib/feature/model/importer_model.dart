@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 import 'package:flutter/foundation.dart';
 import 'package:hive/hive.dart';
 import 'package:json_annotation/json_annotation.dart';
@@ -16,7 +18,7 @@ final class ImporterModel extends MainModel {
   /// this.purchases = const []});` is defining a constructor for the `ImporterModel` class.
 
   ImporterModel({
-    required this.id,
+     this.id,
     this.title,
     this.currency,
     this.balance = 0,
@@ -32,7 +34,7 @@ final class ImporterModel extends MainModel {
   /// keyword indicates that the value of `id` cannot be changed once it is assigned a value.
   @HiveField(0)
   @JsonKey(name: 'supplierId')
-  final int id;
+  final int? id;
   @override
   @HiveField(1)
   @JsonKey(name: 'name')
@@ -64,5 +66,21 @@ final class ImporterModel extends MainModel {
   @override
   Map<String, dynamic> toJson() {
     return _$ImporterModelToJson(this);
+  }
+
+  ImporterModel copyWith({
+    int? id,
+    ValueGetter<String?>? title,
+    ValueGetter<CurrencyEnum?>? currency,
+    ValueGetter<double?>? balance,
+    ValueGetter<Uint8List?>? customerPhoto,
+  }) {
+    return ImporterModel(
+      id: id ?? this.id,
+      title: title != null ? title() : this.title,
+      currency: currency != null ? currency() : this.currency,
+      balance: balance != null ? balance() : this.balance,
+      customerPhoto: customerPhoto != null ? customerPhoto() : this.customerPhoto,
+    );
   }
 }

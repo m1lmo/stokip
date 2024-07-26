@@ -4,7 +4,6 @@ part of 'sales_cubit.dart';
 @immutable
 final class SalesState with EquatableMixin {
   SalesState({
-    this.salesId = 0,
     this.sales,
     this.topCustomer,
     this.filteredSales,
@@ -13,7 +12,6 @@ final class SalesState with EquatableMixin {
     this.monthlySoldAmount = 0.0,
     this.monthlySoldMeter = 0.0,
   });
-  final int salesId;
   final double? totalIncome;
   final List<SalesModel>? sales;
   final List<SalesModel>? filteredSales;
@@ -25,7 +23,6 @@ final class SalesState with EquatableMixin {
   List<Object?> get props => [
         sales,
         filteredSales,
-        salesId,
         totalIncome,
         trendProduct,
         monthlySoldAmount,
@@ -40,7 +37,6 @@ final class SalesState with EquatableMixin {
           runtimeType == other.runtimeType &&
           sales == other.sales &&
           filteredSales == other.filteredSales &&
-          salesId == other.salesId &&
           totalIncome == other.totalIncome &&
           trendProduct == other.trendProduct &&
           topCustomer == other.topCustomer &&
@@ -49,14 +45,7 @@ final class SalesState with EquatableMixin {
 
   @override
   int get hashCode =>
-      sales.hashCode ^
-      filteredSales.hashCode ^
-      salesId.hashCode ^
-      totalIncome.hashCode ^
-      trendProduct.hashCode ^
-      monthlySoldMeter.hashCode ^
-      topCustomer.hashCode ^
-      monthlySoldAmount.hashCode;
+      sales.hashCode ^ filteredSales.hashCode ^ totalIncome.hashCode ^ trendProduct.hashCode ^ monthlySoldMeter.hashCode ^ topCustomer.hashCode ^ monthlySoldAmount.hashCode;
 
   SalesState copyWith({
     int? salesId,
@@ -73,7 +62,6 @@ final class SalesState with EquatableMixin {
     double? monthlySoldMeter,
   }) {
     return SalesState(
-      salesId: salesId ?? this.salesId,
       sales: sales ?? this.sales,
       filteredSales: filteredSales ?? this.filteredSales,
       totalIncome: totalIncome ?? this.totalIncome,

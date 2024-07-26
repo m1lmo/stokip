@@ -1,63 +1,24 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:bloc/bloc.dart';
-
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:kartal/kartal.dart';
 import 'package:stokip/feature/model/customer_model.dart';
 import 'package:stokip/feature/model/filter_model.dart';
+import 'package:stokip/feature/model/sales_model.dart';
+import 'package:stokip/feature/model/stock_model.dart';
 import 'package:stokip/feature/service/repository/sale_repository.dart';
 import 'package:stokip/product/constants/enums/currency_enum.dart';
 import 'package:stokip/product/constants/enums/sales_filter_enum.dart';
-
-import 'package:stokip/product/database/operation/stock_hive_operation.dart';
-
-import 'package:stokip/product/cache/shared_manager.dart';
 import 'package:stokip/product/database/core/database_hive_manager.dart';
 import 'package:stokip/product/database/operation/sales_hive_operation.dart';
-import 'package:stokip/feature/model/sales_model.dart';
-import 'package:stokip/feature/model/stock_model.dart';
+import 'package:stokip/product/database/operation/stock_hive_operation.dart';
 import 'package:stokip/product/helper/dio_helper.dart';
 import 'package:stokip/product/widgets/c_notify.dart';
 import 'package:stokip/test_global.dart';
 
 part 'sales_state.dart';
-
-// enum StockStatus{
-//   OutOfStock,
-//   ZeroStock,
-//   InStock
-// }
-// mixin StockStatusMixin{
-//   Future<dynamic> display(BuildContext context){
-//     switch (this) {
-//       case StockStatus.OutOfStock:
-//       return showDialog(
-//       context: context,
-//       builder: (context) {
-//         return Dialog(
-//           child: Text('Stok Yetersiz'),
-//         );
-//       },
-//     );
-//     case StockStatus.ZeroStock:
-//     return
-
-//     }
-//   }
-// }
-
-//   StockStatus isOutOfStock(StockDetailModel model, double? sold) {
-//      final remainingStock =  model.meter! - (sold ?? 0) ;
-//    if (remainingStock < 0) {
-//     return StockStatus.OutOfStock;
-//   } else if (remainingStock == 0) {
-//     return StockStatus.ZeroStock;
-//   } else {
-//     return StockStatus.InStock;
-//   }
-// }
 
 class SalesCubit extends Cubit<SalesState> {
   SalesCubit({
@@ -69,7 +30,6 @@ class SalesCubit extends Cubit<SalesState> {
   late final List<StockModel>? stocks;
   static final List<SalesModel> saless = [];
   final List<SalesModel> filteredSales = [];
-  late final SharedManager sharedManager;
   final dioHelper = DioHelper.instance();
   late final SaleRepository saleRepository;
   final SaleHiveOperation saleDatabaseOperation = SaleHiveOperation();
@@ -81,7 +41,6 @@ class SalesCubit extends Cubit<SalesState> {
   Future<void> get init async {
     await DatabaseHiveManager().start();
     await saleDatabaseOperation.start();
-    sharedManager = await SharedManager.getInstance;
     dioHelper.setToken(await secureStorage.read(key: 'jwt'));
     saleRepository = SaleRepository(dioHelper.dio);
     if (saleDatabaseOperation.box.isNotEmpty && !globalInternetConnection) {
@@ -102,15 +61,6 @@ class SalesCubit extends Cubit<SalesState> {
     return state.sales?.where((sale) {
       return sale.dateTime.month == currentMonth;
     }).toList();
-  }
-
-  void readId() {
-    final result = sharedManager.readId('salesid');
-    emit(state.copyWith(salesId: result ?? 0));
-  }
-
-  Future<void> writeIdToCache(int? id) async {
-    await sharedManager.writeId(id ?? 0, 'salesid');
   }
 
   Text getSoldTime(int index) {
@@ -280,13 +230,11 @@ class SalesCubit extends Cubit<SalesState> {
     required SalesModel model,
   }) async {
     if ((model.stockDetailModel?.meter ?? 0) == 0) return CNotify(message: 'Ürünün stoğu yetersiz', title: 'Stok Yetersiz').show();
-    final isOkay = await saleRepository.postData(model);
-    print(isOkay);
+    final copyModel = model.copyWith(id: saless.length + 1);
+    final isOkay = await saleRepository.postData(copyModel);
     if (!isOkay) return;
-    saleDatabaseOperation.addOrUpdateItem(model);
-
-    writeIdToCache(state.salesId + 1);
-    saless.add(model);
+    saleDatabaseOperation.addOrUpdateItem(copyModel);
+    saless.add(copyModel);
     emit(state.copyWith(sales: currentSales));
   }
 

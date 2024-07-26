@@ -1,4 +1,4 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:flutter/material.dart';
 
 import 'package:equatable/equatable.dart';
 import 'package:hive/hive.dart';
@@ -14,16 +14,28 @@ part 'stock_model.g.dart';
 
 // abstract class MainModel<T extends Models> {
 abstract class MainModel with HiveModel2Mixin, EquatableMixin, ServiceModel {
-  final String? title;
-
   MainModel({
     this.title,
   });
+  final String? title;
 }
 
 @JsonSerializable(explicitToJson: true)
 @HiveType(typeId: HiveTypes.stockModelId)
 class StockModel extends MainModel {
+  StockModel({
+    required this.stockDetailModel,
+    this.id = 0,
+    this.title,
+    this.pPrice,
+    this.sPrice,
+    this.purchaseDate,
+    this.totalMeter,
+    this.currency = CurrencyEnum.usd,
+  });
+  factory StockModel.fromJson(Map<String, dynamic> json) {
+    return _$StockModelFromJson(json);
+  }
   @override
   String get key {
     return id.toString();
@@ -50,19 +62,6 @@ class StockModel extends MainModel {
   @HiveField(7)
   CurrencyEnum currency;
 
-  StockModel({
-    required this.stockDetailModel,
-    this.id = 0,
-    this.title,
-    this.pPrice,
-    this.sPrice,
-    this.purchaseDate,
-    this.currency = CurrencyEnum.usd,
-  });
-  factory StockModel.fromJson(Map<String, dynamic> json) {
-    return _$StockModelFromJson(json);
-  }
-
   @override
   Map<String, dynamic> toJson() {
     return _$StockModelToJson(this);
@@ -70,14 +69,45 @@ class StockModel extends MainModel {
 
   @override
   List<Object?> get props => [id, pPrice, sPrice, title, stockDetailModel, totalMeter, purchaseDate, currency];
+
+  StockModel copyWith({
+    int? id,
+    ValueGetter<double?>? pPrice,
+    ValueGetter<double?>? sPrice,
+    ValueGetter<String?>? title,
+    List<StockDetailModel>? stockDetailModel,
+    ValueGetter<double?>? totalMeter,
+    ValueGetter<DateTime?>? purchaseDate,
+    CurrencyEnum? currency,
+  }) {
+    return StockModel(
+      id: id ?? this.id,
+      pPrice: pPrice != null ? pPrice() : this.pPrice,
+      sPrice: sPrice != null ? sPrice() : this.sPrice,
+      title: title != null ? title() : this.title,
+      stockDetailModel: stockDetailModel ?? this.stockDetailModel,
+      totalMeter: totalMeter != null ? totalMeter() : this.totalMeter,
+      purchaseDate: purchaseDate != null ? purchaseDate() : this.purchaseDate,
+      currency: currency ?? this.currency,
+    );
+  }
 }
 
 @JsonSerializable()
 @HiveType(typeId: HiveTypes.stockDetailModelId)
 class StockDetailModel extends MainModel {
+  StockDetailModel({
+    this.itemDetailId,
+    this.itemId,
+    this.title,
+    this.meter,
+  });
+  factory StockDetailModel.fromJson(Map<String, dynamic> json) {
+    return _$StockDetailModelFromJson(json);
+  }
   @HiveField(0)
   @JsonKey(name: 'itemDetailId')
-  final int itemDetailId;
+  final int? itemDetailId;
   @override
   @HiveField(1)
   @JsonKey(name: 'name')
@@ -87,16 +117,7 @@ class StockDetailModel extends MainModel {
   double? meter;
   @HiveField(3)
   @JsonKey(name: 'itemId')
-  final int itemId;
-  StockDetailModel({
-    required this.itemDetailId,
-    required this.itemId,
-    this.title,
-    this.meter,
-  });
-  factory StockDetailModel.fromJson(Map<String, dynamic> json) {
-    return _$StockDetailModelFromJson(json);
-  }
+  final int? itemId;
 
   @override
   Map<String, dynamic> toJson() {
@@ -109,4 +130,18 @@ class StockDetailModel extends MainModel {
   @override
   // TODO: implement props
   List<Object?> get props => [itemDetailId, title, meter, itemId];
+
+  StockDetailModel copyWith({
+    int? itemDetailId,
+    ValueGetter<String?>? title,
+    ValueGetter<double?>? meter,
+    ValueGetter<int?>? itemId,
+  }) {
+    return StockDetailModel(
+      itemDetailId: itemDetailId ?? this.itemDetailId,
+      title: title != null ? title() : this.title,
+      meter: meter != null ? meter() : this.meter,
+      itemId: itemId != null ? itemId() : this.itemId,
+    );
+  }
 }
