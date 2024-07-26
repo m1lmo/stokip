@@ -37,6 +37,14 @@ class SplashViewHostState extends State<SplashViewHost> with NavigatorManager {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _checkIsOnBoardingComplete());
+  }
+
+  void _checkIsOnBoardingComplete() {
+    Future.delayed(const Duration(seconds: 2), _checkIsOnBoarding);
+  }
+
+  void _checkIsOnBoarding() {
     context.read<UserCubit>().init.then(
       (value) {
         if (context.read<UserCubit>().getUser != null) {
