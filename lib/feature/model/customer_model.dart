@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:stokip/feature/model/payment_model.dart';
@@ -9,7 +8,6 @@ import 'package:stokip/product/database/core/hive_types.dart';
 
 part 'customer_model.g.dart';
 
-@immutable
 @JsonSerializable()
 @HiveType(typeId: HiveTypes.customerModelId)
 

@@ -9,7 +9,6 @@ import 'package:stokip/feature/model/customer_model.dart';
 import 'package:stokip/feature/model/filter_model.dart';
 import 'package:stokip/feature/service/repository/sale_repository.dart';
 import 'package:stokip/product/constants/enums/currency_enum.dart';
-import 'package:stokip/product/constants/enums/notify_type_enum.dart';
 import 'package:stokip/product/constants/enums/sales_filter_enum.dart';
 
 import 'package:stokip/product/database/operation/stock_hive_operation.dart';

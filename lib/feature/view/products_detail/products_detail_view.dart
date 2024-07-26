@@ -65,7 +65,7 @@ class _ProductsDetailViewState extends State<ProductsDetailView> {
       ],
       child: Scaffold(
         appBar: AppBar(
-          title: Text('${widget.stockModel.title?.toTitleCase()}' ?? ''),
+          title: Text('${widget.stockModel.title?.toTitleCase()}'),
           actions: [
             BlocSelector<StockCubit, StockState, int>(
               selector: (state) {

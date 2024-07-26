@@ -2,8 +2,8 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:stokip/feature/model/user_model.dart';
-import 'package:stokip/feature/service/model/service_model.dart';
 import 'package:stokip/feature/service/manager/service_manager.dart';
+import 'package:stokip/feature/service/model/service_model.dart';
 import 'package:stokip/product/helper/error_handler.dart';
 import 'package:stokip/product/widgets/c_notify.dart';
 
@@ -31,7 +31,7 @@ abstract class IRepository<T extends ServiceModel> extends ServiceManager<T> {
       if (response.statusCode != HttpStatus.ok) return null;
       final datas = response.data;
       if (datas is List) {
-        if (datas.isEmpty ?? true) return null;
+        if (datas.isEmpty) return null;
         return datas.whereType<Map<String, dynamic>>().map((e) => fromJson(e)).toList(); // Replace whereTypeOrNull with whereType
       }
       return null;

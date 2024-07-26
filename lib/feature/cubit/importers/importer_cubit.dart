@@ -9,7 +9,6 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:stokip/feature/model/importer_model.dart';
-import 'package:stokip/feature/model/payment_model.dart';
 import 'package:stokip/feature/model/purchases_model.dart';
 import 'package:stokip/feature/service/repository/importer_repository.dart';
 import 'package:stokip/product/cache/shared_manager.dart';

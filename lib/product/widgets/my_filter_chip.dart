@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
 import 'package:stokip/feature/model/filter_model.dart';
 import 'package:stokip/product/constants/project_colors.dart';
-import 'package:stokip/product/mixin/filter_mixin.dart';
 
 @immutable
 final class MyFilterChip<T extends FilterModel> extends StatelessWidget {
