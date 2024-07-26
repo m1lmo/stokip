@@ -318,30 +318,25 @@ class SalesCubit extends Cubit<SalesState> {
     return stock?.title;
   }
 
-  double? getTotalSalesInMonth(int month) {
+  double highestSale() {
+    var highest = 0.0;
+    if (state.sales == null) return highest;
+    for (final sales in state.sales!) {
+      if (sales.quantity! > highest) {
+        highest = sales.quantity!;
+      }
+    }
+    return highest;
+  }
+
+  double? getAverageSales() {
     var total = 0.0;
     if (state.sales == null) return total;
     for (final sales in state.sales!) {
-      if (sales.dateTime.month == month) {
-        total += sales.quantity ?? 0;
-      }
+      total += sales.quantity ?? 0;
     }
-    return total;
+    return total / state.sales!.length;
   }
-
-//  void getTotalSalesInMonth(int month) {
-//     var total = 0.0;
-//     if (state.sales == null) {
-//       emit(state.copyWith(totalSalesInMonth: total));
-//       return;
-//     }
-//     for (final sales in state.sales!) {
-//       if (sales.dateTime.month == month) {
-//         total += sales.price ?? 0;
-//       }
-//     }
-//     emit(state.copyWith(totalSalesInMonth: total));
-//   }
 
   Future<dynamic> showOutOfDialog(BuildContext context) {
     return showDialog(
