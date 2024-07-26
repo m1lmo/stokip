@@ -34,21 +34,35 @@ class DataContainer extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      '${bloc.getStockTitleById(data.stockDetailModel?.itemId)?.toTitleCase()} ${data.title?.toCapitalized()}',
-                      style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                            fontWeight: FontWeight.w700,
-                            fontSize: 16.sp,
-                          ),
+                    Tooltip(
+                      message: '${bloc.getStockTitleById(data.stockDetailModel?.itemId)?.toTitleCase()} ${data.title?.toCapitalized()}',
+                      child: ConstrainedBox(
+                        constraints: BoxConstraints(maxWidth: 40.w),
+                        child: Text(
+                          '${bloc.getStockTitleById(data.stockDetailModel?.itemId)?.toTitleCase()} ${data.title?.toCapitalized()}',
+                          overflow: TextOverflow.ellipsis,
+                          style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                                fontWeight: FontWeight.w700,
+                                fontSize: 16.sp,
+                              ),
+                        ),
+                      ),
                     ),
                     Padding(
                       padding: EdgeInsets.only(right: 4.w),
-                      child: Text(
-                        data.customer?.title?.toTitleCase() ?? 'Nakit', //TODO LOCALIZATION
-                        style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                              fontWeight: FontWeight.w700,
-                              fontSize: 16.sp,
-                            ),
+                      child: Tooltip(
+                        message: data.customer?.title?.toTitleCase() ?? 'Nakit', //TODO LOCALIZATION
+                        child: ConstrainedBox(
+                          constraints: BoxConstraints(maxWidth: 30.w),
+                          child: Text(
+                            data.customer?.title?.toTitleCase() ?? 'Nakit', //TODO LOCALIZATION
+                            overflow: TextOverflow.ellipsis,
+                            style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: 16.sp,
+                                ),
+                          ),
+                        ),
                       ),
                     ),
                   ],

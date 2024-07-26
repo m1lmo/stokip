@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:stokip/feature/view/tabs/dashboard_view.dart';
+import 'package:stokip/feature/view/tabs/dashboard/dashboard_view.dart';
 import 'package:stokip/feature/view/tabs/products/products_view.dart';
 import 'package:stokip/feature/view/tabs/sales/sales_view.dart';
 import 'package:stokip/feature/view/tabs/current/current_view.dart';

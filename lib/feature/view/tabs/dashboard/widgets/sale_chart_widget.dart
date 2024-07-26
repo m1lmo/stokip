@@ -1,97 +1,37 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
+part of '../dashboard_view.dart';
 
-import 'package:fl_chart/fl_chart.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-
-import 'package:stokip/feature/cubit/importers/importer_cubit.dart';
-import 'package:stokip/feature/cubit/sales/sales_cubit.dart';
-import 'package:stokip/feature/model/sales_model.dart';
-
-class DashBoard extends StatefulWidget {
-  const DashBoard({super.key});
-
+class _SaleChartWidget extends StatefulWidget {
+  const _SaleChartWidget({super.key});
   @override
-  State<DashBoard> createState() => _DashBoardState();
+  State<_SaleChartWidget> createState() => _SaleChartWidgetState();
 }
 
-class _DashBoardState extends State<DashBoard> {
-  @override
-  Widget build(BuildContext context) {
-    final salesCubit = BlocProvider.of<SalesCubit>(context);
-    final importerCubit = BlocProvider.of<ImporterCubit>(context);
-    @override
-    void initState() {
-      super.initState();
-    }
-
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider<SalesCubit>.value(
-          value: salesCubit..getSales(),
-        ),
-        BlocProvider<ImporterCubit>.value(
-          value: importerCubit,
-        ),
-      ],
-      child: Scaffold(
-        appBar: AppBar(),
-        body: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            const SizedBox(
-              height: 15,
-            ),
-            Expanded(
-              child: BlocSelector<SalesCubit, SalesState, List<SalesModel>>(
-                selector: (state) {
-                  return state.sales ?? [];
-                },
-                builder: (context, sales) {
-                  return LineChartSample2(
-                    sales: sales,
-                  );
-                },
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class LineChartSample2 extends StatefulWidget {
-  const LineChartSample2({required this.sales, super.key});
-  final List<SalesModel> sales;
-  @override
-  State<LineChartSample2> createState() => _LineChartSample2State();
-}
-
-class _LineChartSample2State extends State<LineChartSample2> {
+class _SaleChartWidgetState extends State<_SaleChartWidget> {
   List<Color> gradientColors = [
     Colors.cyan,
     Colors.indigo,
   ];
 
-  bool showAvg = false;
+  ValueNotifier<bool> showAvg = ValueNotifier<bool>(false);
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Stack(
       children: <Widget>[
         AspectRatio(
-          aspectRatio: 1.70,
-          child: Padding(
-            padding: const EdgeInsets.only(
-              right: 18,
-              left: 12,
-              top: 24,
-              bottom: 12,
-            ),
-            child: LineChart(
-              showAvg ? avgData() : mainData(widget.sales),
-            ),
+          aspectRatio: 1,
+          child: ValueListenableBuilder(
+            valueListenable: showAvg,
+            builder: (context, value, _) {
+              return LineChart(
+                duration: Durations.long1,
+                value ? _avgData() : _mainData(),
+              );
+            },
           ),
         ),
         SizedBox(
@@ -99,16 +39,19 @@ class _LineChartSample2State extends State<LineChartSample2> {
           height: 34,
           child: TextButton(
             onPressed: () {
-              setState(() {
-                showAvg = !showAvg;
-              });
+              showAvg.value = !showAvg.value;
             },
-            child: Text(
-              'avg',
-              style: TextStyle(
-                fontSize: 12,
-                color: showAvg ? Colors.white.withOpacity(0.5) : Colors.white,
-              ),
+            child: ValueListenableBuilder(
+              valueListenable: showAvg,
+              builder: (context, value, _) {
+                return Text(
+                  'avg',
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: value ? Colors.white.withOpacity(0.5) : Colors.white,
+                  ),
+                );
+              },
             ),
           ),
         ),
@@ -116,7 +59,7 @@ class _LineChartSample2State extends State<LineChartSample2> {
     );
   }
 
-  Widget bottomTitleWidgets(double value, TitleMeta meta) {
+  Widget _bottomTitleWidgets(double value, TitleMeta meta) {
     const style = TextStyle(
       fontWeight: FontWeight.bold,
       fontSize: 16,
@@ -140,19 +83,22 @@ class _LineChartSample2State extends State<LineChartSample2> {
     );
   }
 
-  Widget leftTitleWidgets(double value, TitleMeta meta) {
+  Widget _leftTitleWidgets(double value, TitleMeta meta) {
     const style = TextStyle(
       fontWeight: FontWeight.bold,
       fontSize: 15,
     );
     String text;
+    //  if(value % 1000 == 0){
+    //   text = '${value ~/ 1000}K';
+    // }
     switch (value.toInt()) {
-      case 1:
-        text = '10K';
-      case 3:
-        text = '30k';
-      case 5:
-        text = '50k';
+      case 1000:
+        text = '1K';
+      case 500:
+        text = '500';
+      case 100:
+        text = '100';
       default:
         return Container();
     }
@@ -160,11 +106,11 @@ class _LineChartSample2State extends State<LineChartSample2> {
     return Text(text, style: style, textAlign: TextAlign.left);
   }
 
-  LineChartData mainData(List<SalesModel> sales) {
+  LineChartData _mainData() {
     return LineChartData(
       gridData: FlGridData(
-        horizontalInterval: 1,
         verticalInterval: 1,
+        horizontalInterval: 100,
         getDrawingHorizontalLine: (value) {
           return const FlLine(
             strokeWidth: 1,
@@ -184,35 +130,37 @@ class _LineChartSample2State extends State<LineChartSample2> {
             showTitles: true,
             reservedSize: 30,
             interval: 1,
-            getTitlesWidget: bottomTitleWidgets,
+            getTitlesWidget: _bottomTitleWidgets,
           ),
         ),
         leftTitles: AxisTitles(
           sideTitles: SideTitles(
             showTitles: true,
             interval: 1,
-            getTitlesWidget: leftTitleWidgets,
+            getTitlesWidget: _leftTitleWidgets,
             reservedSize: 42,
           ),
         ),
       ),
+      baselineX: 0,
+      baselineY: 0,
       borderData: FlBorderData(
         show: true,
         border: Border.all(color: const Color(0xff37434d)),
       ),
       minX: 0,
       maxX: 11,
-      minY: 0,
+      maxY: context.read<SalesCubit>().highestSale() < 1000 ? 1000 : context.read<SalesCubit>().highestSale(),
       lineBarsData: [
         LineChartBarData(
-          spots: sales
-              .map(
-                (e) => FlSpot(
-                  e.dateTime.month.toDouble(),
-                  e.quantity!,
-                ),
-              )
-              .toList(),
+          preventCurveOverShooting: true,
+          spots: [
+            for (var i = 0; i < 12; i++)
+              FlSpot(
+                i.toDouble(),
+                context.read<SalesCubit>().getTotalSoldMeterByMonth(i),
+              ),
+          ],
           isCurved: true,
           gradient: LinearGradient(
             colors: gradientColors,
@@ -233,12 +181,12 @@ class _LineChartSample2State extends State<LineChartSample2> {
     );
   }
 
-  LineChartData avgData() {
+  LineChartData _avgData() {
     return LineChartData(
       lineTouchData: const LineTouchData(enabled: false),
       gridData: FlGridData(
         verticalInterval: 1,
-        horizontalInterval: 1,
+        horizontalInterval: 50,
         getDrawingVerticalLine: (value) {
           return const FlLine(
             color: Color(0xff37434d),
@@ -253,43 +201,40 @@ class _LineChartSample2State extends State<LineChartSample2> {
         },
       ),
       titlesData: FlTitlesData(
+        topTitles: const AxisTitles(),
+        rightTitles: const AxisTitles(),
         bottomTitles: AxisTitles(
           sideTitles: SideTitles(
             showTitles: true,
             reservedSize: 30,
-            getTitlesWidget: bottomTitleWidgets,
+            getTitlesWidget: _bottomTitleWidgets,
             interval: 1,
           ),
         ),
         leftTitles: AxisTitles(
           sideTitles: SideTitles(
             showTitles: true,
-            getTitlesWidget: leftTitleWidgets,
+            getTitlesWidget: _leftTitleWidgets,
             reservedSize: 42,
             interval: 1,
           ),
         ),
-        topTitles: const AxisTitles(),
-        rightTitles: const AxisTitles(),
       ),
       borderData: FlBorderData(
-        show: true,
         border: Border.all(color: const Color(0xff37434d)),
       ),
       minX: 0,
       maxX: 11,
       minY: 0,
-      maxY: 6,
+      maxY: (context.read<SalesCubit>().getAverageSales() ?? 50) * 2,
       lineBarsData: [
         LineChartBarData(
-          spots: const [
-            FlSpot(0, 3.44),
-            FlSpot(2.6, 3.3123),
-            FlSpot(4.9, 3.44),
-            FlSpot(6.8, 3.44),
-            FlSpot(8, 3.44),
-            FlSpot(9.5, 3.44),
-            FlSpot(11, 3.44),
+          spots: [
+            for (var i = 0; i < 12; i++)
+              FlSpot(
+                i.toDouble(),
+                context.read<SalesCubit>().getAverageSales() ?? 0,
+              ),
           ],
           isCurved: true,
           gradient: LinearGradient(

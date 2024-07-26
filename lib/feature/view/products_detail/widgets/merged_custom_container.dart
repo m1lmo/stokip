@@ -30,7 +30,7 @@ class MergedCustomContainer extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                '${stockModel.sPrice}${stockModel.currency.getSymbol}',
+                stockModel.sPrice != null ? '${stockModel.sPrice}${stockModel.currency.getSymbol}' : '--',
                 style: Theme.of(context).textTheme.headlineLarge?.copyWith(fontSize: 12.sp),
               ),
               Text(
@@ -45,7 +45,7 @@ class MergedCustomContainer extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                '${stockModel.pPrice}${stockModel.currency.getSymbol}',
+                stockModel.pPrice != null ? '${stockModel.pPrice}${stockModel.currency.getSymbol}' : '--',
                 style: Theme.of(context).textTheme.headlineLarge?.copyWith(fontSize: 12.sp),
               ),
               Text(
