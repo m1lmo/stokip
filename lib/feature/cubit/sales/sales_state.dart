@@ -1,6 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 part of 'sales_cubit.dart';
 
+@immutable
 final class SalesState with EquatableMixin {
   SalesState({
     this.salesId = 0,
@@ -12,8 +13,8 @@ final class SalesState with EquatableMixin {
     this.monthlySoldAmount = 0.0,
     this.monthlySoldMeter = 0.0,
   });
-  int salesId;
-  double? totalIncome;
+  final int salesId;
+  final double? totalIncome;
   final List<SalesModel>? sales;
   final List<SalesModel>? filteredSales;
   final StockModel? trendProduct;
@@ -29,6 +30,7 @@ final class SalesState with EquatableMixin {
         trendProduct,
         monthlySoldAmount,
         monthlySoldMeter,
+        topCustomer,
       ];
 
   @override
@@ -64,6 +66,7 @@ final class SalesState with EquatableMixin {
     String? selectedSpecific,
     CurrencyEnum? currency,
     double? totalIncome,
+    double? highestSale,
     StockModel? trendProduct,
     double? monthlySoldAmount,
     CustomerModel? topCustomer,
