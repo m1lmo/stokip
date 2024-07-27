@@ -181,15 +181,6 @@ class SalesCubit extends Cubit<SalesState> {
     return emit(state.copyWith(monthlySoldAmount: amount));
   }
 
-  // void totalSaledMeter() {
-  //   var totalMeter = 0.0;
-  //   if (state.sales == null) return;
-  //   for (final sales in state.sales!) {
-  //     totalMeter += sales.quantity ?? 0;
-  //   }
-  //   emit(state.copyWith(soldedMeterThisMonth: totalMeter));
-  // }
-
   /// this method is for update trend product u have to call on the saleview
   /// cause the stocks sometimes is coming after this method when we add the init method
   void updateTrendProduct() {
@@ -229,23 +220,25 @@ class SalesCubit extends Cubit<SalesState> {
   Future<void> addSale({
     required SalesModel model,
   }) async {
+    print('itemid: ' '${model.stockDetailModel?.itemId}');
     if ((model.stockDetailModel?.meter ?? 0) == 0) return CNotify(message: 'Ürünün stoğu yetersiz', title: 'Stok Yetersiz').show();
     final copyModel = model.copyWith(id: saless.length + 1);
     final isOkay = await saleRepository.postData(copyModel);
     if (!isOkay) return;
     saleDatabaseOperation.addOrUpdateItem(copyModel);
     saless.add(copyModel);
+    _updateStocks(model);
     emit(state.copyWith(sales: currentSales));
   }
 
   void _updateStocks(SalesModel model) {
     if (stocks == null) return;
     for (final stock in stocks!) {
-      if (stock.id != model.stockDetailModel?.itemId) continue;
+      if (stock.title != model.itemName) continue;
       for (final detail in stock.stockDetailModel) {
-        if (detail.itemDetailId != model.stockDetailModel?.itemDetailId) continue;
+        if (detail.title?.toLowerCase() != model.stockDetailModel?.title?.toLowerCase()) continue;
         detail.meter = detail.meter! - model.quantity!;
-        stockDatabaseOperation?.addOrUpdateItem(stock);
+        // stockDatabaseOperation?.addOrUpdateItem(stock);
       }
     }
   }
