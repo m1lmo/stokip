@@ -17,8 +17,8 @@ part 'sales_model.g.dart';
 @immutable
 final class SalesModel extends MainModel with EquatableMixin, HiveModel2Mixin {
   SalesModel({
-   this.id,
     required this.dateTime,
+    this.id,
     this.stockDetailModel,
     this.quantity,
     this.price,

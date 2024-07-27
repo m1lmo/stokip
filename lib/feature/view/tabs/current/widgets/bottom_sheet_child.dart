@@ -25,6 +25,7 @@ class _BottomSheetChild extends StatelessWidget {
                 }
                 return null;
               },
+              textInputAction: TextInputAction.next,
               controller: titleController,
               decoration: const InputDecoration(
                 labelText: 'Cari adı',
@@ -38,6 +39,7 @@ class _BottomSheetChild extends StatelessWidget {
                 Expanded(
                   child: TextFormField(
                     controller: balanceController,
+                    keyboardType: TextInputType.number,
                     decoration: const InputDecoration(
                       labelText: 'Bakiye',
                     ),

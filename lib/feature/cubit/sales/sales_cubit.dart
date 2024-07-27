@@ -2,13 +2,13 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:kartal/kartal.dart';
 import 'package:stokip/feature/model/customer_model.dart';
 import 'package:stokip/feature/model/filter_model.dart';
 import 'package:stokip/feature/model/sales_model.dart';
 import 'package:stokip/feature/model/stock_model.dart';
 import 'package:stokip/feature/service/repository/sale_repository.dart';
+import 'package:stokip/product/cache/storage_manager.dart';
 import 'package:stokip/product/constants/enums/currency_enum.dart';
 import 'package:stokip/product/constants/enums/sales_filter_enum.dart';
 import 'package:stokip/product/database/core/database_hive_manager.dart';
@@ -33,7 +33,7 @@ class SalesCubit extends Cubit<SalesState> {
   final dioHelper = DioHelper.instance();
   late final SaleRepository saleRepository;
   final SaleHiveOperation saleDatabaseOperation = SaleHiveOperation();
-  final secureStorage = const FlutterSecureStorage();
+  final secureStorage = StorageManager.instance();
   List<SalesModel> get currentSales => List<SalesModel>.from(saless);
 
   //initFor provider.value
@@ -41,7 +41,6 @@ class SalesCubit extends Cubit<SalesState> {
   Future<void> get init async {
     await DatabaseHiveManager().start();
     await saleDatabaseOperation.start();
-    dioHelper.setToken(await secureStorage.read(key: 'jwt'));
     saleRepository = SaleRepository(dioHelper.dio);
     if (saleDatabaseOperation.box.isNotEmpty && !globalInternetConnection) {
       saless.addAll(saleDatabaseOperation.box.values);
@@ -181,15 +180,6 @@ class SalesCubit extends Cubit<SalesState> {
     return emit(state.copyWith(monthlySoldAmount: amount));
   }
 
-  // void totalSaledMeter() {
-  //   var totalMeter = 0.0;
-  //   if (state.sales == null) return;
-  //   for (final sales in state.sales!) {
-  //     totalMeter += sales.quantity ?? 0;
-  //   }
-  //   emit(state.copyWith(soldedMeterThisMonth: totalMeter));
-  // }
-
   /// this method is for update trend product u have to call on the saleview
   /// cause the stocks sometimes is coming after this method when we add the init method
   void updateTrendProduct() {
@@ -229,23 +219,25 @@ class SalesCubit extends Cubit<SalesState> {
   Future<void> addSale({
     required SalesModel model,
   }) async {
+    print('itemid: ' '${model.stockDetailModel?.itemId}');
     if ((model.stockDetailModel?.meter ?? 0) == 0) return CNotify(message: 'Ürünün stoğu yetersiz', title: 'Stok Yetersiz').show();
     final copyModel = model.copyWith(id: saless.length + 1);
     final isOkay = await saleRepository.postData(copyModel);
     if (!isOkay) return;
     saleDatabaseOperation.addOrUpdateItem(copyModel);
     saless.add(copyModel);
+    _updateStocks(model);
     emit(state.copyWith(sales: currentSales));
   }
 
   void _updateStocks(SalesModel model) {
     if (stocks == null) return;
     for (final stock in stocks!) {
-      if (stock.id != model.stockDetailModel?.itemId) continue;
+      if (stock.title != model.itemName) continue;
       for (final detail in stock.stockDetailModel) {
-        if (detail.itemDetailId != model.stockDetailModel?.itemDetailId) continue;
+        if (detail.title?.toLowerCase() != model.stockDetailModel?.title?.toLowerCase()) continue;
         detail.meter = detail.meter! - model.quantity!;
-        stockDatabaseOperation?.addOrUpdateItem(stock);
+        // stockDatabaseOperation?.addOrUpdateItem(stock);
       }
     }
   }

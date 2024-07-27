@@ -25,9 +25,8 @@ class _DashBoardState extends State<DashBoard> {
   void initState() {
     super.initState();
     Future.microtask(() async {
-      await Future.delayed(const Duration(milliseconds: 100), () {
-        isLoading.value = false;
-      });
+      await Future.delayed(const Duration(milliseconds: 200), () {});
+      isLoading.value = false;
     });
   }
 

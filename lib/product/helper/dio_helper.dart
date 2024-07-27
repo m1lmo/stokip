@@ -1,6 +1,10 @@
 import 'package:dio/dio.dart';
 
 final class DioHelper {
+  factory DioHelper.instance() {
+    _instance ??= DioHelper._init();
+    return _instance!;
+  }
   DioHelper._init() {
     dio = Dio(
       BaseOptions(
@@ -16,11 +20,10 @@ final class DioHelper {
 
   late final Dio dio;
   static DioHelper? _instance;
-  static DioHelper instance() {
-    _instance ??= DioHelper._init();
-    return _instance!;
-  }
 
+  /// Set token to header
+  /// u have to set this token before any request
+  //! DONT FORGET TO SET TOKEN
   void setToken(String? token) {
     if (token?.isEmpty ?? true) return;
     if (dio.options.headers.containsKey('Authorization')) {

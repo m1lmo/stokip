@@ -1,14 +1,13 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:stokip/feature/model/sales_model.dart';
+import 'package:stokip/feature/model/stock_model.dart';
 import 'package:stokip/feature/service/repository/stock_repository.dart';
+import 'package:stokip/product/cache/storage_manager.dart';
 import 'package:stokip/product/database/core/database_hive_manager.dart';
 import 'package:stokip/product/database/operation/stock_hive_operation.dart';
 import 'package:stokip/product/helper/dio_helper.dart';
 import 'package:stokip/test_global.dart' as globals;
-
-import 'package:stokip/feature/model/stock_model.dart';
 
 part 'stock_state.dart';
 
@@ -16,7 +15,7 @@ class StockCubit extends Cubit<StockState> {
   StockCubit() : super(StockState(products: lists));
 
   static final List<StockModel> lists = [];
-  final secureStorage = const FlutterSecureStorage();
+  final secureStorage = StorageManager.instance();
   final StockHiveOperation databaseOperation = StockHiveOperation();
   final dioHelper = DioHelper.instance();
   late final StockRepository stockRepository;
@@ -25,14 +24,11 @@ class StockCubit extends Cubit<StockState> {
   Future<void> get init async {
     await DatabaseHiveManager().start();
     await databaseOperation.start();
-    final token = await secureStorage.read(key: 'jwt');
-    print(token);
     stockRepository = StockRepository(dioHelper.dio);
     if (databaseOperation.box.isNotEmpty && !globals.globalInternetConnection) {
       lists.addAll(databaseOperation.box.values);
       emit(state.copyWith(products: currentStocks));
     } else {
-      dioHelper.setToken(token ?? '');
       final data = await stockRepository.fetchData();
       if (data == null) return;
       for (final item in data) {
