@@ -2,13 +2,12 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:stokip/feature/model/sales_model.dart';
+import 'package:stokip/feature/model/stock_model.dart';
 import 'package:stokip/feature/service/repository/stock_repository.dart';
 import 'package:stokip/product/database/core/database_hive_manager.dart';
 import 'package:stokip/product/database/operation/stock_hive_operation.dart';
 import 'package:stokip/product/helper/dio_helper.dart';
 import 'package:stokip/test_global.dart' as globals;
-
-import 'package:stokip/feature/model/stock_model.dart';
 
 part 'stock_state.dart';
 
