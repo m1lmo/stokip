@@ -12,7 +12,7 @@ class _CustomerSearchDelegate<T extends CustomerModel> extends MySearchDelegate<
       }
     }
     return ListView.builder(
-      itemCount: result.length ?? 0,
+      itemCount: result.length,
       itemBuilder: (context, index) {
         return _CustomerListTile(
           customer: result[index]!,
@@ -31,7 +31,7 @@ class _CustomerSearchDelegate<T extends CustomerModel> extends MySearchDelegate<
       }
     }
     return ListView.builder(
-      itemCount: result.length ?? 0,
+      itemCount: result.length,
       itemBuilder: (context, index) {
         return _CustomerListTile(
           customer: result[index]!,

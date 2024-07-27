@@ -5,7 +5,6 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:stokip/feature/model/customer_model.dart';
 import 'package:stokip/feature/model/sales_model.dart';
 import 'package:stokip/feature/service/repository/customer_repository.dart';
-import 'package:stokip/product/cache/shared_manager.dart';
 import 'package:stokip/product/constants/enums/currency_enum.dart';
 import 'package:stokip/product/database/core/database_hive_manager.dart';
 import 'package:stokip/product/database/operation/customer_hive_operation.dart';
@@ -23,7 +22,6 @@ final class CustomerCubit extends Cubit<CustomerState> {
   final List<CustomerModel> customers = [];
   final databaseOperation = CustomerHiveOperation();
   final dioHelper = DioHelper.instance();
-  late final SharedManager sharedManager; //TODO REMOVE
   late final CustomerRepository customerRepository;
   final secureStorage = const FlutterSecureStorage();
 
@@ -33,7 +31,6 @@ final class CustomerCubit extends Cubit<CustomerState> {
     await databaseOperation.start();
     dioHelper.setToken(await secureStorage.read(key: 'jwt'));
     customerRepository = CustomerRepository(dioHelper.dio);
-    sharedManager = await SharedManager.getInstance;
     if (databaseOperation.box.isNotEmpty && !globals.globalInternetConnection) {
       customers.addAll(databaseOperation.box.values);
     } else {
@@ -45,24 +42,12 @@ final class CustomerCubit extends Cubit<CustomerState> {
         // await databaseOperation.addOrUpdateItem(item);
       }
     }
-    readId();
     emit(state.copyWith(customers: customers));
     updateTotalBalanceUSD();
   }
 
-  void readId() {
-    final result = sharedManager.prefs.getInt('customerid');
-    return emit(state.copyWith(id: result));
-  }
-
-  void writeIdToCache() {
-    if (state.id == null) return emit(state.copyWith(id: 0));
-    sharedManager.prefs.setInt('customerid', state.id! + 1);
-    emit(state.copyWith(id: state.id! + 1));
-    print(state.id);
-  }
-
   void addCustomer(CustomerModel customer, BuildContext context) {
+    final copyCustomer = customer.copyWith(id: customers.length + 1);
     if (customers.isNotEmpty) {
       if (customers.where((element) => element.title?.toLowerCase() == customer.title?.toLowerCase()).isNotEmpty) {
         return CNotify(
@@ -71,10 +56,9 @@ final class CustomerCubit extends Cubit<CustomerState> {
         ).show();
       }
     }
-    customerRepository.postData(customer);
-    writeIdToCache();
-    customers.add(customer);
-    databaseOperation.addOrUpdateItem(customer);
+    customerRepository.postData(copyCustomer);
+    customers.add(copyCustomer);
+    databaseOperation.addOrUpdateItem(copyCustomer);
     updateTotalBalanceUSD();
     return emit(state.copyWith(customers: List.from(customers)));
   }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:stokip/feature/model/payment_model.dart';
@@ -9,7 +10,6 @@ import 'package:stokip/product/database/core/hive_types.dart';
 
 part 'customer_model.g.dart';
 
-@immutable
 @JsonSerializable()
 @HiveType(typeId: HiveTypes.customerModelId)
 
@@ -18,7 +18,7 @@ part 'customer_model.g.dart';
 final class CustomerModel extends MainModel {
   /// constructor for the CustomerModel class.
   CustomerModel({
-    required this.id,
+    this.id,
     this.title,
     this.balance = 0,
     this.boughtProducts,
@@ -31,7 +31,7 @@ final class CustomerModel extends MainModel {
   }
   @HiveField(0)
   @JsonKey(name: 'customerId')
-  final int id;
+  final int? id;
   @override
   @HiveField(1)
   @JsonKey(name: 'name')
@@ -57,5 +57,21 @@ final class CustomerModel extends MainModel {
   @override
   Map<String, dynamic> toJson() {
     return _$CustomerModelToJson(this);
+  }
+
+  CustomerModel copyWith({
+    int? id,
+    ValueGetter<String?>? title,
+    ValueGetter<double?>? balance,
+    ValueGetter<List<SalesModel>?>? boughtProducts,
+    CurrencyEnum? currency,
+  }) {
+    return CustomerModel(
+      id: id ?? this.id,
+      title: title != null ? title() : this.title,
+      balance: balance != null ? balance() : this.balance,
+      boughtProducts: boughtProducts != null ? boughtProducts() : this.boughtProducts,
+      currency: currency ?? this.currency,
+    );
   }
 }

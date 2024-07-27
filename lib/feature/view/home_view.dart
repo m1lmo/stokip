@@ -4,8 +4,6 @@ import 'package:stokip/feature/cubit/customers/cubit/customer_cubit.dart';
 import 'package:stokip/feature/cubit/importers/importer_cubit.dart';
 import 'package:stokip/feature/cubit/sales/sales_cubit.dart';
 import 'package:stokip/feature/cubit/stock/stock_cubit.dart';
-import 'package:stokip/feature/cubit/user/user_cubit.dart';
-import 'package:stokip/feature/model/user_model.dart';
 import 'package:stokip/product/constants/enums/tabs_enum.dart';
 import 'package:stokip/product/constants/project_colors.dart';
 import 'package:stokip/product/extensions/tabs_extension.dart';

@@ -12,7 +12,7 @@ final class _SupplierSearchDelegate<T extends ImporterModel> extends MySearchDel
       }
     }
     return ListView.builder(
-      itemCount: result.length ?? 0,
+      itemCount: result.length,
       itemBuilder: (context, index) {
         return _ImporterListTile(
           importer: result[index]!,
@@ -31,7 +31,7 @@ final class _SupplierSearchDelegate<T extends ImporterModel> extends MySearchDel
       }
     }
     return ListView.builder(
-      itemCount: result.length ?? 0,
+      itemCount: result.length,
       itemBuilder: (context, index) {
         return _ImporterListTile(
           importer: result[index]!,

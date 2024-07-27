@@ -65,14 +65,9 @@ class _ProductsDetailViewState extends State<ProductsDetailView> {
       ],
       child: Scaffold(
         appBar: AppBar(
-          title: Text('${widget.stockModel.title?.toTitleCase()}' ?? ''),
+          title: Text('${widget.stockModel.title?.toTitleCase()}'),
           actions: [
-            BlocSelector<StockCubit, StockState, int>(
-              selector: (state) {
-                return state.productDetailId;
-              },
-              builder: (context, state) {
-                return IconButton(
+          IconButton(
                   onPressed: () {
                     CustomBottomSheet.show(
                       context,
@@ -84,7 +79,6 @@ class _ProductsDetailViewState extends State<ProductsDetailView> {
                               itemId: widget.stockModel.id,
                               title: productDetailController.text,
                               meter: double.tryParse(quantityController.text),
-                              itemDetailId: state,
                             ),
                           );
                           widget.stockCubit.getProduct();
@@ -95,8 +89,7 @@ class _ProductsDetailViewState extends State<ProductsDetailView> {
                     );
                   },
                   icon: const Icon(CustomIcons.add),
-                );
-              },
+  
             ),
           ],
         ),

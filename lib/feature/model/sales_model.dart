@@ -17,7 +17,7 @@ part 'sales_model.g.dart';
 @immutable
 final class SalesModel extends MainModel with EquatableMixin, HiveModel2Mixin {
   SalesModel({
-    required this.id,
+   this.id,
     required this.dateTime,
     this.stockDetailModel,
     this.quantity,
@@ -32,7 +32,7 @@ final class SalesModel extends MainModel with EquatableMixin, HiveModel2Mixin {
   }
   @HiveField(0)
   @JsonKey(name: 'saleId')
-  final int id;
+  final int? id;
   @HiveField(1)
   @JsonKey(name: 'itemDetail')
   final StockDetailModel? stockDetailModel;
@@ -79,5 +79,27 @@ final class SalesModel extends MainModel with EquatableMixin, HiveModel2Mixin {
 
   static String _dateTimeToJson(DateTime date) {
     return date.toUtc().toIso8601String();
+  }
+
+  SalesModel copyWith({
+    int? id,
+    ValueGetter<StockDetailModel?>? stockDetailModel,
+    ValueGetter<double?>? quantity,
+    DateTime? dateTime,
+    ValueGetter<double?>? price,
+    ValueGetter<CurrencyEnum?>? currency,
+    ValueGetter<CustomerModel?>? customer,
+    ValueGetter<String?>? itemName,
+  }) {
+    return SalesModel(
+      id: id ?? this.id,
+      stockDetailModel: stockDetailModel != null ? stockDetailModel() : this.stockDetailModel,
+      quantity: quantity != null ? quantity() : this.quantity,
+      dateTime: dateTime ?? this.dateTime,
+      price: price != null ? price() : this.price,
+      currency: currency != null ? currency() : this.currency,
+      customer: customer != null ? customer() : this.customer,
+      itemName: itemName != null ? itemName() : this.itemName,
+    );
   }
 }

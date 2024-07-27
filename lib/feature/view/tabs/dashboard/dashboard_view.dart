@@ -19,14 +19,15 @@ class DashBoard extends StatefulWidget {
 }
 
 class _DashBoardState extends State<DashBoard> {
-  final isLoading = ValueNotifier<bool>(false);
+  final isLoading = ValueNotifier<bool>(true);
 
   @override
   void initState() {
     super.initState();
     Future.microtask(() async {
-      await Future.delayed(const Duration(milliseconds: 100));
-      isLoading.value = true;
+      await Future.delayed(const Duration(milliseconds: 100), () {
+        isLoading.value = false;
+      });
     });
   }
 
@@ -63,7 +64,7 @@ class _DashBoardState extends State<DashBoard> {
               ValueListenableBuilder(
                 valueListenable: isLoading,
                 builder: (context, value, _) {
-                  return value
+                  return !value
                       ? const _SaleChartWidget()
                       : SizedBox(
                           height: 30.h,

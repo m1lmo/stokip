@@ -3,8 +3,6 @@ part of 'stock_cubit.dart';
 // ignore: must_be_immutable
 class StockState extends Equatable {
   StockState({
-    this.productId = 0,
-    this.productDetailId = 0,
     this.products,
     this.details,
     this.appBarTitle,
@@ -20,8 +18,6 @@ class StockState extends Equatable {
   /// this is used for cache logic
   ///
   /// dont use for fetch products
-  int productId;
-  int productDetailId;
   String? appBarTitle;
   double? totalMeter;
   StockModel? runningOutStock;
@@ -34,8 +30,6 @@ class StockState extends Equatable {
     return [
       products,
       details,
-      productId,
-      productDetailId,
       appBarTitle,
       totalMeter,
       runningOutStock,
@@ -52,8 +46,6 @@ class StockState extends Equatable {
           runtimeType == other.runtimeType &&
           products == other.products &&
           details == other.details &&
-          productId == other.productId &&
-          productDetailId == other.productDetailId &&
           runningOutStock == other.runningOutStock &&
           runningOutStockDetail == other.runningOutStockDetail &&
           trendStockDetail == other.trendStockDetail &&
@@ -65,8 +57,6 @@ class StockState extends Equatable {
   int get hashCode =>
       products.hashCode ^
       details.hashCode ^
-      productId.hashCode ^
-      productDetailId.hashCode ^
       runningOutStock.hashCode ^
       runningOutStockDetail.hashCode ^
       trendStockDetail.hashCode ^
@@ -77,8 +67,6 @@ class StockState extends Equatable {
   StockState copyWith({
     List<StockModel>? products,
     List<StockDetailModel>? details,
-    int? productId,
-    int? productDetailId,
     String? appBarTitle,
     double? totalMeter,
     StockModel? runningOutStock,
@@ -89,8 +77,6 @@ class StockState extends Equatable {
     return StockState(
       products: products ?? this.products,
       details: details ?? this.details,
-      productId: productId ?? this.productId,
-      productDetailId: productDetailId ?? this.productDetailId,
       appBarTitle: appBarTitle ?? this.appBarTitle,
       totalMeter: totalMeter ?? this.totalMeter,
       runningOutStock: runningOutStock ?? this.runningOutStock,
