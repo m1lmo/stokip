@@ -142,7 +142,7 @@ class _SalesViewState extends State<SalesView> {
                           return state.trendProduct;
                         },
                         builder: (context, state) {
-                          return CustomContainer(text: '${state?.title?.toTitleCase()}', title: 'En Çok Satan');
+                          return CustomContainer(text: state?.title?.toTitleCase() ?? '--', title: 'En Çok Satan');
                         },
                       ),
                     ],

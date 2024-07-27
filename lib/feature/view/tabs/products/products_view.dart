@@ -78,31 +78,31 @@ class _ProductsViewState extends State<ProductsView> with NavigatorManager {
             ProjectStrings.productsAppBarTitle,
           ),
           actions: [
-           IconButton(
-                  onPressed: () {
-                    CustomBottomSheet.show(
-                      context,
-                      title: 'add product', // TODOLOCALIZATION
-                      child: _BottomSheetChild(
-                        textEditingController: productNameEditingController,
-                        pPriceEditingController: pPriceEditingController,
-                        sPriceEditingController: sPriceEditingController,
-                        onPressed: () {
-                          blocProvider.addProduct(
-                            StockModel(
-                              title: productNameEditingController.text.toLowerCase(),
-                              pPrice: double.tryParse(pPriceEditingController.text) ?? 0,
-                              sPrice: double.tryParse(sPriceEditingController.text) ?? 0,
-                              stockDetailModel: [],
-                            ),
-                          );
-                          productNameEditingController.clear();
-                          Navigator.pop(context);
-                        },
-                      ),
-                    );
-                  },
-                  icon: const Icon(Icons.add),
+            IconButton(
+              onPressed: () {
+                CustomBottomSheet.show(
+                  context,
+                  title: 'add product', // TODOLOCALIZATION
+                  child: _BottomSheetChild(
+                    textEditingController: productNameEditingController,
+                    pPriceEditingController: pPriceEditingController,
+                    sPriceEditingController: sPriceEditingController,
+                    onPressed: () {
+                      blocProvider.addProduct(
+                        StockModel(
+                          title: productNameEditingController.text.toLowerCase(),
+                          pPrice: double.tryParse(pPriceEditingController.text) ?? 0,
+                          sPrice: double.tryParse(sPriceEditingController.text) ?? 0,
+                          stockDetailModel: [],
+                        ),
+                      );
+                      productNameEditingController.clear();
+                      Navigator.pop(context);
+                    },
+                  ),
+                );
+              },
+              icon: const Icon(Icons.add),
             ),
           ],
         ),
@@ -143,7 +143,7 @@ class _ProductsViewState extends State<ProductsView> with NavigatorManager {
                       return state.trendProduct;
                     },
                     builder: (context, state) {
-                      return CustomContainer(text: '${state?.title?.toTitleCase()}', title: 'Trend');
+                      return CustomContainer(text: state?.title?.toTitleCase() ?? '--', title: 'Trend');
                     },
                   ), // TODOLOCALIZATION
                 ],
