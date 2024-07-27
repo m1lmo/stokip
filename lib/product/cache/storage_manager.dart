@@ -4,7 +4,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class StorageManager {
   StorageManager._init() {
-    secureStorage = const FlutterSecureStorage();
+    _secureStorage = const FlutterSecureStorage();
   }
   static StorageManager? _instance;
   static StorageManager get instance {
@@ -12,9 +12,9 @@ class StorageManager {
     return _instance!;
   }
 
-  late final FlutterSecureStorage secureStorage;
+  late final FlutterSecureStorage _secureStorage;
 
-  Future<void> setToken(String token) => secureStorage.write(key: 'jwt', value: token);
+  Future<void> setToken(String token) => _secureStorage.write(key: 'jwt', value: token);
 
-  Future<String?> get getToken => secureStorage.read(key: 'jwt');
+  Future<String?> get getToken => _secureStorage.read(key: 'jwt');
 }
