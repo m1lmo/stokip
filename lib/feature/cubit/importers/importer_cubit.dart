@@ -6,11 +6,11 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:stokip/feature/model/importer_model.dart';
 import 'package:stokip/feature/model/purchases_model.dart';
 import 'package:stokip/feature/service/repository/importer_repository.dart';
+import 'package:stokip/product/cache/storage_manager.dart';
 import 'package:stokip/product/constants/enums/currency_enum.dart';
 import 'package:stokip/product/database/core/database_hive_manager.dart';
 import 'package:stokip/product/database/operation/importer_hive_operation.dart';
@@ -26,19 +26,15 @@ class ImporterCubit extends Cubit<ImporterState> {
   ImporterCubit() : super(ImporterState());
 
   final List<ImporterModel> importers = [];
-
   final ImporterHiveOperation databaseOperation = ImporterHiveOperation();
-
   final DioHelper dioHelper = DioHelper.instance();
   late final ImporterRepository importerRepository;
-  final FlutterSecureStorage secureStorage = const FlutterSecureStorage();
+  final secureStorage = StorageManager.instance();
 
   Future<void> get init async {
     await DatabaseHiveManager().start();
     await databaseOperation.start();
     importerRepository = ImporterRepository(dioHelper.dio);
-    final token = await secureStorage.read(key: 'jwt');
-    dioHelper.setToken(token);
     if (!globals.globalInternetConnection && databaseOperation.box.isNotEmpty) {
       importers.addAll(databaseOperation.box.values);
       updateTotalBalanceUSD();

@@ -6,15 +6,15 @@ class StorageManager {
   StorageManager._init() {
     _secureStorage = const FlutterSecureStorage();
   }
-  static StorageManager? _instance;
-  static StorageManager get instance {
+  factory StorageManager.instance() {
     _instance ??= StorageManager._init();
     return _instance!;
   }
+  static StorageManager? _instance;
 
   late final FlutterSecureStorage _secureStorage;
 
-  Future<void> setToken(String token) => _secureStorage.write(key: 'jwt', value: token);
+  Future<void> writeToken(String token) => _secureStorage.write(key: 'jwt', value: token);
 
   Future<String?> get getToken => _secureStorage.read(key: 'jwt');
 }

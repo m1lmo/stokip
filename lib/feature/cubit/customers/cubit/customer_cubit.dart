@@ -1,10 +1,10 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:stokip/feature/model/customer_model.dart';
 import 'package:stokip/feature/model/sales_model.dart';
 import 'package:stokip/feature/service/repository/customer_repository.dart';
+import 'package:stokip/product/cache/storage_manager.dart';
 import 'package:stokip/product/constants/enums/currency_enum.dart';
 import 'package:stokip/product/database/core/database_hive_manager.dart';
 import 'package:stokip/product/database/operation/customer_hive_operation.dart';
@@ -23,13 +23,12 @@ final class CustomerCubit extends Cubit<CustomerState> {
   final databaseOperation = CustomerHiveOperation();
   final dioHelper = DioHelper.instance();
   late final CustomerRepository customerRepository;
-  final secureStorage = const FlutterSecureStorage();
+  final secureStorage = StorageManager.instance();
 
   /// init method for [CustomerCubit]
   Future<void> init() async {
     await DatabaseHiveManager().start();
     await databaseOperation.start();
-    dioHelper.setToken(await secureStorage.read(key: 'jwt'));
     customerRepository = CustomerRepository(dioHelper.dio);
     if (databaseOperation.box.isNotEmpty && !globals.globalInternetConnection) {
       customers.addAll(databaseOperation.box.values);
