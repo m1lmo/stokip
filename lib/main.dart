@@ -4,6 +4,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:sizer/sizer.dart';
 import 'package:stokip/feature/cubit/user/user_cubit.dart';
 import 'package:stokip/feature/view/splash/splash_inherited.dart';
@@ -49,6 +50,7 @@ Future<void> init() async {
   WidgetsFlutterBinding.ensureInitialized();
   await EasyLocalization.ensureInitialized();
   globals.globalInternetConnection = await checkInternet();
+  await MobileAds.instance.initialize();
   // final subscription = Connectivity().onConnectivityChanged.listen((List<ConnectivityResult> result) {
   //   if (result.contains(ConnectivityResult.none)) {
   //     CNotify(message: 'İnternet bağlantınızı kontrol edin', title: 'Hata').show();

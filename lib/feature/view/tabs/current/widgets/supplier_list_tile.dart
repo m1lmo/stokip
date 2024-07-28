@@ -23,13 +23,14 @@ class _ImporterListTile extends StatelessWidget {
                         importer.title?.toTitleCase() ?? '',
                         style: Theme.of(context).textTheme.headlineSmall,
                       ),
-                      Text(
-                        'Toplam satış: 4',
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w300,
-                            ),
-                      ),
+                      //todo add this when u make purchase view for user
+                      // Text(
+                      //   'Toplam satış: 4',
+                      //   style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      //         color: Colors.white,
+                      //         fontWeight: FontWeight.w300,
+                      //       ),
+                      // ),
                     ],
                   ),
                   Column(

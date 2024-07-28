@@ -10,9 +10,9 @@ import 'package:stokip/product/helper/dio_helper.dart';
 part 'user_state.dart';
 
 class UserCubit extends Cubit<UserState> {
-   UserCubit() : super(const UserState());
+  UserCubit() : super(const UserState());
 
-  late final UserModel? currentUser;
+  UserModel? currentUser;
 
   final userHiveOperation = UserHiveOperation();
   final secureStorage = StorageManager.instance();
