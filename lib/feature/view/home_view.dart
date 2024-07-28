@@ -35,6 +35,8 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
     loadAds();
   }
 
+  // this method is used to load the ads
+  // and set the value of the bannerAd
   Future<void> loadAds() async {
     print('load ads triggered');
     bannerAd = ValueNotifier(
@@ -89,6 +91,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
           },
         ),
       ],
+      // this is the parent widget that will pass the value of the bannerAd to the child widgets
       child: AdInherited(bannerAd, child: TabView(tabIndex: tabIndex, tabController: _tabController)),
     );
   }
