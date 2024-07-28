@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:sizer/sizer.dart';
+import 'package:stokip/feature/ad/ad_inherited.dart';
 import 'package:stokip/feature/cubit/customers/cubit/customer_cubit.dart';
 import 'package:stokip/feature/cubit/importers/importer_cubit.dart';
 import 'package:stokip/feature/cubit/sales/sales_cubit.dart';
@@ -18,40 +21,39 @@ class HomeView extends StatefulWidget {
 class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
   late final TabController _tabController;
   late final ValueNotifier<int> tabIndex = ValueNotifier<int>(0);
-  // bool _swipeIsInProgress = false;
-  // final bool _tapIsBeingExecuted = false;
-  // final int _selectedIndex = 1;
-  // int _prevIndex = 1;
+  late final ValueNotifier<BannerAd?> bannerAd;
   @override
   void initState() {
     super.initState();
-
     _tabController = TabController(vsync: this, length: Tabs.values.length, animationDuration: const Duration(milliseconds: 300));
-    // _tabController.animation?.addListener(() {
-    //   if (!_tapIsBeingExecuted && !_swipeIsInProgress && (_tabController.offset >= 0.5 || _tabController.offset <= -0.5)) {
-    //     // detects if a swipe is being executed. limits set to 0.5 and -0.5 to make sure the swipe gesture triggered
-    //     log('swipe  detected');
-    //     final newIndex = _tabController.offset > 0 ? _tabController.index + 1 : _tabController.index - 1;
-    //     _swipeIsInProgress = true;
-    //     _prevIndex = _selectedIndex;
-    //     tabIndex.value = _tabController.index;
-    //   } else {
-    //     if (!_tapIsBeingExecuted &&
-    //         _swipeIsInProgress &&
-    //         ((_tabController.offset < 0.5 && _tabController.offset > 0) || (_tabController.offset > -0.5 && _tabController.offset < 0))) {
-    //       // detects if a swipe is being reversed. the
-    //       log('swipe reverse detected');
-    //       _swipeIsInProgress = false;
-    //       tabIndex.value = _tabController.index;
-    //     }
-    //   }
-    // });
     _tabController.addListener(() {
       tabIndex.value = _tabController.index;
       if (_tabController.indexIsChanging) {
         FocusScope.of(context).requestFocus(FocusNode());
       }
     });
+    loadAds();
+  }
+
+  Future<void> loadAds() async {
+    print('load ads triggered');
+    bannerAd = ValueNotifier(
+      BannerAd(
+        size: AdSize.banner,
+        adUnitId: 'ca-app-pub-9069954727984208/2913442795',
+        listener: BannerAdListener(
+          onAdLoaded: (ad) {
+            debugPrint('Ad loaded: ${ad.adUnitId}');
+          },
+          onAdFailedToLoad: (ad, error) {
+            debugPrint('Ad failed to load: ${ad.adUnitId}, $error');
+            ad.dispose();
+          },
+        ),
+        request: const AdRequest(),
+      ),
+    );
+    await bannerAd.value!.load();
   }
 
   @override
@@ -87,7 +89,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
           },
         ),
       ],
-      child: TabView(tabIndex: tabIndex, tabController: _tabController),
+      child: AdInherited(bannerAd, child: TabView(tabIndex: tabIndex, tabController: _tabController)),
     );
   }
 }
@@ -104,6 +106,7 @@ class TabView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final addInherited = AdInherited.of(context);
     return DefaultTabController(
       length: Tabs.values.length,
       child: Scaffold(
@@ -139,14 +142,32 @@ class TabView extends StatelessWidget {
             controller: _tabController,
           ),
         ),
-        body: TabBarView(
-          physics: const NeverScrollableScrollPhysics(),
-          controller: _tabController,
+        body: Stack(
           children: [
-            Tabs.dashboard.getPage(),
-            Tabs.sales.getPage(),
-            Tabs.products.getPage(),
-            Tabs.suppliers.getPage(),
+            TabBarView(
+              physics: const NeverScrollableScrollPhysics(),
+              controller: _tabController,
+              children: [
+                Tabs.dashboard.getPage(),
+                Tabs.sales.getPage(),
+                Tabs.products.getPage(),
+                Tabs.suppliers.getPage(),
+              ],
+            ),
+            ValueListenableBuilder(
+              valueListenable: addInherited.bannerAd,
+              builder: (context, value, _) {
+                return Positioned(
+                  bottom: 0,
+                  left: 88.w - value!.size.width.toDouble(),
+                  child: SizedBox(
+                    width: value.size.width.toDouble(),
+                    height: value.size.height.toDouble(),
+                    child: AdWidget(ad: value),
+                  ),
+                );
+              },
+            ),
           ],
         ),
       ),
