@@ -2,5 +2,6 @@
     "cSpell.words": [
         "stokip",
         "TODOLOCALIZATION"
-    ]
+    ],
+    "java.configuration.updateBuildConfiguration": "interactive"
 }

@@ -24,7 +24,7 @@ if (flutterVersionName == null) {
 
 android {
     namespace "com.example.stokip"
-    compileSdkVersion flutter.compileSdkVersion
+    compileSdkVersion 28
     ndkVersion flutter.ndkVersion
 
     compileOptions {
