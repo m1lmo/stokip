@@ -92,6 +92,9 @@ class SupplierTabView extends StatelessWidget {
             ),
             child: Text('Add Supplier', style: Theme.of(context).textTheme.headlineMedium?.copyWith(color: ProjectColors2.primaryContainer)),
           ),
+          SizedBox(
+            height: 5.h,
+          ),
         ],
       ),
     );

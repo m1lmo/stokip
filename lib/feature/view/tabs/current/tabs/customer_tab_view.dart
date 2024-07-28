@@ -100,6 +100,9 @@ final class CustomerTabView extends StatelessWidget {
             ),
             child: Text('Add Customer', style: Theme.of(context).textTheme.headlineMedium?.copyWith(color: ProjectColors2.primaryContainer)),
           ),
+          SizedBox(
+            height: 5.h,
+          ),
         ],
       ),
     );
