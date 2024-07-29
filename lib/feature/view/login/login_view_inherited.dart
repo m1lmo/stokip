@@ -1,7 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:stokip/feature/cubit/user/user_cubit.dart';
-import 'package:stokip/feature/model/user_model.dart';
 import 'package:stokip/feature/service/repository/user_repository.dart';
 import 'package:stokip/feature/view/home_view.dart';
 import 'package:stokip/feature/view/login/login_view.dart';
@@ -47,11 +46,21 @@ class LoginViewHostState extends State<LoginViewHost> with NavigatorManager {
     userRepository = UserRepository(dioHelper.dio);
   }
 
+  @override
+  void dispose() {
+    super.dispose();
+    emailController.dispose();
+    passwordController.dispose();
+  }
+
   Future<void> loginMethod() async {
-    final response = await userRepository.postWithResponse(UserModel(email: emailController.text, password: passwordController.text));
-    if (response == null) return;
-    context.read<UserCubit>().setUser(response);
-    navigateToPageReplaced(context, const HomeView());
+    await context.read<UserCubit>().loginMethod(
+      emailController.text,
+      passwordController.text,
+      onSuccess: () {
+        navigateToPageReplaced(context, const HomeView());
+      },
+    );
   }
 
   @override

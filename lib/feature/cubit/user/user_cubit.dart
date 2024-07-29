@@ -1,5 +1,7 @@
 import 'package:bloc/bloc.dart';
+import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
 import 'package:stokip/feature/model/user_model.dart';
 import 'package:stokip/feature/service/repository/user_repository.dart';
 import 'package:stokip/product/cache/storage_manager.dart';
@@ -29,6 +31,14 @@ class UserCubit extends Cubit<UserState> {
 
   UserModel? get getUser {
     return currentUser;
+  }
+
+  Future<void> loginMethod(String email, String password, {required VoidCallback onSuccess}) async {
+    final user = UserModel(email: email, password: password);
+    final response = await userRepository.postWithResponse(user);
+    if (response == null) return;
+    setUser(response);
+    onSuccess.call();
   }
 
   void setUser(UserModel user) {
