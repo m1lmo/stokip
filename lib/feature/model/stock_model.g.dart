@@ -23,8 +23,9 @@ class StockModelAdapter extends TypeAdapter<StockModel> {
       pPrice: fields[1] as double?,
       sPrice: fields[2] as double?,
       purchaseDate: fields[6] as DateTime?,
+      totalMeter: fields[5] as double?,
       currency: fields[7] as CurrencyEnum,
-    )..totalMeter = fields[5] as double?;
+    );
   }
 
   @override
@@ -71,8 +72,8 @@ class StockDetailModelAdapter extends TypeAdapter<StockDetailModel> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return StockDetailModel(
-      itemDetailId: fields[0] as int,
-      itemId: fields[3] as int,
+      itemDetailId: fields[0] as int?,
+      itemId: fields[3] as int?,
       title: fields[1] as String?,
       meter: fields[2] as double?,
     );
@@ -118,9 +119,10 @@ StockModel _$StockModelFromJson(Map<String, dynamic> json) => StockModel(
       purchaseDate: json['purchaseDate'] == null
           ? null
           : DateTime.parse(json['purchaseDate'] as String),
+      totalMeter: (json['totalMeter'] as num?)?.toDouble(),
       currency: $enumDecodeNullable(_$CurrencyEnumEnumMap, json['currency']) ??
           CurrencyEnum.usd,
-    )..totalMeter = (json['totalMeter'] as num?)?.toDouble();
+    );
 
 Map<String, dynamic> _$StockModelToJson(StockModel instance) =>
     <String, dynamic>{
@@ -142,8 +144,8 @@ const _$CurrencyEnumEnumMap = {
 
 StockDetailModel _$StockDetailModelFromJson(Map<String, dynamic> json) =>
     StockDetailModel(
-      itemDetailId: (json['itemDetailId'] as num).toInt(),
-      itemId: (json['itemId'] as num).toInt(),
+      itemDetailId: (json['itemDetailId'] as num?)?.toInt(),
+      itemId: (json['itemId'] as num?)?.toInt(),
       title: json['name'] as String?,
       meter: (json['quantity'] as num?)?.toDouble(),
     );

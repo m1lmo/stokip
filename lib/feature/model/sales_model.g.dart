@@ -17,8 +17,8 @@ class SalesModelAdapter extends TypeAdapter<SalesModel> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return SalesModel(
-      id: fields[0] as int,
       dateTime: fields[3] as DateTime,
+      id: fields[0] as int?,
       stockDetailModel: fields[1] as StockDetailModel?,
       quantity: fields[2] as double?,
       price: fields[4] as double?,
@@ -66,8 +66,8 @@ class SalesModelAdapter extends TypeAdapter<SalesModel> {
 // **************************************************************************
 
 SalesModel _$SalesModelFromJson(Map<String, dynamic> json) => SalesModel(
-      id: (json['saleId'] as num).toInt(),
       dateTime: SalesModel._dateTimeFromJson(json['soldDate'] as String),
+      id: (json['saleId'] as num?)?.toInt(),
       stockDetailModel: json['itemDetail'] == null
           ? null
           : StockDetailModel.fromJson(

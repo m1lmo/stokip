@@ -17,7 +17,7 @@ class ImporterModelAdapter extends TypeAdapter<ImporterModel> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return ImporterModel(
-      id: fields[0] as int,
+      id: fields[0] as int?,
       title: fields[1] as String?,
       currency: fields[2] as CurrencyEnum?,
       balance: fields[3] as double?,
@@ -62,7 +62,7 @@ class ImporterModelAdapter extends TypeAdapter<ImporterModel> {
 
 ImporterModel _$ImporterModelFromJson(Map<String, dynamic> json) =>
     ImporterModel(
-      id: (json['supplierId'] as num).toInt(),
+      id: (json['supplierId'] as num?)?.toInt(),
       title: json['name'] as String?,
       currency:
           $enumDecodeNullable(_$CurrencyEnumEnumMap, json['currencyType']),
