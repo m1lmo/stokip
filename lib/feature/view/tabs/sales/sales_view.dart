@@ -58,6 +58,7 @@ class _SalesViewState extends State<SalesView> {
     super.dispose();
     searchTextEditingController.dispose();
     titleTextEditingController.dispose();
+    salesViewModel.dispose();
   }
 
   @override
@@ -201,7 +202,7 @@ class _SalesViewState extends State<SalesView> {
                   BlocSelector<SalesCubit, SalesState, List<SalesModel>>(
                     selector: (state) {
                       // salesViewModel.blocProvider.filterSales(null);
-                      return state.filteredSales ?? [];
+                      return state.filteredSales ?? state.sales ?? [];
                     },
                     builder: (context, state) {
                       return Container(
