@@ -17,7 +17,7 @@ class CustomerModelAdapter extends TypeAdapter<CustomerModel> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return CustomerModel(
-      id: fields[0] as int,
+      id: fields[0] as int?,
       title: fields[1] as String?,
       balance: fields[2] as double?,
       boughtProducts: (fields[3] as List?)?.cast<SalesModel>(),
@@ -60,7 +60,7 @@ class CustomerModelAdapter extends TypeAdapter<CustomerModel> {
 
 CustomerModel _$CustomerModelFromJson(Map<String, dynamic> json) =>
     CustomerModel(
-      id: (json['customerId'] as num).toInt(),
+      id: (json['customerId'] as num?)?.toInt(),
       title: json['name'] as String?,
       balance: (json['balance'] as num?)?.toDouble() ?? 0,
       currency:

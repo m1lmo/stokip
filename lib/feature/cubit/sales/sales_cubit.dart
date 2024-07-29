@@ -28,7 +28,7 @@ class SalesCubit extends Cubit<SalesState> {
 
   late final StockHiveOperation? stockDatabaseOperation;
   late final List<StockModel>? stocks;
-  static final List<SalesModel> saless = [];
+  final List<SalesModel> saless = [];
   final List<SalesModel> filteredSales = [];
   final dioHelper = DioHelper.instance();
   late final SaleRepository saleRepository;

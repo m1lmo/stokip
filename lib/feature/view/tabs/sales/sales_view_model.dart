@@ -41,6 +41,15 @@ abstract class _SalesVievModelBase with Store {
     priceController = TextEditingController();
   }
 
+  void dispose() {
+    stockDropDownController?.dispose();
+    customerDropDownController?.dispose();
+    stockDetailDropDownController?.dispose();
+    currencyDropDownController?.dispose();
+    quantityController?.dispose();
+    priceController?.dispose();
+  }
+
   @action
   void sortFilters() {
     filters
