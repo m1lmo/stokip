@@ -2,7 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:stokip/feature/cubit/user/user_cubit.dart';
 import 'package:stokip/feature/service/repository/user_repository.dart';
-import 'package:stokip/feature/view/home_view.dart';
+import 'package:stokip/feature/view/home/home_view_inherited.dart';
 import 'package:stokip/feature/view/login/login_view.dart';
 import 'package:stokip/product/helper/dio_helper.dart';
 import 'package:stokip/product/navigator_manager.dart';
@@ -58,7 +58,7 @@ class LoginViewHostState extends State<LoginViewHost> with NavigatorManager {
       emailController.text,
       passwordController.text,
       onSuccess: () {
-        navigateToPageReplaced(context, const HomeView());
+        navigateToPageReplaced(context, const HomeViewHost());
       },
     );
   }
