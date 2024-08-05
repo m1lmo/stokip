@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:stokip/feature/cubit/user/user_cubit.dart';
-import 'package:stokip/feature/view/home_view.dart';
+import 'package:stokip/feature/view/home/home_view.dart';
+import 'package:stokip/feature/view/home/home_view_inherited.dart';
 import 'package:stokip/feature/view/login/login_view_inherited.dart';
 import 'package:stokip/feature/view/splash/splash_view.dart';
 import 'package:stokip/product/navigator_manager.dart';
@@ -48,7 +49,7 @@ class SplashViewHostState extends State<SplashViewHost> with NavigatorManager {
     context.read<UserCubit>().init.then(
       (value) {
         if (context.read<UserCubit>().getUser != null) {
-          navigateToPageReplaced(context, const HomeView());
+          navigateToPageReplaced(context, const HomeViewHost());
         } else {
           navigateToPageReplaced(context, const LoginViewHost());
         }

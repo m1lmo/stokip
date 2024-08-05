@@ -19,10 +19,7 @@ class _ImporterListTile extends StatelessWidget {
                 children: [
                   Column(
                     children: [
-                      Text(
-                        importer.title?.toTitleCase() ?? '',
-                        style: Theme.of(context).textTheme.headlineSmall,
-                      ),
+                      CurrentTitleWidget<ImporterModel>(customer: importer),
                       //todo add this when u make purchase view for user
                       // Text(
                       //   'Toplam satış: 4',

@@ -1,65 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'package:sizer/sizer.dart';
-import 'package:stokip/feature/ad/ad_inherited.dart';
 import 'package:stokip/feature/cubit/customers/cubit/customer_cubit.dart';
 import 'package:stokip/feature/cubit/importers/importer_cubit.dart';
 import 'package:stokip/feature/cubit/sales/sales_cubit.dart';
 import 'package:stokip/feature/cubit/stock/stock_cubit.dart';
+import 'package:stokip/feature/view/home/home_view_inherited.dart';
 import 'package:stokip/product/constants/enums/tabs_enum.dart';
 import 'package:stokip/product/constants/project_colors.dart';
 import 'package:stokip/product/extensions/tabs_extension.dart';
 
-class HomeView extends StatefulWidget {
+class HomeView extends StatelessWidget {
   const HomeView({super.key});
 
   @override
-  State<HomeView> createState() => _HomeViewState();
-}
-
-class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
-  late final TabController _tabController;
-  late final ValueNotifier<int> tabIndex = ValueNotifier<int>(0);
-  late final ValueNotifier<BannerAd?> bannerAd;
-  @override
-  void initState() {
-    super.initState();
-    _tabController = TabController(vsync: this, length: Tabs.values.length, animationDuration: const Duration(milliseconds: 300));
-    _tabController.addListener(() {
-      tabIndex.value = _tabController.index;
-      if (_tabController.indexIsChanging) {
-        FocusScope.of(context).requestFocus(FocusNode());
-      }
-    });
-    loadAds();
-  }
-
-  // this method is used to load the ads
-  // and set the value of the bannerAd
-  Future<void> loadAds() async {
-    print('load ads triggered');
-    bannerAd = ValueNotifier(
-      BannerAd(
-        size: AdSize.banner,
-        adUnitId: 'ca-app-pub-9069954727984208/2913442795',
-        listener: BannerAdListener(
-          onAdLoaded: (ad) {
-            debugPrint('Ad loaded: ${ad.adUnitId}');
-          },
-          onAdFailedToLoad: (ad, error) {
-            debugPrint('Ad failed to load: ${ad.adUnitId}, $error');
-            ad.dispose();
-          },
-        ),
-        request: const AdRequest(),
-      ),
-    );
-    await bannerAd.value!.load();
-  }
-
-  @override
   Widget build(BuildContext context) {
+    final currentState = HomeViewInherited.of(context);
     return MultiBlocProvider(
       providers: [
         BlocProvider<StockCubit>(
@@ -92,7 +48,10 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
         ),
       ],
       // this is the parent widget that will pass the value of the bannerAd to the child widgets
-      child: AdInherited(bannerAd, child: TabView(tabIndex: tabIndex, tabController: _tabController)),
+      child: TabView(
+        tabIndex: currentState.tabIndex,
+        tabController: currentState.tabController,
+      ),
     );
   }
 }
@@ -109,7 +68,6 @@ class TabView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final addInherited = AdInherited.of(context);
     return DefaultTabController(
       length: Tabs.values.length,
       child: Scaffold(
@@ -118,7 +76,6 @@ class TabView extends StatelessWidget {
           child: TabBar(
             tabs: Tabs.values.map(
               (e) {
-                print(e.index);
                 return Center(
                   child: ValueListenableBuilder(
                     valueListenable: tabIndex,
@@ -157,23 +114,37 @@ class TabView extends StatelessWidget {
                 Tabs.suppliers.getPage(),
               ],
             ),
-            ValueListenableBuilder(
-              valueListenable: addInherited.bannerAd,
-              builder: (context, value, _) {
-                return Positioned(
-                  bottom: 0,
-                  left: 88.w - value!.size.width.toDouble(),
-                  child: SizedBox(
-                    width: value.size.width.toDouble(),
-                    height: value.size.height.toDouble(),
-                    child: AdWidget(ad: value),
-                  ),
-                );
-              },
-            ),
+            const _BannerAdWidget(),
           ],
         ),
       ),
+    );
+  }
+}
+
+class _BannerAdWidget extends StatelessWidget {
+  const _BannerAdWidget({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final homeState = HomeViewInherited.of(context);
+    return ValueListenableBuilder(
+      valueListenable: homeState.bannerAd,
+      builder: (context, value, _) {
+        if (value == null) {
+          return const SizedBox();
+        }
+        return Align(
+          alignment: Alignment.bottomCenter,
+          child: SizedBox(
+            width: value.size.width.toDouble(),
+            height: value.size.height.toDouble(),
+            child: AdWidget(ad: value),
+          ),
+        );
+      },
     );
   }
 }

@@ -49,7 +49,6 @@ class _SalesViewState extends State<SalesView> {
     super.initState();
     searchTextEditingController = TextEditingController();
     titleTextEditingController = TextEditingController();
-
     salesViewModel.init(context);
   }
 
@@ -205,12 +204,10 @@ class _SalesViewState extends State<SalesView> {
                       return state.filteredSales ?? state.sales ?? [];
                     },
                     builder: (context, state) {
-                      return Container(
-                        child: SearchContainer<SalesModel>(
-                          delegate: SaleDelegate(
-                            salesViewModel.blocProvider,
-                            items: state,
-                          ),
+                      return SearchContainer<SalesModel>(
+                        delegate: SaleDelegate(
+                          salesViewModel.blocProvider,
+                          items: state,
                         ),
                       );
                     },

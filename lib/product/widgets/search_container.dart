@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
 import 'package:stokip/feature/model/stock_model.dart';
+import 'package:stokip/feature/view/home/home_view_inherited.dart';
 import 'package:stokip/product/constants/project_colors.dart';
 import 'package:stokip/product/constants/custom_icon.dart';
 
@@ -15,8 +16,12 @@ final class SearchContainer<T extends MainModel> extends StatelessWidget {
   final EdgeInsets? edgeInsets;
   @override
   Widget build(BuildContext context) {
+    final homeState = HomeViewInherited.of(context);
     return InkWell(
       onTap: () {
+        if (homeState.isInterstitialAdReady) {
+          homeState.showInterstitialAd();
+        }
         showSearch<T>(context: context, delegate: delegate);
       },
       child: Container(

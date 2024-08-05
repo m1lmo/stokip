@@ -21,33 +21,26 @@ abstract class _SalesVievModelBase with Store {
   late final SalesCubit blocProvider;
   late final CustomerCubit customerCubitProvider;
   late final StockCubit stockCubitProvider;
-  late final SingleValueDropDownController? stockDropDownController;
-  late final SingleValueDropDownController? customerDropDownController;
-  late final SingleValueDropDownController? stockDetailDropDownController;
-  late final SingleValueDropDownController? currencyDropDownController;
-  late final TextEditingController? quantityController;
-  late final TextEditingController? priceController;
-
+  final stockDropDownController = SingleValueDropDownController();
+  final customerDropDownController = SingleValueDropDownController();
+  final stockDetailDropDownController = SingleValueDropDownController();
+  final currencyDropDownController = SingleValueDropDownController();
+  final quantityController = TextEditingController();
+  final priceController = TextEditingController();
   @action
   void init(BuildContext context) {
     blocProvider = BlocProvider.of<SalesCubit>(context);
     customerCubitProvider = BlocProvider.of<CustomerCubit>(context);
     stockCubitProvider = BlocProvider.of<StockCubit>(context);
-    stockDropDownController = SingleValueDropDownController();
-    customerDropDownController = SingleValueDropDownController();
-    stockDetailDropDownController = SingleValueDropDownController();
-    currencyDropDownController = SingleValueDropDownController();
-    quantityController = TextEditingController();
-    priceController = TextEditingController();
   }
 
   void dispose() {
-    stockDropDownController?.dispose();
-    customerDropDownController?.dispose();
-    stockDetailDropDownController?.dispose();
-    currencyDropDownController?.dispose();
-    quantityController?.dispose();
-    priceController?.dispose();
+    stockDropDownController.dispose();
+    customerDropDownController.dispose();
+    stockDetailDropDownController.dispose();
+    currencyDropDownController.dispose();
+    quantityController.dispose();
+    priceController.dispose();
   }
 
   @action
@@ -76,17 +69,17 @@ abstract class _SalesVievModelBase with Store {
   @action
   void addSale() {
     final saleModel = SalesModel(
-      customer: customerDropDownController?.dropDownValue?.value as CustomerModel?,
-      itemName: stockDropDownController?.dropDownValue?.value?.title as String,
+      customer: customerDropDownController.dropDownValue?.value as CustomerModel?,
+      itemName: stockDropDownController.dropDownValue?.value?.title as String,
       dateTime: DateTime.now(),
-      stockDetailModel: stockDetailDropDownController?.dropDownValue?.value as StockDetailModel,
-      quantity: double.tryParse(quantityController!.text),
-      price: double.tryParse(priceController!.text),
-      currency: currencyDropDownController!.dropDownValue!.value as CurrencyEnum,
+      stockDetailModel: stockDetailDropDownController.dropDownValue?.value as StockDetailModel,
+      quantity: double.tryParse(quantityController.text),
+      price: double.tryParse(priceController.text),
+      currency: currencyDropDownController.dropDownValue!.value as CurrencyEnum,
     );
     if (saleModel.customer == null || saleModel.stockDetailModel == null || saleModel.quantity == null || saleModel.price == null) return;
     blocProvider.addSale(model: saleModel);
     customerCubitProvider.updateCustomerBalance(saleModel.customer!, saleModel.price! * saleModel.quantity!);
-    stockCubitProvider.updateTotalMeter(itemId: (stockDropDownController!.dropDownValue!.value as StockModel).id);
+    stockCubitProvider.updateTotalMeter(itemId: (stockDropDownController.dropDownValue!.value as StockModel).id);
   }
 }

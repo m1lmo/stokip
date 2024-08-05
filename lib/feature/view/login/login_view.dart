@@ -16,17 +16,25 @@ class LoginView extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => UserCubit(),
-      child: const Scaffold(
+      child: Scaffold(
         backgroundColor: Colors.white,
         body: Form(
-          child: Stack(
-            fit: StackFit.expand,
-            alignment: Alignment.center,
-            children: [
-              _LoginWithPassword(),
-              _OrLoginWith(),
-              _LoginAndSignButton(),
-            ],
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                Stack(
+                  alignment: Alignment.topCenter,
+                  children: [
+                    SizedBox(
+                      height: 100.h,
+                    ),
+                    const _LoginWithPassword(),
+                    const _LoginAndSignButton(),
+                    const _OrLoginWith(),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),
