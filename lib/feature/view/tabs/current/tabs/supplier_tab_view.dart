@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sizer/sizer.dart';
 import 'package:stokip/feature/cubit/importers/importer_cubit.dart';
 import 'package:stokip/feature/model/importer_model.dart';
+import 'package:stokip/feature/view/tabs/current/tabs/customer_tab_view.dart';
 import 'package:stokip/product/constants/project_colors.dart';
 import 'package:stokip/product/constants/project_paddings.dart';
 import 'package:stokip/product/extensions/currency_enum_extension.dart';
