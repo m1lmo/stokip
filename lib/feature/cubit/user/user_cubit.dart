@@ -1,5 +1,4 @@
 import 'package:bloc/bloc.dart';
-import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:stokip/feature/model/user_model.dart';
@@ -47,6 +46,7 @@ class UserCubit extends Cubit<UserState> {
         return null;
       },
     );
+    dioHelper.setToken(user.jwtToken);
     secureStorage.writeToken(user.jwtToken!);
     userHiveOperation.addOrUpdateItem(currentUser!);
     emit(state.copyWith(currentUser: currentUser));
