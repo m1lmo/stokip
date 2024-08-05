@@ -6,7 +6,6 @@ import 'package:stokip/feature/model/importer_model.dart';
 import 'package:stokip/product/constants/project_colors.dart';
 import 'package:stokip/product/constants/project_paddings.dart';
 import 'package:stokip/product/extensions/currency_enum_extension.dart';
-import 'package:stokip/product/extensions/string_extension.dart';
 import 'package:stokip/product/widgets/custom_container.dart';
 import 'package:stokip/product/widgets/custom_divider.dart';
 import 'package:stokip/product/widgets/my_search_delegate.dart';
