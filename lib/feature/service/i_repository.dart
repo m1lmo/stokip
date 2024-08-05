@@ -18,7 +18,7 @@ abstract class IRepository<T extends ServiceModel> extends ServiceManager<T> {
     } on DioException catch (e) {
       final failure = ErrorHandler.handler(e).failure;
       CNotify(
-        title: 'Hata',
+        title: 'Error',
         message: failure.message,
       ).show();
       return false;
@@ -38,7 +38,7 @@ abstract class IRepository<T extends ServiceModel> extends ServiceManager<T> {
     } on DioException catch (e) {
       final failure = ErrorHandler.handler(e).failure;
       CNotify(
-        title: 'Hata',
+        title: 'Error',
         message: failure.message,
       ).show();
       return null;
