@@ -21,10 +21,7 @@ class _CustomerListTile extends StatelessWidget {
                   children: [
                     Column(
                       children: [
-                        Text(
-                          customer.title?.toTitleCase() ?? '',
-                          style: Theme.of(context).textTheme.headlineSmall,
-                        ),
+                        CurrentTitleWidget<CustomerModel>(customer: customer),
                         Text(
                           'Toplam satış: ${customer.boughtProducts?.length ?? 0} ',
                           style: Theme.of(context).textTheme.bodySmall?.copyWith(
@@ -78,6 +75,34 @@ class _CustomerListTile extends StatelessWidget {
           ),
           CustomDivider.horizontal(width: double.maxFinite, thickness: .1.w),
         ],
+      ),
+    );
+  }
+}
+
+class CurrentTitleWidget<T extends MainModel> extends StatelessWidget {
+  const CurrentTitleWidget({
+    required this.customer,
+    super.key,
+  });
+
+  final T customer;
+
+  @override
+  Widget build(BuildContext context) {
+    return ConstrainedBox(
+      constraints: BoxConstraints(
+        maxWidth: 30.w,
+        minWidth: 30.w,
+      ),
+      child: Tooltip(
+        message: customer.title?.toTitleCase(),
+        child: Text(
+          overflow: TextOverflow.ellipsis,
+          maxLines: 1,
+          customer.title?.toTitleCase() ?? '',
+          style: Theme.of(context).textTheme.headlineSmall,
+        ),
       ),
     );
   }
